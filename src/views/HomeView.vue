@@ -1,9 +1,7 @@
-<script setup>
-import TheWelcome from '../components/TheWelcome.vue'
-</script>
-
 <template>
-  <main>
-    <TheWelcome />
-  </main>
+  <div class="header">
+    <h1>ZaKuvare</h1>
+  </div>
 </template>
+
+<script setup></script>
