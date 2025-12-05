@@ -1,15 +1,24 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+import logo from './components/logo.png'
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" />
+    <!-- Levo: logo -->
+    <RouterLink to="/"><img alt="Logo" class="logo" :src="logo" /></RouterLink>
 
-    <nav>
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/about">About</RouterLink>
-    </nav>
+    <!-- Sredina: Moji favoriti -->
+    <div class="center-nav">
+      <RouterLink to="/vasa-omiljena-jela">Moji favoriti</RouterLink>
+      <RouterLink to="/o-nama">O nama</RouterLink>
+    </div>
+
+    <!-- Desno: Registracija i Login -->
+    <div class="right-nav">
+      <RouterLink to="/register">Registruj se</RouterLink>
+      <RouterLink to="/login">Uloguj se</RouterLink>
+    </div>
   </header>
 
   <main>
@@ -23,8 +32,8 @@ header {
   top: 0;
   left: 0;
   width: 100%;
-  height: 80px;
-  background-color: #fff;
+  height: 75px;
+  background-color: #743f3f;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -33,32 +42,53 @@ header {
   z-index: 1000;
 }
 
+/* Logo */
 .logo {
-  height: 60px;
+  height: 80px;
   width: auto;
+  padding-top: 5px;
 }
 
-/* Navigacija */
-nav {
-  display: flex;
-  gap: 1.5rem;
-  font-size: 1rem;
+/* Sredina */
+.center-nav {
+  flex: 1;
+  text-align: center;
 }
 
-nav a {
+.center-nav a {
   text-decoration: none;
-  color: #333;
+  color: white;
+  font-weight: 500;
+  font-size: 1.1rem;
+  margin: 30px;
+}
+
+.center-nav a:hover {
+  color: #a0643c;
+}
+
+/* Ovo je ključno za aktivni link */
+.center-nav a.router-link-exact-active {
+  color: #a0643c;
+  font-weight: 700;
+}
+
+/* Desno */
+.right-nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.right-nav a {
+  text-decoration: none;
+  color: #ffffff;
   padding: 0.5rem 1rem;
   transition: background-color 0.2s;
 }
 
-nav a:hover {
+.right-nav a:hover {
   background-color: #eee;
   border-radius: 5px;
-}
-
-/* Pomak sadržaja ispod header-a */
-main {
-  margin-top: 100px; /* isto koliko header da ne preklapa sadržaj */
+  color: #a0643c;
 }
 </style>
