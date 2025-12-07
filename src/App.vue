@@ -5,16 +5,13 @@ import logo from './components/logo.png'
 
 <template>
   <header>
-    <!-- Levo: logo -->
     <RouterLink to="/"><img alt="Logo" class="logo" :src="logo" /></RouterLink>
 
-    <!-- Sredina: Moji favoriti -->
     <div class="center-nav">
       <RouterLink to="/vasa-omiljena-jela">Moji favoriti</RouterLink>
       <RouterLink to="/o-nama">O nama</RouterLink>
     </div>
 
-    <!-- Desno: Registracija i Login -->
     <div class="right-nav">
       <RouterLink to="/register">Registruj se</RouterLink>
       <RouterLink to="/login">Uloguj se</RouterLink>
@@ -42,14 +39,12 @@ header {
   z-index: 1000;
 }
 
-/* Logo */
 .logo {
   height: 80px;
   width: auto;
   padding-top: 5px;
 }
 
-/* Sredina */
 .center-nav {
   flex: 1;
   text-align: center;
@@ -67,13 +62,11 @@ header {
   color: #a0643c;
 }
 
-/* Ovo je ključno za aktivni link */
 .center-nav a.router-link-exact-active {
   color: #a0643c;
   font-weight: 700;
 }
 
-/* Desno */
 .right-nav {
   display: flex;
   gap: 1rem;
