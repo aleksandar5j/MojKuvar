@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/require-v-for-key -->
 <template>
   <div class="hero">
     <div class="content">
@@ -9,14 +10,18 @@
       <div class="row">
         <label>Kategorija jela</label>
         <select class="select">
-          <option>Opcija 1</option>
+          <option v-for="category in categories" :key="category.cat_name" style="color: black">
+            {{ category.cat_name }}
+          </option>
         </select>
       </div>
 
       <div class="row">
         <label>Po sastojku</label>
         <select class="select">
-          <option>Opcija 1</option>
+          <option v-for="ing in ingredients" :key="ing.ing_name" style="color: black">
+            {{ ing.ing_name }}
+          </option>
         </select>
       </div>
 
@@ -26,7 +31,67 @@
       </div>
     </div>
   </div>
+  <div class="main-wrapper">
+    <div class="main" v-for="recipe in recipes" :key="recipe.rec_id">
+      <RouterLink :to="{ name: 'detalji-recepta', params: { id: recipe.rec_id } }">
+        <div class="recipe-card">
+          <img :src="`http://565q123.e2.mars-hosting.com${recipe.rec_image}`" />
+          <h2>{{ recipe.rec_name }}</h2>
+          <p style="color: black; font-size: 12px; margin-bottom: 10px">
+            Težina pripreme: {{ recipe.rec_preparation }}
+          </p>
+        </div>
+      </RouterLink>
+    </div>
+  </div>
 </template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import api from '@/api'
+
+const categories = ref([])
+
+async function getCategories() {
+  try {
+    const res = await api.getCategories()
+    console.log(res.data)
+    categories.value = res.data.data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const ingredients = ref([])
+
+async function getIngredients() {
+  try {
+    const res = await api.getIngredients()
+    console.log(res.data)
+    ingredients.value = res.data.data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const recipes = ref([])
+
+async function getRecipes() {
+  try {
+    const res = await api.getRecipes()
+    console.log(res.data)
+    recipes.value = res.data.data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+onMounted(() => {
+  getCategories()
+  getIngredients()
+  getRecipes()
+})
+</script>
 
 <style scoped>
 .hero {
@@ -189,5 +254,48 @@
   opacity: 1;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px #743f3f;
+}
+
+.main-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* CENTRIRA SVE KARTICE */
+  gap: 25px;
+  padding: 40px;
+}
+
+/* KONTEJNER */
+.recipe-card {
+  width: 200px;
+  background: #ffffff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transition: 0.25s ease;
+  cursor: pointer;
+  text-align: center;
+}
+
+/* HOVER EFEKAT */
+.recipe-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+/* SLIKA */
+.recipe-card img {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  display: block;
+}
+
+/* NASLOV */
+.recipe-card h2 {
+  margin: 20px 0 20px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #743f3f;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 </style>
