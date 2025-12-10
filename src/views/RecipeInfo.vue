@@ -1,66 +1,82 @@
 <template>
-  <h1 style="color: black; padding-top: 120px; text-align: center; font-size: 40px">
-    Instrukcije za pravljenje recepta
-  </h1>
-  <div class="wrapper" v-if="recipe" style="padding-top: 50px">
-    <div class="recipe-card">
-      <!-- Slika recepta -->
-      <h1 class="recipe-title" style="margin-bottom: 15px">{{ recipe.rec_name }}</h1>
-      <img class="recipe-image" :src="`http://565q123.e2.mars-hosting.com${recipe.image}`" />
+  <div>
+    <h1 style="color: black; padding-top: 120px; text-align: center; font-size: 40px">
+      Instrukcije za pravljenje recepta
+    </h1>
 
-      <!-- Glavni detalji -->
+    <div class="wrapper" v-if="recipe">
+      <div class="recipe-card">
+        <h1 class="recipe-title">{{ recipe.rec_name }}</h1>
+        <img class="recipe-image" :src="`http://565q123.e2.mars-hosting.com${recipe.image}`" />
 
-      <h3 style="font-weight: bold; margin-top: 20px">Instrukcije</h3>
-      <p class="recipe-inst">{{ recipe.rec_instructions }}</p>
+        <p class="recipe-prep"><strong>Težina pripreme:</strong> {{ recipe.rec_preparation }}</p>
 
-      <h3 style="font-weight: bold; margin-top: 25px">Deskripcija</h3>
-      <p class="recipe-desc">{{ recipe.rec_description }}</p>
+        <h2 class="sub-title">Sastojci</h2>
+        <ul class="ingredients">
+          <li v-for="ing in ingredients" :key="ing.ing_id">
+            <span class="ing-name">{{ ing.ing_name }}</span>
+            <span class="ing-qty">{{ ing.rig_quantity }}</span>
+          </li>
+        </ul>
 
-      <p class="recipe-prep"><strong>Težina pripreme:</strong> {{ recipe.rec_preparation }}</p>
+        <h3 style="font-weight: bold; margin-top: 20px">Instrukcije</h3>
+        <p class="recipe-inst">{{ recipe.rec_instructions }}</p>
 
-      <hr />
+        <h3 style="font-weight: bold; margin-top: 25px">Deskripcija</h3>
+        <p class="recipe-desc">{{ recipe.rec_description }}</p>
+      </div>
 
-      <!-- Sastojci -->
-      <h2 class="sub-title">Sastojci</h2>
-
-      <ul class="ingredients">
-        <li v-for="ing in ingredients" :key="ing.ing_id">
-          <span class="ing-name">{{ ing.ing_name }}</span>
-          <span class="ing-qty">{{ ing.rig_quantity }}</span>
-        </li>
-      </ul>
+      <h2 class="sub-title" style="margin-top: 50px">Slični recepti</h2>
+      <div class="related-container">
+        <RouterLink
+          v-for="r in relatedRecipes"
+          :key="r.rec_id"
+          :to="{ name: 'detalji-recepta', params: { id: r.rec_id } }"
+          class="related-card"
+        >
+          <img :src="`http://565q123.e2.mars-hosting.com${r.image}`" class="related-img" />
+          <h3>{{ r.rec_name }}</h3>
+        </RouterLink>
+      </div>
     </div>
-  </div>
-
-  <div v-else class="loading">
-    <p>Učitavanje recepta...</p>
   </div>
 </template>
 
 <script setup>
 import api from '@/api'
 import { useRoute } from 'vue-router'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 
 const route = useRoute()
-
 const recipe = ref(null)
 const ingredients = ref([])
+const relatedRecipes = ref([])
 
-async function getRecipe() {
+async function getRecipe(id) {
   try {
-    const res = await api.getRecipeId(route.params.id)
-    console.log(res.data)
-    recipe.value = res.data.data.recipe
-    ingredients.value = res.data.data.ingredients
+    const res = await api.getRecipeId(id)
+    recipe.value = res.data.recipe
+    ingredients.value = res.data.ingredients
+
+    const same = await api.getSameCategoryRecipes(route.params.id)
+    relatedRecipes.value = same.data
   } catch (error) {
     console.log(error)
   }
 }
 
+// Pokreni prvi put
 onMounted(() => {
-  getRecipe()
+  getRecipe(route.params.id)
 })
+
+// Watch za promenu ID-ja u ruti (klik na sličan recept)
+watch(
+  () => route.params.id,
+  (newId) => {
+    getRecipe(newId)
+  },
+)
 </script>
 
 <style scoped>
@@ -101,7 +117,7 @@ onMounted(() => {
 
 .recipe-prep {
   font-size: 15px;
-  color: #333;
+  color: #743f3f;
   background: #f3f3f3;
   padding: 10px;
   border-radius: 10px;

@@ -35,7 +35,7 @@
     <div class="main" v-for="recipe in recipes" :key="recipe.rec_id">
       <RouterLink :to="{ name: 'detalji-recepta', params: { id: recipe.rec_id } }">
         <div class="recipe-card">
-          <img :src="`http://565q123.e2.mars-hosting.com${recipe.rec_image}`" />
+          <img :src="`http://565q123.e2.mars-hosting.com${recipe.image}`" />
           <h2>{{ recipe.rec_name }}</h2>
           <p style="color: black; font-size: 12px; margin-bottom: 10px">
             Težina pripreme: {{ recipe.rec_preparation }}

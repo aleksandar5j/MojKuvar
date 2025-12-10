@@ -5,4 +5,5 @@ export default {
   getIngredients: (data) => axios.get('ingredients', data),
   getRecipes: (data) => axios.get('recipes', data),
   getRecipeId: (id) => axios.get(`recipes/${id}`),
+  getSameCategoryRecipes: (id) => axios.post(`recipes/same-category`, { id }),
 }
