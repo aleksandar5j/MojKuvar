@@ -1,42 +1,53 @@
 <template>
   <div>
-    <h1 style="color: black; padding-top: 120px; text-align: center; font-size: 40px">
+    <h1 style="color: white; padding-top: 120px; text-align: center; font-size: 40px; background-color: #743f3f;">
       Instrukcije za pravljenje recepta
     </h1>
 
-    <div class="wrapper" v-if="recipe">
+    <div class="wrapper" v-if="recipe && recipe.rec_name">
       <div class="recipe-card">
         <h1 class="recipe-title">{{ recipe.rec_name }}</h1>
         <img class="recipe-image" :src="`http://565q123.e2.mars-hosting.com${recipe.image}`" />
 
         <p class="recipe-prep"><strong>Težina pripreme:</strong> {{ recipe.rec_preparation }}</p>
 
+        <br><hr></br>
+
         <h2 class="sub-title">Sastojci</h2>
         <ul class="ingredients">
-          <li v-for="ing in ingredients" :key="ing.ing_id">
+          <li v-for="ing in ingredients" :key="ing.ing_id" style="background-color: #743f3f; border: 0;">
             <span class="ing-name">{{ ing.ing_name }}</span>
             <span class="ing-qty">{{ ing.rig_quantity }}</span>
           </li>
         </ul>
 
-        <h3 style="font-weight: bold; margin-top: 20px">Instrukcije</h3>
-        <p class="recipe-inst">{{ recipe.rec_instructions }}</p>
+        <br><hr></br>
 
-        <h3 style="font-weight: bold; margin-top: 25px">Deskripcija</h3>
+        <h3 style="font-weight: bold; margin-top: 20px; color: white;">Instrukcije</h3>
+        <p class="recipe-inst" style="color: white">{{ recipe.rec_instructions }}</p>
+
+        <br><hr></br>
+
+        <h3 style="font-weight: bold; margin-top: 25px; color: white;">Deskripcija</h3>
         <p class="recipe-desc">{{ recipe.rec_description }}</p>
       </div>
 
-      <h2 class="sub-title" style="margin-top: 50px">Slični recepti</h2>
-      <div class="related-container">
-        <RouterLink
-          v-for="r in relatedRecipes"
-          :key="r.rec_id"
-          :to="{ name: 'detalji-recepta', params: { id: r.rec_id } }"
-          class="related-card"
-        >
-          <img :src="`http://565q123.e2.mars-hosting.com${r.image}`" class="related-img" />
-          <h3>{{ r.rec_name }}</h3>
-        </RouterLink>
+      <div v-if="relatedRecipes.length" class="related-section">
+        <h3 style="font-weight: bold;">Slični recepti</h3>
+        <div class="related-wrapper">
+          <RouterLink
+            v-for="r in relatedRecipes"
+            :key="r.rec_id"
+            :to="{ name: 'detalji-recepta', params: { id: r.rec_id } }"
+            class="related-card-link"
+          >
+            <div class="related-card">
+              <img :src="`http://565q123.e2.mars-hosting.com${r.image}`" class="related-image" />
+              <p class="related-name">{{ r.rec_name }}</p>
+              <p class="related-desc">{{ r.rec_description }}</p>
+            </div>
+          </RouterLink>
+        </div>
       </div>
     </div>
   </div>
@@ -48,34 +59,35 @@ import { useRoute } from 'vue-router'
 import { ref, onMounted, watch } from 'vue'
 
 const route = useRoute()
-const recipe = ref(null)
+const recipe = ref({})
 const ingredients = ref([])
 const relatedRecipes = ref([])
 
-async function getRecipe(id) {
+async function getRecipe() {
   try {
-    const res = await api.getRecipeId(id)
-    recipe.value = res.data.recipe
-    ingredients.value = res.data.ingredients
+    const res = await api.getRecipeId(route.params.id)
+    console.log(res.data)
 
-    const same = await api.getSameCategoryRecipes(route.params.id)
-    relatedRecipes.value = same.data
+    recipe.value = res.data.data.recipe
+    ingredients.value = res.data.data.ingredients
+
+    const related = await api.getRelatedRecipes(route.params.id)
+    relatedRecipes.value = related.data.data.data
+    console.log('Related:', relatedRecipes.value)
   } catch (error) {
     console.log(error)
   }
 }
 
-// Pokreni prvi put
 onMounted(() => {
-  getRecipe(route.params.id)
+  getRecipe()
 })
 
-// Watch za promenu ID-ja u ruti (klik na sličan recept)
 watch(
   () => route.params.id,
-  (newId) => {
-    getRecipe(newId)
-  },
+  (newId, oldId) => {
+    getRecipe()
+  }
 )
 </script>
 
@@ -83,12 +95,15 @@ watch(
 .wrapper {
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-direction: column;
   padding: 30px;
+  background-color: #743f3f;
 }
 
 .recipe-card {
-  width: 600px;
-  background: #ffffff;
+  width: 700px;
+  background: #a85c5c;
   padding: 25px;
   border-radius: 15px;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15);
@@ -106,19 +121,19 @@ watch(
   margin: 0;
   font-size: 26px;
   font-weight: bold;
-  color: #222;
+  color: white;
 }
 
 .recipe-desc {
   font-size: 16px;
-  color: #555;
+  color: white;
   padding-bottom: 20px;
 }
 
 .recipe-prep {
   font-size: 15px;
-  color: #743f3f;
-  background: #f3f3f3;
+  color: white;
+  background: #743f3f;
   padding: 10px;
   border-radius: 10px;
   font-weight: bold;
@@ -127,7 +142,7 @@ watch(
 .sub-title {
   margin-top: 20px;
   font-size: 22px;
-  color: #333;
+  color: white;
 }
 
 .ingredients {
@@ -148,10 +163,11 @@ watch(
 
 .ing-name {
   font-weight: 600;
+  color: white
 }
 
 .ing-qty {
-  color: #222;
+  color: white;
   font-weight: 500;
 }
 
@@ -160,4 +176,59 @@ watch(
   padding: 50px;
   font-size: 20px;
 }
+
+.related-section {
+  background-color: #5c2e2e; /* tamnija nijansa od wrappera */
+  padding: 30px;
+  border-radius: 15px;
+  margin-top: 30px;
+}
+
+.related-section h3 {
+  color: white;
+  font-size: 22px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.related-wrapper {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.related-card {
+  width: 250px;       /* veće kartice */
+  background: #743f3f; /* malo tamnija nijansa */
+  border-radius: 12px;
+  overflow: hidden;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.related-card:hover {
+  transform: scale(1.05);
+}
+
+.related-image {
+  width: 100%;
+  height: 250px;  /* veća slika */
+  object-fit: cover;
+}
+
+.related-name {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  padding: 20px 5px;
+}
+
+.related-desc {
+  color: white;
+  padding-bottom: 20px;
+  font-size: 12px;
+}
+
 </style>
