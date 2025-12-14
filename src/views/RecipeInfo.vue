@@ -199,7 +199,7 @@ watch(
 }
 
 .related-card {
-  width: 250px;       /* veće kartice */
+  width: 370px;       /* veće kartice */
   background: #743f3f; /* malo tamnija nijansa */
   border-radius: 12px;
   overflow: hidden;

@@ -31,6 +31,13 @@
       </div>
     </div>
   </div>
+
+  <h1
+    style="color: #743f3f; font-size: 45px; text-align: center; font-weight: bold; margin-top: 30px"
+  >
+    Svi recepti ↓
+  </h1>
+
   <div class="main-wrapper">
     <div class="main" v-for="recipe in recipes" :key="recipe.rec_id">
       <RouterLink :to="{ name: 'detalji-recepta', params: { id: recipe.rec_id } }">
@@ -43,6 +50,32 @@
         </div>
       </RouterLink>
     </div>
+  </div>
+  <hr
+    style="margin: 50px; background-color: #743f3f; height: 3px; border: 0; border-radius: 50px"
+  />
+  <h1 style="font-weight: bold; color: #743f3f; text-align: center">Glavna jela ↓</h1>
+  <div class="slider-container">
+    <!-- LEVA STRELICA -->
+    <button class="arrow left" @click="scrollLeft">‹</button>
+
+    <!-- SLIDER -->
+    <div class="slider-wrapper" ref="slider">
+      <div class="main-wrapper2">
+        <div class="main2" v-for="jelo in glavnajela" :key="jelo.rec_id">
+          <RouterLink :to="{ name: 'detalji-recepta', params: { id: jelo.rec_id } }">
+            <div class="recipe-card2">
+              <img :src="`http://565q123.e2.mars-hosting.com${jelo.image}`" alt="recipe" />
+              <h2>{{ jelo.rec_name }}</h2>
+              <p class="difficulty">Težina pripreme: {{ jelo.rec_preparation }}</p>
+            </div>
+          </RouterLink>
+        </div>
+      </div>
+    </div>
+
+    <!-- DESNA STRELICA -->
+    <button class="arrow right" @click="scrollRight">›</button>
   </div>
 </template>
 
@@ -75,6 +108,17 @@ async function getIngredients() {
 }
 
 const recipes = ref([])
+const glavnajela = ref([])
+
+async function getGlavnaJela() {
+  try {
+    const res = await api.getGlavnaJela()
+    console.log(res.data)
+    glavnajela.value = res.data.data
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 async function getRecipes() {
   try {
@@ -90,7 +134,24 @@ onMounted(() => {
   getCategories()
   getIngredients()
   getRecipes()
+  getGlavnaJela()
 })
+
+const slider = ref(null)
+
+const scrollLeft = () => {
+  slider.value.scrollBy({
+    left: -425, // širina kartice + gap
+    behavior: 'smooth',
+  })
+}
+
+const scrollRight = () => {
+  slider.value.scrollBy({
+    left: 425,
+    behavior: 'smooth',
+  })
+}
 </script>
 
 <style scoped>
@@ -259,14 +320,13 @@ onMounted(() => {
 .main-wrapper {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center; /* CENTRIRA SVE KARTICE */
+  justify-content: center;
   gap: 25px;
-  padding: 40px;
+  padding: 10px;
 }
 
-/* KONTEJNER */
 .recipe-card {
-  width: 200px;
+  width: 450px;
   background: #ffffff;
   border-radius: 18px;
   overflow: hidden;
@@ -276,26 +336,121 @@ onMounted(() => {
   text-align: center;
 }
 
-/* HOVER EFEKAT */
 .recipe-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
 }
 
-/* SLIKA */
 .recipe-card img {
   width: 100%;
-  height: 170px;
+  height: 250px;
   object-fit: cover;
   display: block;
 }
-
-/* NASLOV */
-.recipe-card h2 {
+a .recipe-card h2 {
   margin: 20px 0 20px;
   font-size: 20px;
   font-weight: bold;
   color: #743f3f;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.slider-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(233, 233, 233);
+  border-radius: 50px;
+  margin: 30px;
+}
+
+/* strelice */
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #743f3f;
+  color: white;
+  border: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  font-size: 30px;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0.9;
+  transition: 0.2s;
+}
+
+.arrow:hover {
+  opacity: 1;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.arrow.left {
+  left: 50px;
+}
+
+.arrow.right {
+  right: 50px;
+}
+
+/* vidi se max 4 kartice */
+.slider-wrapper {
+  max-width: calc(4 * 400px + 3 * 25px);
+  overflow-x: hidden;
+}
+
+/* slider */
+.main-wrapper2 {
+  display: flex;
+  gap: 25px;
+  padding: 10px;
+  flex-wrap: nowrap;
+}
+
+.main2 {
+  flex-shrink: 0;
+}
+
+/* kartica */
+.recipe-card2 {
+  min-width: 400px;
+  background: #ffffff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transition: 0.25s ease;
+  cursor: pointer;
+  text-align: center;
+}
+
+.recipe-card2:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+.recipe-card2 img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+.recipe-card2 h2 {
+  margin: 18px 0 8px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #743f3f;
+}
+
+.difficulty {
+  font-size: 12px;
+  margin-bottom: 14px;
+  color: black;
+}
+
+a {
+  text-decoration: none;
 }
 </style>

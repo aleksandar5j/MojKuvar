@@ -6,4 +6,5 @@ export default {
   getRecipes: (data) => axios.get('recipes', data),
   getRecipeId: (id) => axios.get(`recipes/${id}`),
   getRelatedRecipes: (id) => axios.get(`recipes/same-category?id=${id}`),
+  getGlavnaJela: (data) => axios.get('recipes/glavna-jela', data),
 }
