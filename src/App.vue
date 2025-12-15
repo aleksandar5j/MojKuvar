@@ -1,8 +1,3 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import logo from './components/logo.png'
-</script>
-
 <template>
   <header>
     <RouterLink to="/"><img alt="Logo" class="logo" :src="logo" /></RouterLink>
@@ -13,8 +8,15 @@ import logo from './components/logo.png'
     </div>
 
     <div class="right-nav">
-      <RouterLink to="/register">Registruj se</RouterLink>
-      <RouterLink to="/login">Uloguj se</RouterLink>
+      <template v-if="!isLoggedIn">
+        <RouterLink to="/register">Registruj se</RouterLink>
+        <RouterLink to="/login">Uloguj se</RouterLink>
+      </template>
+
+      <template v-else>
+        <span>Dobrodošao, {{ user.usr_username }}</span>
+        <button @click="logoutUser">LogOut</button>
+      </template>
     </div>
   </header>
 
@@ -22,6 +24,27 @@ import logo from './components/logo.png'
     <RouterView />
   </main>
 </template>
+
+<script setup>
+import { useRouter } from 'vue-router'
+import { useSessionStore } from './stores/sessionUser'
+import { computed } from 'vue'
+import logo from './components/logo.png'
+
+const session = useSessionStore()
+const router = useRouter()
+
+// inicijalizacija iz localStorage
+
+// reactive properties
+const isLoggedIn = computed(() => !!session.user)
+const user = computed(() => session.user || {})
+
+const logoutUser = () => {
+  session.logout()
+  router.push('/')
+}
+</script>
 
 <style scoped>
 header {

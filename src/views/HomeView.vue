@@ -13,8 +13,13 @@
       <div class="row">
         <label>Kategorija jela</label>
         <select class="select" v-model="selectedCategory" @change="onCategoryChange">
-          <option value="">Sve kategorije</option>
-          <option v-for="cat in categories" :key="cat.cat_id" :value="cat.cat_id">
+          <option value="" style="color: black">Sve kategorije</option>
+          <option
+            v-for="cat in categories"
+            :key="cat.cat_id"
+            :value="cat.cat_id"
+            style="color: black"
+          >
             {{ cat.cat_name }}
           </option>
         </select>
@@ -24,8 +29,13 @@
       <div class="row">
         <label>Po sastojku</label>
         <select class="select" v-model="selectedIngredient" @change="onIngredientChange">
-          <option value="">Svi sastojci</option>
-          <option v-for="ing in ingredients" :key="ing.ing_id" :value="ing.ing_id">
+          <option value="" style="color: black">Svi sastojci</option>
+          <option
+            v-for="ing in ingredients"
+            :key="ing.ing_id"
+            :value="ing.ing_id"
+            style="color: black"
+          >
             {{ ing.ing_name }}
           </option>
         </select>
