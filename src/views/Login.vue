@@ -38,9 +38,10 @@ const loginUser = async () => {
   try {
     await session.login(username.value, password.value)
     successMsg.value = 'Uspesan login'
-    router.push('/') // redirect nakon login-a
+    router.push('/')
   } catch (err) {
     errorMsg.value = err.response?.data || 'Login failed'
+    console.log(err)
   }
 }
 </script>

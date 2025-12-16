@@ -22,4 +22,6 @@ export default {
     axios.post('auth/register', { fullname, username, password, email }),
 
   loginUser: ({ username, password }) => axios.post('auth/login', { username, password }),
+
+  getComments: (id) => axios.get(`recipes/comments?id=${id}`),
 }

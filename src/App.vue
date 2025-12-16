@@ -14,8 +14,16 @@
       </template>
 
       <template v-else>
-        <span>Dobrodošao, {{ user.usr_username }}</span>
-        <button @click="logoutUser">LogOut</button>
+        <div class="user-menu" @click="toggleMenu">
+          <!-- avatar -->
+          <img class="avatar" :src="avatar" alt="User" />
+
+          <!-- dropdown -->
+          <div v-if="menuOpen" class="dropdown">
+            <div class="dropdown-user">Username: {{ user.usr_username }}</div>
+            <button class="dropdown-btn" @click.stop="logoutUser">LogOut</button>
+          </div>
+        </div>
       </template>
     </div>
   </header>
@@ -30,19 +38,24 @@ import { useRouter } from 'vue-router'
 import { useSessionStore } from './stores/sessionUser'
 import { computed } from 'vue'
 import logo from './components/logo.png'
-
+import avatar from './components/avatar.png'
 const session = useSessionStore()
 const router = useRouter()
 
-// inicijalizacija iz localStorage
-
-// reactive properties
 const isLoggedIn = computed(() => !!session.user)
 const user = computed(() => session.user || {})
 
 const logoutUser = () => {
   session.logout()
-  router.push('/')
+  router.push('/login')
+}
+
+import { ref } from 'vue'
+
+const menuOpen = ref(false)
+
+const toggleMenu = () => {
+  menuOpen.value = !menuOpen.value
 }
 </script>
 
@@ -103,8 +116,55 @@ header {
 }
 
 .right-nav a:hover {
-  background-color: #eee;
+  background-color: #d8d8d8;
   border-radius: 5px;
-  color: #a0643c;
+  color: #743f3f;
+  font-weight: bold;
+}
+
+.user-menu {
+  position: relative;
+  cursor: pointer;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+}
+
+.dropdown {
+  position: absolute;
+  right: 0;
+  top: 48px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  min-width: 160px;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.dropdown-user {
+  padding: 12px;
+  font-weight: bold;
+  color: #743f3f;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
+.dropdown-btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.dropdown-btn:hover {
+  background-color: #f2f2f2;
 }
 </style>
