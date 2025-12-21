@@ -2,6 +2,7 @@
 
 #app {
   font-weight: normal;
+  background-color: rgba(116, 63, 63, 0.2); /* #743f3f sa 50% providnosti */
 }
 
 a,

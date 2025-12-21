@@ -20,8 +20,10 @@
 
           <!-- dropdown -->
           <div v-if="menuOpen" class="dropdown">
-            <div class="dropdown-user">Username: {{ user.usr_username }}</div>
-            <button class="dropdown-btn" @click.stop="logoutUser">LogOut</button>
+            <div class="dropdown-user">Korisničko ime: {{ user.usr_username }}</div>
+            <button class="dropdown-btn">Profil</button>
+            <button class="dropdown-btn">Tvoji recepti</button>
+            <button class="dropdown-btn" @click.stop="logoutUser">Odjavi se</button>
           </div>
         </div>
       </template>
@@ -39,6 +41,7 @@ import { useSessionStore } from './stores/sessionUser'
 import { computed } from 'vue'
 import logo from './components/logo.png'
 import avatar from './components/avatar.png'
+
 const session = useSessionStore()
 const router = useRouter()
 
@@ -60,6 +63,13 @@ const toggleMenu = () => {
 </script>
 
 <style scoped>
+@import './assets/base.css';
+
+#app {
+  font-weight: normal;
+  background-color: #743f3f;
+}
+
 header {
   position: fixed;
   top: 0;

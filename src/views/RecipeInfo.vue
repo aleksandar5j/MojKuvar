@@ -33,6 +33,8 @@
         <p class="recipe-desc">{{ recipe.rec_description }}</p>
       </div>
 
+      <hr style="width: 150vh; margin-top: 40px; height: 3px; background-color: #5c2e2e; border: 0;"></hr>
+
       <div v-if="relatedRecipes.length" class="related-section">
         <h3 style="font-weight: bold;">Slični recepti</h3>
         <div class="related-wrapper">
@@ -51,6 +53,10 @@
         </div>
       </div>
 
+      <div v-else>
+        <h1 style="color: white; margin-top: 120px; margin-bottom: 80px; font-weight: bold; font-size: 40px;">Nema sličnih recepta!</h1>
+      </div>
+
       <hr style="width: 150vh; margin-top: 40px; height: 3px; background-color: #5c2e2e; border: 0;"></hr>
 
       <div class="comments-section">
@@ -58,11 +64,15 @@
 
         <!-- Forma za dodavanje komentara -->
         <div v-if="isLoggedIn" class="add-comment">
-          <textarea v-model="newComment" placeholder="Dodaj svoj komentar..."></textarea>
+          <h3>Dodaj komentar</h3>
+          <textarea v-model="newComment"></textarea>
           <button @click="postComment">Pošalji</button>
         </div>
-        <div v-else>
-          <p style="color: white; text-align: center; padding-bottom: 10px;">Morate biti ulogovani da dodate komentar.</p>
+        <div v-else class="login-box">
+          <p>
+            🔒 Morate biti <b>ulogovani</b> da biste dodali komentar.
+          </p>
+          <button @click="router.push('/login')">Uloguj se</button>
         </div>
 
         <!-- Lista komentara -->
@@ -92,6 +102,7 @@ import api from '@/api'
 import { useRoute } from 'vue-router'
 import { ref, onMounted, watch } from 'vue'
 import { useSessionStore } from '@/stores/sessionUser'
+import router from '@/router'
 
 const session = useSessionStore()
 const isLoggedIn = session.isLoggedIn
@@ -104,14 +115,12 @@ const relatedRecipes = ref([])
 async function getRecipe() {
   try {
     const res = await api.getRecipeId(route.params.id)
-    console.log(res.data)
 
     recipe.value = res.data.data.recipe
     ingredients.value = res.data.data.ingredients
 
     const related = await api.getRelatedRecipes(route.params.id)
     relatedRecipes.value = related.data.data.data
-    console.log(relatedRecipes.value)
   } catch (error) {
     console.log(error)
   }
@@ -122,13 +131,30 @@ const comments = ref([])
 async function getComments() {
   try {
     const res = await api.getComments(route.params.id)
-    console.log(res.data)
     comments.value = res.data.data
-    console.log(comments.value)
   } catch (error) {
     console.log(error)
   }
 }
+
+const newComment = ref('')
+
+async function postComment() {
+  try {
+    const res = await api.addComment({
+      id: route.params.id,
+      comment: newComment.value,
+      sid: session.sid
+    })
+
+    console.log(res.data)
+    newComment.value = ''
+    getComments()
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 
 onMounted(() => {
   getRecipe()
@@ -254,7 +280,7 @@ watch(
 }
 
 .related-card {
-  width: 370px;       /* veće kartice */
+  width: 250px;       /* veće kartice */
   background: #743f3f; /* malo tamnija nijansa */
   border-radius: 12px;
   overflow: hidden;
@@ -269,7 +295,7 @@ watch(
 
 .related-image {
   width: 100%;
-  height: 250px;  /* veća slika */
+  height: 200px;
   object-fit: cover;
 }
 
@@ -284,6 +310,8 @@ watch(
   color: white;
   padding-bottom: 20px;
   font-size: 12px;
+  margin-left: 30px;
+  margin-right: 30px;
 }
 .comments-section {
   width: 100%;
@@ -305,6 +333,7 @@ watch(
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
+  color: white;
 }
 
 .add-comment textarea {
@@ -315,6 +344,8 @@ watch(
   margin-bottom: 10px;
   border: none;
   font-size: 14px;
+  color: white;
+  background-color: #854848;
 }
 
 .add-comment button {
@@ -325,6 +356,10 @@ watch(
   color: white;
   border: none;
   cursor: pointer;
+}
+
+.add-comment h3 {
+  align-self: flex-start;
 }
 
 .add-comment button:hover {
@@ -373,6 +408,47 @@ watch(
   color: #f5f5f5;
   line-height: 1.5;
   padding-top: 20px;
+}
+
+.login-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+
+  padding: 15px 20px;
+  margin: 20px 0;
+
+  background:#743f3f;
+  border-radius: 10px;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.login-box p {
+  margin: 0;
+  font-size: 16px;
+  color: white;
+}
+
+.login-box button {
+  background-color: #a85c5c;
+  color: #fff;
+
+  border: none;
+  border-radius: 8px;
+
+  padding: 8px 18px;
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.login-box button:hover {
+  background-color: #8f4a4a;
+  transform: translateY(-1px);
 }
 
 </style>

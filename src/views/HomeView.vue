@@ -1,7 +1,7 @@
 <template>
   <div class="hero">
     <div class="content">
-      <label id="naslov">Pronadji svoj recept ↓</label>
+      <label id="naslov">Pronadji recept po tvom ukusu ↓</label>
 
       <!-- INPUT I SEARCH DUGME -->
       <div class="row">
@@ -50,10 +50,7 @@
   </div>
 
   <!-- NASLOVI -->
-  <h1 v-if="imeRecepta || selectedCategory || selectedIngredient" class="section-title">
-    Pretraga ↓
-  </h1>
-  <h1 v-else class="section-title">SVI RECEPTI ↓</h1>
+  <h1 v-if="recipes.length > 0" class="section-title">SVI RECEPTI</h1>
 
   <!-- RECEPTI -->
   <div class="main-wrapper" v-if="recipes.length > 0" ref="recipesWrapper">
@@ -68,12 +65,28 @@
     </div>
   </div>
 
-  <h1 v-else class="no-results">NEMA REZULTATA PRETRAGE</h1>
+  <div v-else class="no-results-container">
+    <img src="/src/components/nosearch.png" alt="No results" class="no-results-img" />
+    <p class="no-results-text">Nema rezultata pretrage</p>
+  </div>
 
-  <hr class="section-divider" />
+  <div class="tips">
+    <div class="tip">
+      <img src="/src/components/clock.png" />
+      <p>Manje vremena u kuhinji – više uživanja</p>
+    </div>
+    <div class="tip">
+      <img src="/src/components/meal.png" />
+      <p>Nemaš ideju šta da kuvaš? Mi imamo!</p>
+    </div>
+    <div class="tip">
+      <img src="/src/components/heart.png" />
+      <p>Savršeno i za porodicu i za goste</p>
+    </div>
+  </div>
 
   <!-- OMILJENA JELA -->
-  <h1 class="section-title">OMILJENA JELA ↓</h1>
+  <h1 class="section-title">OMILJENA JELA</h1>
   <div class="slider-container">
     <button class="arrow left" @click="scrollLeft">‹</button>
     <div class="slider-wrapper" ref="slider">
@@ -206,6 +219,7 @@ function searchByName() {
   selectedCategory.value = ''
   selectedIngredient.value = ''
   pretrazi()
+  scrollToRecipes()
 }
 
 // Kad se promeni kategorija
@@ -251,7 +265,7 @@ function onIngredientChange() {
 .content {
   position: relative;
   z-index: 2;
-  color: white;
+  color: rgb(255, 255, 255);
   width: 100%;
   height: 100%;
   display: flex;
@@ -341,6 +355,7 @@ function onIngredientChange() {
   margin-bottom: 50px;
   font-size: 42px;
   color: #743f3f;
+  border-bottom: 2px solid #743f3f;
 }
 
 .newRecipe {
@@ -351,6 +366,7 @@ function onIngredientChange() {
   color: #743f3f;
   font-size: 23px;
   font-weight: bold;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .newRecipe button {
@@ -373,70 +389,129 @@ function onIngredientChange() {
 }
 
 .main-wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 25px;
-  padding: 10px;
+  max-width: 1300px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 30px;
+  justify-items: center;
+  background-color: rgba(116, 63, 63, 0.06); /* #743f3f sa 50% providnosti */
+  padding: 40px 60px;
+  border-radius: 50px;
 }
 
 .recipe-card,
 .recipe-card2 {
-  background: #ffffff;
-  border-radius: 18px;
+  width: 280px;
+  background-color: rgba(228, 228, 228, 0.15);
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-  transition: 0.25s ease;
-  cursor: pointer;
+  box-shadow: 0 10px 25px var(--card-shadow);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
+  color: #743f3f;
+  font-weight: bold;
+  border: 2px solid #743f3f;
 }
 
 .recipe-card:hover,
 .recipe-card2:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  transform: translateY(-8px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
 }
 
 .recipe-card img,
 .recipe-card2 img {
+  height: 210px;
+  transition: transform 0.4s ease;
   width: 100%;
-  height: 250px;
-  object-fit: cover;
+  object-position: center;
+}
+
+.recipe-card:hover img,
+.recipe-card2:hover img {
+  transform: scale(1.05);
 }
 
 .recipe-card h2,
 .recipe-card2 h2 {
-  margin: 18px 0 10px;
-  font-size: 20px;
-  font-weight: bold;
-  color: #743f3f;
+  margin: 16px 12px 6px;
+  font-size: 18px;
+  color: var(--primary);
+  text-align: center;
+  width: 100%;
 }
 
 .difficulty {
-  font-size: 12px;
-  color: black;
-  margin-bottom: 14px;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 16px;
 }
 
 .section-title {
-  color: #743f3f;
-  font-size: 45px;
+  position: relative;
+  font-size: 36px;
+  letter-spacing: 1px;
+  margin: 60px auto 40px;
   text-align: center;
+  color: #743f3f;
+  width: fit-content;
+  cursor: pointer;
   font-weight: bold;
-  margin-top: 30px;
 }
 
-.no-results {
-  color: #743f3f;
-  text-align: center;
-  font-size: 40px;
-  font-weight: bold;
-  margin-top: 100px;
+.section-title::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -10px;
+  width: 0;
+  height: 4px;
+  background-color: #743f3f;
+  border-radius: 50px;
+  transform: translateX(-50%);
+  transition: width 0.35s ease;
+}
+
+.section-title:has(+ .main-wrapper:hover)::after {
+  width: 80%;
+}
+
+.section-title:has(~ .slider-container:hover)::after {
+  width: 80%;
+}
+
+.no-results-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 120px;
   margin-bottom: 150px;
+  color: #743f3f;
+}
+
+.no-results-img {
+  height: 300px;
+  margin-bottom: 20px;
+  opacity: 0.85;
+}
+
+.no-results-text {
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
 }
 
 .section-divider {
   margin: 50px;
+  margin-left: 200px;
+  margin-right: 200px;
   background-color: #743f3f;
   height: 3px;
   border: 0;
@@ -448,9 +523,12 @@ function onIngredientChange() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgb(243, 243, 243);
+  background-color: rgba(116, 63, 63, 0.06); /* #743f3f sa 50% providnosti */
   border-radius: 50px;
   margin: 30px;
+  max-width: 1300px;
+  margin: auto;
+  padding: 30px;
 }
 
 .arrow {
@@ -501,5 +579,40 @@ function onIngredientChange() {
 
 a {
   text-decoration: none;
+}
+
+.tips {
+  display: flex;
+  flex-direction: row;
+  max-width: 1300px;
+  margin: auto;
+  gap: 15px;
+  justify-content: center;
+  background-color: rgba(116, 63, 63, 0.06);
+  margin-top: 100px;
+  margin-bottom: 100px;
+  border-radius: 50px;
+}
+
+.tip {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+  background-color: rgba(116, 63, 63, 0.08);
+  padding-right: 20px;
+  border-radius: 20px;
+}
+
+.tip img {
+  height: 60px;
+  margin: 5px;
+}
+
+.tip p {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 17px;
+  color: black;
 }
 </style>
