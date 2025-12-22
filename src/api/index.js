@@ -25,4 +25,6 @@ export default {
 
   getComments: (id) => axios.get(`recipes/comments?id=${id}`),
   addComment: ({ id, comment, sid }) => axios.post('recipes/comments', { id, comment, sid }),
+
+  userFavoriteRecipes: (sid) => axios.get('recipes/favorites', { params: { sid } }),
 }
