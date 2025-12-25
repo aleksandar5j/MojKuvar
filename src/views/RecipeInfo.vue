@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/no-parsing-error -->
 <template>
   <div>
-    <h1 style="color: white; padding-top: 120px; text-align: center; font-size: 40px; background-color: #743f3f;">
+    <h1 style="color: white; padding-top: 120px; text-align: center; font-size: 40px; background: rgb(109, 68, 68);">
       Instrukcije za pravljenje recepta
     </h1>
 
@@ -10,7 +10,10 @@
         <h1 class="recipe-title">{{ recipe.rec_name }}</h1>
         <img class="recipe-image" :src="`http://565q123.e2.mars-hosting.com${recipe.image}`" />
 
-        <p class="recipe-prep"><strong>Težina pripreme:</strong> {{ recipe.rec_preparation }}</p>
+        <div class="prep-time">
+          <img src="/src/components/clock.png">
+          <p>{{ recipe.rec_preparation }}</p>
+        </div>
 
         <br><hr></br>
 
@@ -178,7 +181,7 @@ watch(
   align-items: center;
   flex-direction: column;
   padding: 30px;
-  background-color: #743f3f;
+  background: rgb(109, 68, 68);
 }
 
 .recipe-card {
@@ -210,16 +213,6 @@ watch(
   color: white;
   padding-bottom: 20px;
 }
-
-.recipe-prep {
-  font-size: 15px;
-  color: white;
-  background: #743f3f;
-  padding: 10px;
-  border-radius: 10px;
-  font-weight: bold;
-}
-
 .sub-title {
   margin-top: 20px;
   font-size: 22px;
@@ -259,8 +252,8 @@ watch(
 }
 
 .related-section {
-  background-color: #5c2e2e; /* tamnija nijansa od wrappera */
-  padding: 30px;
+  background: #854848;
+  padding: 50px;
   border-radius: 15px;
   margin-top: 30px;
 }
@@ -318,7 +311,7 @@ watch(
   max-width: 800px;
   margin-top: 40px;
   padding: 20px;
-  background-color: #5c2e2e;
+  background: #854848;
   border-radius: 15px;
   color: white;
 }
@@ -345,7 +338,7 @@ watch(
   border: none;
   font-size: 14px;
   color: white;
-  background-color: #854848;
+  background-color: #743f3f;
 }
 
 .add-comment button {
@@ -363,7 +356,7 @@ watch(
 }
 
 .add-comment button:hover {
-  opacity: 0.9;
+  opacity: 0.6;
 }
 
 .comments-list {
@@ -449,6 +442,27 @@ watch(
 .login-box button:hover {
   background-color: #8f4a4a;
   transform: translateY(-1px);
+}
+
+.prep-time {
+  display: flex;
+  flex-direction: row;
+  background: #743f3f;
+  border-radius: 10px;
+  padding: 5px;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 15px;
+}
+
+.prep-time p {
+  font-weight: bold;
+}
+
+.prep-time img {
+  height: 50px;
 }
 
 </style>

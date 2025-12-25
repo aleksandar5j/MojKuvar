@@ -53,7 +53,7 @@ const team = [
 /* Hero */
 .hero {
   text-align: center;
-  padding: 50px;
+  padding: 90px;
   background-color: #743f3f;
   color: white;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);

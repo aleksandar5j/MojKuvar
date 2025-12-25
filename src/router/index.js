@@ -5,6 +5,7 @@ import AboutUs from '@/views/AboutUs.vue'
 import RecipeInfo from '@/views/RecipeInfo.vue'
 import Register from '@/views/Register.vue'
 import Login from '@/views/Login.vue'
+import postRecipe from '@/views/postRecipe.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: Login,
+    },
+    {
+      path: '/dodaj-recept',
+      name: 'dodaj-recept',
+      component: postRecipe,
     },
   ],
 })

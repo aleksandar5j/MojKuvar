@@ -4,7 +4,8 @@
     <div v-if="isLoggedIn">
       <h1
         style="
-          padding-bottom: 30px;
+          padding-top: 30px;
+          padding-bottom: 50px;
           text-align: center;
           font-weight: bold;
           color: #743f3f;
@@ -17,6 +18,13 @@
         <div class="main" v-for="fav in favorites" :key="fav.fav_id">
           <RouterLink :to="{ name: 'detalji-recepta', params: { id: fav.rec_id } }">
             <div class="recipe-card">
+              <button
+                class="fav-btn"
+                @click.stop.prevent="toggleFavorite(fav)"
+                title="Ukloni iz omiljenih"
+              >
+                ❤
+              </button>
               <img :src="`http://565q123.e2.mars-hosting.com${fav.image}`" alt="Recipe image" />
               <h2>{{ fav.rec_name }}</h2>
               <p class="difficulty">Težina pripreme: {{ fav.rec_preparation }}</p>
@@ -25,7 +33,10 @@
         </div>
       </div>
 
-      <h3 v-else>Trenutno nemate omiljene recepte!</h3>
+      <div v-else class="nofav">
+        <img src="/src/components/nosearch.png" style="height: 200px" />
+        <h3 style="text-align: center">Trenutno nemate omiljene recepte!</h3>
+      </div>
     </div>
 
     <div v-else class="notlogged">
@@ -55,9 +66,18 @@ async function favoriteRecipes() {
     const res = await api.userFavoriteRecipes(session.sid)
     favorites.value = res.data.data
     console.log(res.data.data)
-    console.log('SESSION:', session('user'))
   } catch (e) {
     console.log(e)
+  }
+}
+
+async function toggleFavorite(fav) {
+  try {
+    const res = await api.deleteFavoriteRecipe(session.sid, fav.rec_id)
+    await favoriteRecipes()
+    console.log(res.data)
+  } catch (error) {
+    console.log(error)
   }
 }
 
@@ -76,6 +96,16 @@ onMounted(() => {
   align-items: flex-start; /* gore ostavlja padding */
   padding-top: 120px; /* odstojanje od headera */
   background: #f3efef;
+}
+
+.nofav {
+  margin-top: 100px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
 }
 
 /* GRID WRAPPER */
@@ -106,6 +136,7 @@ a {
 
 /* KARTICA */
 .recipe-card {
+  position: relative;
   width: 100%;
   max-width: 280px;
   background-color: rgba(255, 255, 255, 0.95);
@@ -121,6 +152,40 @@ a {
   flex-direction: column;
   align-items: center;
   text-align: center;
+}
+
+.fav-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 40px; /* veće dugme */
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  border-color: #e53935;
+  background: #e53935;
+  color: #fff;
+  font-size: 25px; /* veće srce */
+  cursor: pointer;
+  z-index: 5;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: all 0.25s ease;
+}
+
+.fav-btn:hover {
+  background: #e53935;
+  border-color: #e53935;
+  transform: scale(1.1); /* malo veći hover efekat */
+}
+
+.fav-btn.active {
+  background: #e53935;
+  border-color: #e53935;
+  color: #fff;
 }
 
 /* SLIKA */

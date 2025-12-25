@@ -27,4 +27,28 @@ export default {
   addComment: ({ id, comment, sid }) => axios.post('recipes/comments', { id, comment, sid }),
 
   userFavoriteRecipes: (sid) => axios.get('recipes/favorites', { params: { sid } }),
+  addFavoriteRecipe: (sid, rec_id) => axios.post('recipes/add-favorite-recipe', { sid, rec_id }),
+  deleteFavoriteRecipe: (sid, rec_id) =>
+    axios.post('recipes/delete-favorite-recipe', { sid, rec_id }),
+
+  postRecipe: ({
+    rec_name,
+    rec_instructions,
+    rec_description,
+    rec_preparation,
+    cat_id,
+    image,
+    ingredients,
+    sid,
+  }) =>
+    axios.post('recipes/post-recipe', {
+      rec_name,
+      rec_instructions,
+      rec_description,
+      rec_preparation,
+      cat_id,
+      image,
+      ingredients,
+      sid,
+    }),
 }

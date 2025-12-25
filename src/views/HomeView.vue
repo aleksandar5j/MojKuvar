@@ -44,24 +44,43 @@
       <!-- DODAJ NOVI RECEPT -->
       <div class="newRecipe">
         <label>Dodaj svoj recept →</label>
-        <button>Dodaj</button>
+        <button @click="router.push('/dodaj-recept')">Dodaj</button>
       </div>
     </div>
   </div>
 
   <!-- NASLOVI -->
-  <h1 v-if="recipes.length > 0" class="section-title">SVI RECEPTI</h1>
+  <h1 v-if="recipes.length > 0" class="section-title">PREPORUČUJEMO</h1>
 
   <!-- RECEPTI -->
-  <div class="main-wrapper" v-if="recipes.length > 0" ref="recipesWrapper">
-    <div class="main" v-for="recipe in recipes" :key="recipe.rec_id">
-      <RouterLink :to="{ name: 'detalji-recepta', params: { id: recipe.rec_id } }">
-        <div class="recipe-card">
-          <img :src="`http://565q123.e2.mars-hosting.com${recipe.image}`" />
-          <h2>{{ recipe.rec_name }}</h2>
-          <p class="difficulty">Težina pripreme: {{ recipe.rec_preparation }}</p>
-        </div>
-      </RouterLink>
+  <div class="recipes-wrapper" v-if="recipes.length > 0" ref="recipesWrapper">
+    <RouterLink
+      v-for="(recipe, index) in displayedRecipes"
+      :key="recipe.rec_id"
+      :to="{ name: 'detalji-recepta', params: { id: recipe.rec_id } }"
+      :class="['rec-card', { big: index === 0 }]"
+    >
+      <!-- SRCE -->
+      <button
+        class="fav-btn"
+        :class="{ active: recipe.isFavorite }"
+        @click.stop.prevent="toggleFavorite(recipe)"
+        title="Dodaj u omiljene"
+      >
+        ❤
+      </button>
+
+      <img :src="`http://565q123.e2.mars-hosting.com${recipe.image}`" alt="recipe" />
+
+      <div class="overlay"></div>
+
+      <span class="badge">{{ recipe.rec_name }}</span>
+
+      <h2>{{ recipe.rec_description }}</h2>
+    </RouterLink>
+
+    <div v-if="visibleCount < recipes.length" class="load-more-container">
+      <button class="load-more-btn" @click="loadMoreRecipes">Učitaj još recepata ↓</button>
     </div>
   </div>
 
@@ -104,11 +123,52 @@
     </div>
     <button class="arrow right" @click="scrollRight">›</button>
   </div>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <!-- LOGO / OPIS -->
+      <div class="footer-col">
+        <img src="/src/components/logo.png" />
+        <p>Pronađi savršene recepte za svaki dan. Jednostavno, brzo i ukusno.</p>
+      </div>
+
+      <!-- LINKOVI -->
+      <div class="footer-col">
+        <h4>Navigacija</h4>
+        <ul>
+          <li><RouterLink to="/">Početna</RouterLink></li>
+          <li><RouterLink to="/vasa-omiljena-jela">Omiljeni recepti</RouterLink></li>
+          <li><RouterLink to="/dodaj-recept">Dodaj recept</RouterLink></li>
+        </ul>
+      </div>
+
+      <!-- INFO -->
+      <div class="footer-col">
+        <h4>Informacije</h4>
+        <ul>
+          <li>📍 Srbija</li>
+          <li>📧 kontakt@mojkuvar.rs</li>
+          <li>☎️ +381 64 123 456</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- DONJA LINIJA -->
+    <div class="footer-bottom">
+      © {{ new Date().getFullYear() }} Moj Kuvar — Sva prava zadržana
+    </div>
+  </footer>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import api from '@/api'
+
+import { useSessionStore } from '@/stores/sessionUser'
+import router from '@/router'
+
+const session = useSessionStore()
+const isLoggedIn = session.isLoggedIn
 
 const imeRecepta = ref('')
 const selectedCategory = ref('')
@@ -116,6 +176,8 @@ const selectedIngredient = ref('')
 
 async function pretrazi() {
   try {
+    visibleCount.value = STEP
+
     const res = await api.getRecipesSearch({
       search: imeRecepta.value,
       category: selectedCategory.value,
@@ -124,9 +186,7 @@ async function pretrazi() {
     recipes.value = res.data.data
     console.log(res.data)
 
-    // Scroll samo ako imamo rezultate
     if (recipes.value.length > 0) {
-      // delay da se DOM update završi
       setTimeout(() => {
         scrollToRecipes()
       }, 50)
@@ -183,11 +243,45 @@ async function getRecipes() {
   }
 }
 
+const favorites = ref([])
+
+async function userFavoriteRecipes() {
+  try {
+    const res = await api.userFavoriteRecipes(session.sid)
+    favorites.value = res.data.data
+    console.log(res.data.data)
+    console.log('SESSION:', session('user'))
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+async function toggleFavorite(recipe) {
+  try {
+    if (!recipe.isFavorite) {
+      if (isLoggedIn) {
+        const res = await api.addFavoriteRecipe(session.sid, recipe.rec_id)
+        console.log('Added:', res.data)
+        recipe.isFavorite = true
+      } else {
+        router.push('/login')
+      }
+    } else {
+      const res = await api.deleteFavoriteRecipe(session.sid, recipe.rec_id)
+      console.log('Deleted:', res.data)
+      recipe.isFavorite = false
+    }
+  } catch (error) {
+    console.error('Error toggling favorite:', error)
+  }
+}
+
 onMounted(() => {
   getCategories()
   getIngredients()
   getRecipes()
   getFavoriteRecipes()
+  userFavoriteRecipes()
 })
 
 const slider = ref(null)
@@ -236,6 +330,17 @@ function onIngredientChange() {
   selectedCategory.value = ''
   pretrazi()
   scrollToRecipes()
+}
+
+const STEP = 6
+const visibleCount = ref(STEP)
+
+const displayedRecipes = computed(() => {
+  return recipes.value.slice(0, visibleCount.value)
+})
+
+const loadMoreRecipes = () => {
+  visibleCount.value += STEP
 }
 </script>
 
@@ -400,10 +505,9 @@ function onIngredientChange() {
   border-radius: 50px;
 }
 
-.recipe-card,
 .recipe-card2 {
   width: 280px;
-  background-color: rgba(228, 228, 228, 0.15);
+  background-color: rgba(228, 228, 228, 0.7);
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 10px 25px var(--card-shadow);
@@ -417,16 +521,13 @@ function onIngredientChange() {
   text-align: center;
   color: #743f3f;
   font-weight: bold;
-  border: 2px solid #743f3f;
 }
 
-.recipe-card:hover,
 .recipe-card2:hover {
   transform: translateY(-8px);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
 }
 
-.recipe-card img,
 .recipe-card2 img {
   height: 210px;
   transition: transform 0.4s ease;
@@ -434,12 +535,10 @@ function onIngredientChange() {
   object-position: center;
 }
 
-.recipe-card:hover img,
 .recipe-card2:hover img {
   transform: scale(1.05);
 }
 
-.recipe-card h2,
 .recipe-card2 h2 {
   margin: 16px 12px 6px;
   font-size: 18px;
@@ -456,14 +555,12 @@ function onIngredientChange() {
 
 .section-title {
   position: relative;
-  font-size: 36px;
+  font-size: 55px;
   letter-spacing: 1px;
-  margin: 60px auto 40px;
-  text-align: center;
+  margin-top: 100px;
   color: #743f3f;
-  width: fit-content;
-  cursor: pointer;
   font-weight: bold;
+  margin-left: 310px;
 }
 
 .section-title::after {
@@ -477,14 +574,6 @@ function onIngredientChange() {
   border-radius: 50px;
   transform: translateX(-50%);
   transition: width 0.35s ease;
-}
-
-.section-title:has(+ .main-wrapper:hover)::after {
-  width: 80%;
-}
-
-.section-title:has(~ .slider-container:hover)::after {
-  width: 80%;
 }
 
 .no-results-container {
@@ -614,5 +703,234 @@ a {
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   font-size: 17px;
   color: black;
+}
+
+.recipes-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 5px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 260px;
+  gap: 22px;
+}
+
+/* KARTICA */
+.rec-card {
+  position: relative;
+  border-radius: 26px;
+  overflow: hidden;
+  text-decoration: none;
+  color: white;
+}
+
+/* PRVA VELIKA */
+.rec-card.big {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+/* SLIKA */
+.rec-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* TAMNI OVERLAY */
+.rec-card .overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.1));
+}
+
+/* BADGE */
+.rec-card .badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: #743f3f;
+  color: white;
+  font-size: 13px;
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-weight: 600;
+  z-index: 2;
+}
+
+/* NASLOV */
+.rec-card h2 {
+  position: absolute;
+  bottom: 22px;
+  left: 22px;
+  right: 22px;
+  font-size: 20px;
+  line-height: 1.3;
+  z-index: 2;
+}
+
+/* HOVER */
+.rec-card:hover img {
+  transform: scale(1.05);
+}
+
+.rec-card img {
+  transition: transform 0.4s ease;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .recipes-wrapper {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .rec-card.big {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .recipes-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .rec-card.big {
+    grid-column: span 1;
+  }
+}
+
+.rec-card {
+  position: relative;
+}
+
+/* Dugme srce */
+.fav-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 40px; /* veće dugme */
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: transparent;
+  color: #fff;
+  font-size: 25px; /* veće srce */
+  cursor: pointer;
+  z-index: 5;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: all 0.25s ease;
+}
+
+.fav-btn:hover {
+  background: #e53935;
+  border-color: #e53935;
+  transform: scale(1.1); /* malo veći hover efekat */
+}
+
+.fav-btn.active {
+  background: #e53935;
+  border-color: #e53935;
+  color: #fff;
+}
+
+.load-more-container {
+  grid-column: 1 / -1; /* 🔥 zauzima ceo grid red */
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  margin-top: 20px;
+}
+
+.load-more-btn {
+  background-color: #743f3f;
+  color: white;
+  font-size: 18px;
+  padding: 14px 25px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.load-more-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(116, 63, 63, 0.35);
+}
+
+.footer {
+  margin-top: 80px;
+  background: #743f3f;
+  color: #ddd;
+  padding: 50px 20px 20px;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+
+  display: flex;
+  justify-content: center; /* sve u sredinu */
+  align-items: flex-start;
+  gap: 150px; /* razmak izmedju kolona */
+
+  text-align: center;
+}
+
+.footer-col {
+  max-width: 260px; /* da tekst ne ide u širinu */
+  flex: 1;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-col ul li {
+  margin-bottom: 16px;
+}
+
+/* tekst da se lepo lomi */
+.footer-col p,
+.footer-col li {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.6;
+}
+
+.footer-col h3,
+.footer-col h4 {
+  color: #fff;
+  margin-bottom: 15px;
+  font-size: 25px;
+}
+
+.footer-col img {
+  height: 80px;
+}
+
+.footer-col a {
+  color: #ddd;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-col a:hover {
+  color: #ff4d4d;
+}
+
+.footer-bottom {
+  margin-top: 40px;
+  padding-top: 15px;
+  border-top: 1px solid #333;
+  text-align: center;
+  font-size: 13px;
+  color: #aaa;
 }
 </style>
