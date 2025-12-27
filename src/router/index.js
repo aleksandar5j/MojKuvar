@@ -6,6 +6,7 @@ import RecipeInfo from '@/views/RecipeInfo.vue'
 import Register from '@/views/Register.vue'
 import Login from '@/views/Login.vue'
 import postRecipe from '@/views/postRecipe.vue'
+import MyRecipes from '@/views/MyRecipes.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,6 +45,11 @@ const router = createRouter({
       path: '/dodaj-recept',
       name: 'dodaj-recept',
       component: postRecipe,
+    },
+    {
+      path: '/moji-recepti',
+      name: 'moji-recepti',
+      component: MyRecipes,
     },
   ],
 })

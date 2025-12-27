@@ -5,6 +5,7 @@
     <div class="center-nav">
       <RouterLink to="/vasa-omiljena-jela">Moji favoriti</RouterLink>
       <RouterLink to="/o-nama">O nama</RouterLink>
+      <RouterLink to="/novosti">Novosti</RouterLink>
     </div>
 
     <div class="right-nav">
@@ -22,7 +23,7 @@
           <div v-if="menuOpen" class="dropdown">
             <div class="dropdown-user">Korisničko ime: {{ user.usr_username }}</div>
             <button class="dropdown-btn">Profil</button>
-            <button class="dropdown-btn">Tvoji recepti</button>
+            <button class="dropdown-btn" @click="router.push('/moji-recepti')">Moji recepti</button>
             <button class="dropdown-btn" @click.stop="logoutUser">Odjavi se</button>
           </div>
         </div>
@@ -92,7 +93,6 @@ header {
 }
 
 .center-nav {
-  flex: 1;
   text-align: center;
 }
 
@@ -101,7 +101,9 @@ header {
   color: white;
   font-weight: 500;
   font-size: 1.1rem;
-  margin: 30px;
+  margin-right: 55px;
+  border-right: 2px solid white;
+  padding-right: 20px;
 }
 
 .center-nav a:hover {

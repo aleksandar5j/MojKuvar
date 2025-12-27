@@ -170,7 +170,7 @@ async function submitRecipe() {
     }
     const res = await api.postRecipe(payload)
     alert('Recept uspešno dodat! ID: ' + res.data.rec_id)
-    router.push('/recepti')
+    router.push('/moji-recepti')
   } catch (err) {
     console.error(err)
     alert('Došlo je do greške prilikom dodavanja recepta.')

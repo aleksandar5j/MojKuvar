@@ -51,4 +51,6 @@ export default {
       ingredients,
       sid,
     }),
+
+  myRecipes: (sid) => axios.get('recipes/my-recipes', { params: { sid } }),
 }

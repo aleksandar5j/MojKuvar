@@ -111,12 +111,17 @@
     <div class="slider-wrapper" ref="slider">
       <div class="main-wrapper2">
         <div class="main2" v-for="fav in favoriteRecipes" :key="fav.rec_id">
-          <RouterLink :to="{ name: 'detalji-recepta', params: { id: fav.rec_id } }">
-            <div class="recipe-card2">
-              <img :src="`http://565q123.e2.mars-hosting.com${fav.image}`" alt="recipe" />
-              <h2>{{ fav.rec_name }}</h2>
-              <p class="difficulty">Težina pripreme: {{ fav.rec_preparation }}</p>
-            </div>
+          <RouterLink
+            :to="{ name: 'detalji-recepta', params: { id: fav.rec_id } }"
+            class="rec-card"
+          >
+            <img :src="`http://565q123.e2.mars-hosting.com${fav.image}`" alt="recipe" />
+
+            <div class="overlay"></div>
+
+            <span class="badge">{{ fav.rec_name }}</span>
+
+            <h2>Težina pripreme: {{ fav.rec_preparation }}</h2>
           </RouterLink>
         </div>
       </div>
@@ -505,48 +510,6 @@ const loadMoreRecipes = () => {
   border-radius: 50px;
 }
 
-.recipe-card2 {
-  width: 280px;
-  background-color: rgba(228, 228, 228, 0.7);
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 10px 25px var(--card-shadow);
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  color: #743f3f;
-  font-weight: bold;
-}
-
-.recipe-card2:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
-}
-
-.recipe-card2 img {
-  height: 210px;
-  transition: transform 0.4s ease;
-  width: 100%;
-  object-position: center;
-}
-
-.recipe-card2:hover img {
-  transform: scale(1.05);
-}
-
-.recipe-card2 h2 {
-  margin: 16px 12px 6px;
-  font-size: 18px;
-  color: var(--primary);
-  text-align: center;
-  width: 100%;
-}
-
 .difficulty {
   font-size: 13px;
   color: #666;
@@ -651,8 +614,8 @@ const loadMoreRecipes = () => {
 }
 
 .slider-wrapper {
-  max-width: calc(4 * 400px + 3 * 25px);
-  overflow-x: hidden;
+  overflow-x: hidden; /* sakriva scrollbar */
+  scroll-behavior: smooth;
 }
 
 .main-wrapper2 {
@@ -660,6 +623,20 @@ const loadMoreRecipes = () => {
   gap: 25px;
   padding: 10px;
   flex-wrap: nowrap;
+  align-items: flex-start; /* ovo je ključno */
+}
+
+.main-wrapper2 .rec-card {
+  width: 380px;
+  height: 260px; /* ista visina kao grid */
+  flex-shrink: 0;
+  display: block; /* osigurava da img height:100% radi */
+}
+
+.main-wrapper2 .rec-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .main2 {
@@ -932,5 +909,11 @@ a {
   text-align: center;
   font-size: 13px;
   color: #aaa;
+}
+
+.main-wrapper2 .rec-card {
+  width: 380px;
+  height: 260px; /* ISTO kao grid-auto-rows */
+  flex-shrink: 0;
 }
 </style>
