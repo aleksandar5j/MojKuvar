@@ -67,13 +67,14 @@ const successMsg = ref('')
 const loginUser = async () => {
   errorMsg.value = ''
   successMsg.value = ''
+
   try {
     await session.login(username.value, password.value)
-    successMsg.value = 'Uspesan login'
+    successMsg.value = 'Uspešan login'
     router.push('/')
   } catch (err) {
-    errorMsg.value = err.response?.data || 'Login failed'
-    console.log(err)
+    errorMsg.value = err.response?.data?.data || 'Greška prilikom prijavljivanja!'
+    console.error(err.response?.data)
   }
 }
 </script>
@@ -176,6 +177,14 @@ button:hover {
 .success {
   text-align: center;
   margin-top: 15px;
+}
+
+.error {
+  color: red;
+}
+
+.success {
+  color: green;
 }
 
 /* MOBILE */

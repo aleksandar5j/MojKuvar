@@ -73,6 +73,13 @@
       </div>
     </div>
   </div>
+
+  <div v-if="toastMsg" :class="['toast', toastType]">
+    <span class="icon">
+      {{ toastType === 'error' ? '⚠️' : '✅' }}
+    </span>
+    <p>{{ toastMsg }}</p>
+  </div>
 </template>
 
 <script setup>
@@ -142,7 +149,7 @@ function onFileChange(e) {
     const reader = new FileReader()
     reader.onload = (event) => {
       image.value = {
-        data: event.target.result,
+        data: event.target.result, // ovo je "data:image/jpeg;base64,..."
         fileName: file.name,
         size: file.size,
         contentType: file.type,
@@ -153,10 +160,17 @@ function onFileChange(e) {
 }
 
 async function submitRecipe() {
-  if (!rec_name.value || !rec_instructions.value || !rec_preparation.value || !cat_id.value) {
-    alert('Popuni obavezna polja!')
+  if (
+    !rec_name.value ||
+    !rec_instructions.value ||
+    !rec_preparation.value ||
+    !cat_id.value ||
+    !image.value
+  ) {
+    showToast('Popuni sva obavezna polja!', 'error')
     return
   }
+
   try {
     const payload = {
       rec_name: rec_name.value,
@@ -168,12 +182,17 @@ async function submitRecipe() {
       ingredients: ingredients.value,
       sid: session.sid,
     }
-    const res = await api.postRecipe(payload)
-    alert('Recept uspešno dodat! ID: ' + res.data.rec_id)
-    router.push('/moji-recepti')
+
+    await api.postRecipe(payload)
+
+    showToast('Recept uspešno dodat!', 'success')
+
+    setTimeout(() => {
+      router.push('/moji-recepti')
+    }, 1200)
   } catch (err) {
     console.error(err)
-    alert('Došlo je do greške prilikom dodavanja recepta.')
+    showToast('Došlo je do greške prilikom dodavanja recepta.', 'error')
   }
 }
 
@@ -181,6 +200,18 @@ onMounted(() => {
   loadCategories()
   loadIngredients()
 })
+
+const toastMsg = ref('')
+const toastType = ref('error')
+
+function showToast(msg, type = 'error') {
+  toastMsg.value = msg
+  toastType.value = type
+
+  setTimeout(() => {
+    toastMsg.value = ''
+  }, 3500)
+}
 </script>
 
 <style scoped>
@@ -451,5 +482,54 @@ textarea {
 
 .btn-submit:hover {
   background: #5c2f2f;
+}
+
+.toast {
+  position: fixed;
+  top: 25px;
+  right: 25px;
+  z-index: 9999;
+
+  min-width: 280px;
+  max-width: 380px;
+  padding: 16px 20px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.35s ease;
+}
+
+.toast .icon {
+  font-size: 22px;
+}
+
+/* ERROR */
+.toast.error {
+  background: #e53935;
+  color: #fff;
+}
+
+/* SUCCESS */
+.toast.success {
+  background: #2e7d32;
+  color: #fff;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 </style>

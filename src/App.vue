@@ -5,7 +5,6 @@
     <div class="center-nav">
       <RouterLink to="/vasa-omiljena-jela">Moji favoriti</RouterLink>
       <RouterLink to="/o-nama">O nama</RouterLink>
-      <RouterLink to="/novosti">Novosti</RouterLink>
     </div>
 
     <div class="right-nav">
@@ -15,6 +14,7 @@
       </template>
 
       <template v-else>
+        <button class="addforlogged" @click="router.push('/dodaj-recept')">Dodaj recept</button>
         <div class="user-menu" @click="toggleMenu">
           <!-- avatar -->
           <img class="avatar" :src="avatar" alt="User" />
@@ -22,7 +22,6 @@
           <!-- dropdown -->
           <div v-if="menuOpen" class="dropdown">
             <div class="dropdown-user">Korisničko ime: {{ user.usr_username }}</div>
-            <button class="dropdown-btn">Profil</button>
             <button class="dropdown-btn" @click="router.push('/moji-recepti')">Moji recepti</button>
             <button class="dropdown-btn" @click.stop="logoutUser">Odjavi se</button>
           </div>
@@ -71,6 +70,23 @@ const toggleMenu = () => {
   background-color: #743f3f;
 }
 
+.addforlogged {
+  padding: 0px 15px;
+  margin-right: 40px;
+  border-radius: 10px;
+  font-size: 15px;
+  border: 0;
+  background-color: #a0643c;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.addforlogged:hover {
+  transition: 0.3s;
+  background-color: #915228;
+}
+
 header {
   position: fixed;
   top: 0;
@@ -101,9 +117,19 @@ header {
   color: white;
   font-weight: 500;
   font-size: 1.1rem;
-  margin-right: 55px;
-  border-right: 2px solid white;
-  padding-right: 20px;
+  padding: 0 40px;
+  position: relative;
+}
+
+.center-nav a:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 100%;
+  width: 2px;
+  background-color: white;
 }
 
 .center-nav a:hover {
@@ -112,7 +138,6 @@ header {
 
 .center-nav a.router-link-exact-active {
   color: #a0643c;
-  font-weight: 700;
 }
 
 .right-nav {
@@ -137,6 +162,7 @@ header {
 .user-menu {
   position: relative;
   cursor: pointer;
+  margin-right: 20px;
 }
 
 .avatar {

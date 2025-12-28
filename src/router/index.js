@@ -8,6 +8,8 @@ import Login from '@/views/Login.vue'
 import postRecipe from '@/views/postRecipe.vue'
 import MyRecipes from '@/views/MyRecipes.vue'
 
+import { useSessionStore } from '@/stores/sessionUser'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -20,6 +22,19 @@ const router = createRouter({
       path: '/vasa-omiljena-jela',
       name: 'vasa-omiljena-jela',
       component: Favorites,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/moji-recepti',
+      name: 'moji-recepti',
+      component: MyRecipes,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/dodaj-recept',
+      name: 'dodaj-recept',
+      component: postRecipe,
+      meta: { requiresAuth: true },
     },
     {
       path: '/o-nama',
@@ -41,17 +56,17 @@ const router = createRouter({
       name: 'login',
       component: Login,
     },
-    {
-      path: '/dodaj-recept',
-      name: 'dodaj-recept',
-      component: postRecipe,
-    },
-    {
-      path: '/moji-recepti',
-      name: 'moji-recepti',
-      component: MyRecipes,
-    },
   ],
+})
+
+router.beforeEach((to, from, next) => {
+  const session = useSessionStore()
+
+  if (to.meta.requiresAuth && !session.isLoggedIn) {
+    next('/login')
+  } else {
+    next()
+  }
 })
 
 export default router

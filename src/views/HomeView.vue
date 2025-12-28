@@ -44,7 +44,7 @@
       <!-- DODAJ NOVI RECEPT -->
       <div class="newRecipe">
         <label>Dodaj svoj recept →</label>
-        <button @click="router.push('/dodaj-recept')">Dodaj</button>
+        <button @click="dodajRecept">Dodaj</button>
       </div>
     </div>
   </div>
@@ -121,12 +121,17 @@
 
             <span class="badge">{{ fav.rec_name }}</span>
 
-            <h2>Težina pripreme: {{ fav.rec_preparation }}</h2>
+            <h2>Vreme pripreme: {{ fav.rec_preparation }}</h2>
           </RouterLink>
         </div>
       </div>
     </div>
     <button class="arrow right" @click="scrollRight">›</button>
+  </div>
+
+  <div class="tip2">
+    <img src="/src/components/avatar.png" />
+    <p>Registrujte se i dodajte vaš recept, kao i da čuvate vase omiljene recepte.</p>
   </div>
 
   <footer class="footer">
@@ -141,7 +146,7 @@
       <div class="footer-col">
         <h4>Navigacija</h4>
         <ul>
-          <li><RouterLink to="/">Početna</RouterLink></li>
+          <li><RouterLink to="/novosti">Novosti</RouterLink></li>
           <li><RouterLink to="/vasa-omiljena-jela">Omiljeni recepti</RouterLink></li>
           <li><RouterLink to="/dodaj-recept">Dodaj recept</RouterLink></li>
         </ul>
@@ -278,6 +283,14 @@ async function toggleFavorite(recipe) {
     }
   } catch (error) {
     console.error('Error toggling favorite:', error)
+  }
+}
+
+async function dodajRecept() {
+  if (isLoggedIn) {
+    router.push('/dodaj-recept')
+  } else {
+    router.push('/login')
   }
 }
 
@@ -655,7 +668,7 @@ a {
   gap: 15px;
   justify-content: center;
   background-color: rgba(116, 63, 63, 0.06);
-  margin-top: 100px;
+  margin-top: 20px;
   margin-bottom: 100px;
   border-radius: 50px;
 }
@@ -669,6 +682,30 @@ a {
   background-color: rgba(116, 63, 63, 0.08);
   padding-right: 20px;
   border-radius: 20px;
+}
+
+.tip2 {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: auto;
+  align-items: center;
+  background-color: rgba(116, 63, 63, 0.06);
+  border-radius: 50px;
+  padding: 20px;
+  gap: 20px;
+  max-width: 1300px;
+  margin-top: 100px;
+}
+
+.tip2 img {
+  height: 80px;
+}
+
+.tip2 p {
+  font-size: 30px;
+  color: black;
+  font-weight: bold;
 }
 
 .tip img {

@@ -50,6 +50,7 @@ async function myRecipes() {
   try {
     const res = await api.myRecipes(session.sid)
     recipes.value = res.data.data
+    console.log(res.data)
   } catch (error) {
     console.log(error)
   }
@@ -86,6 +87,7 @@ onMounted(() => {
   max-width: 1400px; /* OVO pravi prostor sa strane */
   margin: 0 auto; /* centriranje */
   padding: 0 20px 60px;
+  min-height: 74.9vh;
 }
 
 /* RESPONSIVE */
