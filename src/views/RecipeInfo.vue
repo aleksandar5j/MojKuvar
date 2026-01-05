@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/no-parsing-error -->
 <template>
   <div>
-    <h1 style="color: white; padding-top: 120px; text-align: center; font-size: 40px; background: rgb(109, 68, 68);">
+    <h1 style="color: #743f3f; padding-top: 120px; text-align: center; font-size: 40px; background-color: rgba(116, 63, 63, 0.2); font-weight: bold;/* #743f3f sa 50% providnosti */">
       Instrukcije za pravljenje recepta
     </h1>
 
@@ -181,7 +181,7 @@ watch(
   align-items: center;
   flex-direction: column;
   padding: 30px;
-  background: rgb(109, 68, 68);
+  background-color: rgba(116, 63, 63, 0.2); /* #743f3f sa 50% providnosti */
 }
 
 .recipe-card {

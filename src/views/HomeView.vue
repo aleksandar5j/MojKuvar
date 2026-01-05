@@ -110,18 +110,18 @@
     <button class="arrow left" @click="scrollLeft">‹</button>
     <div class="slider-wrapper" ref="slider">
       <div class="main-wrapper2">
-        <div class="main2" v-for="fav in favoriteRecipes" :key="fav.rec_id">
+        <div class="main2" v-for="pop in popularRecipes" :key="pop.rec_id">
           <RouterLink
-            :to="{ name: 'detalji-recepta', params: { id: fav.rec_id } }"
+            :to="{ name: 'detalji-recepta', params: { id: pop.rec_id } }"
             class="rec-card"
           >
-            <img :src="`http://565q123.e2.mars-hosting.com${fav.image}`" alt="recipe" />
+            <img :src="`http://565q123.e2.mars-hosting.com${pop.image}`" alt="recipe" />
 
             <div class="overlay"></div>
 
-            <span class="badge">{{ fav.rec_name }}</span>
+            <span class="badge">{{ pop.rec_name }}</span>
 
-            <h2>Vreme pripreme: {{ fav.rec_preparation }}</h2>
+            <h2>Vreme pripreme: {{ pop.rec_preparation }}</h2>
           </RouterLink>
         </div>
       </div>
@@ -131,7 +131,7 @@
 
   <div class="tip2">
     <img src="/src/components/avatar.png" />
-    <p>Registrujte se i dodajte vaš recept, kao i da čuvate vase omiljene recepte.</p>
+    <p>Registrujte se i dodajte vaš recept, kao i da sačuvate vaše omiljene recepte.</p>
   </div>
 
   <footer class="footer">
@@ -231,13 +231,13 @@ async function getIngredients() {
 }
 
 const recipes = ref([])
-const favoriteRecipes = ref([])
+const popularRecipes = ref([])
 
-async function getFavoriteRecipes() {
+async function getPopularRecipes() {
   try {
     const res = await api.getFavoriteRecipes()
     console.log(res.data)
-    favoriteRecipes.value = res.data.data
+    popularRecipes.value = res.data.data
   } catch (error) {
     console.log(error)
   }
@@ -253,36 +253,40 @@ async function getRecipes() {
   }
 }
 
-const favorites = ref([])
+const userFavorites = ref([])
 
-async function userFavoriteRecipes() {
+async function getUserFavorites() {
   try {
     const res = await api.userFavoriteRecipes(session.sid)
-    favorites.value = res.data.data
-    console.log(res.data.data)
-    console.log('SESSION:', session('user'))
-  } catch (e) {
-    console.log(e)
+    userFavorites.value = res.data.data
+  } catch (error) {
+    console.log(error)
   }
+}
+
+function markFavoriteRecipes() {
+  recipes.value.forEach((recipe) => {
+    recipe.isFavorite = userFavorites.value.some((uf) => uf.rec_id === recipe.rec_id)
+  })
 }
 
 async function toggleFavorite(recipe) {
   try {
     if (!recipe.isFavorite) {
-      if (isLoggedIn) {
-        const res = await api.addFavoriteRecipe(session.sid, recipe.rec_id)
-        console.log('Added:', res.data)
-        recipe.isFavorite = true
-      } else {
+      if (!isLoggedIn) {
         router.push('/login')
+        return
       }
+      await api.addFavoriteRecipe(session.sid, recipe.rec_id)
+      await getUserFavorites()
+      markFavoriteRecipes()
     } else {
-      const res = await api.deleteFavoriteRecipe(session.sid, recipe.rec_id)
-      console.log('Deleted:', res.data)
-      recipe.isFavorite = false
+      await api.deleteFavoriteRecipe(session.sid, recipe.rec_id)
+      await getUserFavorites()
+      markFavoriteRecipes()
     }
   } catch (error) {
-    console.error('Error toggling favorite:', error)
+    console.error(error)
   }
 }
 
@@ -294,12 +298,17 @@ async function dodajRecept() {
   }
 }
 
-onMounted(() => {
-  getCategories()
-  getIngredients()
-  getRecipes()
-  getFavoriteRecipes()
-  userFavoriteRecipes()
+onMounted(async () => {
+  await getCategories()
+  await getIngredients()
+  await getRecipes()
+
+  await getPopularRecipes() // 🔥 popularno (slider)
+
+  if (isLoggedIn) {
+    await getUserFavorites() // ❤️ user
+    markFavoriteRecipes()
+  }
 })
 
 const slider = ref(null)

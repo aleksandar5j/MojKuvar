@@ -12,7 +12,7 @@
         <div class="main" v-for="recipe in recipes" :key="recipe.rec_id">
           <RouterLink :to="{ name: 'detalji-recepta', params: { id: recipe.rec_id } }">
             <div class="recipe-card">
-              <img :src="`http://565q123.e2.mars-hosting.com${recipe.image}`" alt="Recipe image" />
+              <img :src="`http://565q123.e2.mars-hosting.com${recipe.image}`" />
 
               <h2>{{ recipe.rec_name }}</h2>
 
@@ -51,6 +51,7 @@ async function myRecipes() {
     const res = await api.myRecipes(session.sid)
     recipes.value = res.data.data
     console.log(res.data)
+    console.log(recipes.value)
   } catch (error) {
     console.log(error)
   }
