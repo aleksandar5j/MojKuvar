@@ -144,19 +144,7 @@ function removeIngredient(index) {
 }
 
 function onFileChange(e) {
-  const file = e.target.files[0]
-  if (file) {
-    const reader = new FileReader()
-    reader.onload = (event) => {
-      image.value = {
-        data: event.target.result, // ovo je "data:image/jpeg;base64,..."
-        fileName: file.name,
-        size: file.size,
-        contentType: file.type,
-      }
-    }
-    reader.readAsDataURL(file)
-  }
+  image.value = e.target.files[0]
 }
 
 async function submitRecipe() {
@@ -172,18 +160,18 @@ async function submitRecipe() {
   }
 
   try {
-    const payload = {
-      rec_name: rec_name.value,
-      rec_instructions: rec_instructions.value,
-      rec_description: rec_description.value,
-      rec_preparation: rec_preparation.value,
-      cat_id: cat_id.value,
-      image: image.value,
-      ingredients: ingredients.value,
-      sid: session.sid,
-    }
+    const fd = new FormData()
+    fd.append('rec_name', rec_name.value)
+    fd.append('rec_instructions', rec_instructions.value)
+    fd.append('rec_description', rec_description.value)
+    fd.append('rec_preparation', rec_preparation.value)
+    fd.append('cat_id', cat_id.value)
+    fd.append('ingredients', JSON.stringify(ingredients.value))
+    fd.append('sid', session.sid) // <-- sid ide u FormData
+    fd.append('image', image.value) // File
 
-    await api.postRecipe(payload)
+    // ne šalji sid kao header, samo FormData
+    await api.postRecipe(fd)
 
     showToast('Recept uspešno dodat!', 'success')
 

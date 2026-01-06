@@ -31,26 +31,7 @@ export default {
   deleteFavoriteRecipe: (sid, rec_id) =>
     axios.post('recipes/delete-favorite-recipe', { sid, rec_id }),
 
-  postRecipe: ({
-    rec_name,
-    rec_instructions,
-    rec_description,
-    rec_preparation,
-    cat_id,
-    image,
-    ingredients,
-    sid,
-  }) =>
-    axios.post('recipes/post-recipe', {
-      rec_name,
-      rec_instructions,
-      rec_description,
-      rec_preparation,
-      cat_id,
-      image,
-      ingredients,
-      sid,
-    }),
+  postRecipe: (data) => axios.post('recipes/post-recipe', data),
 
   myRecipes: (sid) => axios.get('recipes/my-recipes', { params: { sid } }),
 }
