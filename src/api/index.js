@@ -34,4 +34,6 @@ export default {
   postRecipe: (data) => axios.post('recipes/post-recipe', data),
 
   myRecipes: (sid) => axios.get('recipes/my-recipes', { params: { sid } }),
+
+  latestRecipes: (data) => axios.get('recipes/latest-added-recipes', data),
 }

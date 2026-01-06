@@ -5,6 +5,7 @@
     <div class="center-nav">
       <RouterLink to="/vasa-omiljena-jela">Moji favoriti</RouterLink>
       <RouterLink to="/o-nama">O nama</RouterLink>
+      <RouterLink to="/novosti">Novosti</RouterLink>
     </div>
 
     <div class="right-nav">

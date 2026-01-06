@@ -35,7 +35,7 @@
 
       <div class="form-group">
         <label>Priprema:</label>
-        <textarea v-model="rec_preparation" placeholder="Vreme pripreme"></textarea>
+        <textarea v-model="rec_preparation" placeholder="00 minuta"></textarea>
       </div>
 
       <h3>Sastojci</h3>

@@ -7,6 +7,7 @@ import Register from '@/views/Register.vue'
 import Login from '@/views/Login.vue'
 import postRecipe from '@/views/postRecipe.vue'
 import MyRecipes from '@/views/MyRecipes.vue'
+import NewsView from '@/views/NewsView.vue'
 
 import { useSessionStore } from '@/stores/sessionUser'
 
@@ -55,6 +56,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: Login,
+    },
+    {
+      path: '/novosti',
+      name: 'novosti',
+      component: NewsView,
     },
   ],
 })
