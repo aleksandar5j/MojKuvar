@@ -18,11 +18,20 @@
         <button class="addforlogged" @click="router.push('/dodaj-recept')">Dodaj recept</button>
         <div class="user-menu" @click="toggleMenu">
           <!-- avatar -->
-          <img class="avatar" :src="avatar" alt="User" />
+          <img v-if="session.isAdmin" class="admin" :src="admin" alt="Admin" />
+          <img v-else-if="session.isLoggedIn" class="avatar" :src="avatar" alt="User" />
 
           <!-- dropdown -->
           <div v-if="menuOpen" class="dropdown">
             <div class="dropdown-user">Korisničko ime: {{ user.usr_username }}</div>
+            <button
+              class="dropdown-btn"
+              style="color: #743f3f; font-weight: bold"
+              v-if="session.isAdmin"
+              @click="router.push('/admin-komande')"
+            >
+              Admin panel
+            </button>
             <button class="dropdown-btn" @click="router.push('/moji-recepti')">Moji recepti</button>
             <button class="dropdown-btn" @click.stop="logoutUser">Odjavi se</button>
           </div>
@@ -42,6 +51,7 @@ import { useSessionStore } from './stores/sessionUser'
 import { computed } from 'vue'
 import logo from './components/logo.png'
 import avatar from './components/avatar.png'
+import admin from './components/admin.png'
 
 const session = useSessionStore()
 const router = useRouter()
@@ -172,6 +182,14 @@ header {
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid white;
+}
+
+.admin {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid black;
 }
 
 .dropdown {

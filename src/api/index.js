@@ -36,4 +36,10 @@ export default {
   myRecipes: (sid) => axios.get('recipes/my-recipes', { params: { sid } }),
 
   latestRecipes: (data) => axios.get('recipes/latest-added-recipes', data),
+
+  adminRecipes: (sid) => axios.get('admin/recipes', { params: { sid } }),
+  adminCategories: (sid) => axios.get('admin/categories', { params: { sid } }),
+  adminIngredients: (sid) => axios.get('admin/ingredients', { params: { sid } }),
+  adminComments: (sid) => axios.get('admin/comments', { params: { sid } }),
+  adminUsers: (sid) => axios.get('admin/users', { params: { sid } }),
 }

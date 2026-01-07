@@ -7,6 +7,7 @@ export const useSessionStore = defineStore('session', {
     sid: localStorage.getItem('sid') || null,
     message: null,
   }),
+
   actions: {
     async login(username, password) {
       const res = await api.loginUser({ username, password })
@@ -24,11 +25,14 @@ export const useSessionStore = defineStore('session', {
       this.user = null
       this.sid = null
       this.message = null
+
       localStorage.removeItem('user')
       localStorage.removeItem('sid')
     },
   },
+
   getters: {
     isLoggedIn: (state) => !!state.user,
+    isAdmin: (state) => !!state.user?.usr_admin,
   },
 })

@@ -8,6 +8,7 @@ import Login from '@/views/Login.vue'
 import postRecipe from '@/views/postRecipe.vue'
 import MyRecipes from '@/views/MyRecipes.vue'
 import NewsView from '@/views/NewsView.vue'
+import AdminView from '@/views/AdminView.vue'
 
 import { useSessionStore } from '@/stores/sessionUser'
 
@@ -62,11 +63,23 @@ const router = createRouter({
       name: 'novosti',
       component: NewsView,
     },
+    {
+      path: '/admin-komande',
+      name: 'admin-komande',
+      component: AdminView,
+      meta: { requiresAdmin: true },
+    },
   ],
 })
 
 router.beforeEach((to, from, next) => {
   const session = useSessionStore()
+
+  if (to.meta.requiresAdmin && !session.isAdmin) {
+    next('/')
+  } else {
+    next()
+  }
 
   if (to.meta.requiresAuth && !session.isLoggedIn) {
     next('/login')

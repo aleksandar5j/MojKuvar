@@ -41,7 +41,7 @@
             <input type="password" v-model="password" required />
           </div>
 
-          <button type="submit">Login</button>
+          <button type="submit">Uloguj se</button>
         </form>
 
         <p v-if="errorMsg" class="error">{{ errorMsg }}</p>
