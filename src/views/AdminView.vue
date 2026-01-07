@@ -58,16 +58,38 @@
           </div>
 
           <div v-if="activeTable === 'categories'" class="cards-container-wrapper">
+            <!-- Dugme za otvaranje popup-a -->
             <div class="add-category-wrapper">
-              <button class="add-btn" @click="action = 'add'">➕ Dodaj kategoriju</button>
+              <button class="add-btn" @click="showAddPopup = true">➕ Dodaj kategoriju</button>
             </div>
 
+            <!-- Lista kategorija -->
             <div class="cards-container">
               <div v-for="cat in categories" :key="cat.cat_id" class="category-card">
-                <button class="card-delete-btn">🗑</button>
-
+                <button class="card-delete-btnn" @click="deleteCategory(cat.cat_id)" title="Obriši">
+                  ✖
+                </button>
                 <div class="category-info">
                   <h4>{{ cat.cat_name }}</h4>
+                </div>
+              </div>
+            </div>
+
+            <!-- Popup za dodavanje nove kategorije -->
+            <div v-if="showAddPopup" class="popup-overlay">
+              <div class="popup-card">
+                <h3>Dodaj novu kategoriju</h3>
+
+                <input
+                  type="text"
+                  v-model="newCategoryName"
+                  placeholder="Ime kategorije"
+                  class="popup-input"
+                />
+
+                <div class="popup-buttons">
+                  <button class="btn-add" @click="addCategory()">Dodaj</button>
+                  <button class="btn-cancel" @click="showAddPopup = false">Otkaži</button>
                 </div>
               </div>
             </div>
@@ -202,6 +224,38 @@ async function getAll() {
     console.log(rec.data, cat.data, ing.data, com.data, usr.data)
   } catch (error) {
     console.log(error)
+  }
+}
+
+async function deleteCategory(cat_id) {
+  try {
+    const res = await api.adminDeleteCategories(cat_id)
+    console.log(res.data)
+    console.log('Uspesno obrisano')
+    await getAll()
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const showAddPopup = ref(false)
+const newCategoryName = ref('')
+
+async function addCategory() {
+  if (!newCategoryName.value.trim()) {
+    alert('Unesite ime kategorije')
+    return
+  }
+
+  try {
+    const res = await api.adminPostCategory(newCategoryName.value)
+    console.log(res.data)
+    newCategoryName.value = ''
+    showAddPopup.value = false
+    console.log('Kategorija dodata')
+    await getAll()
+  } catch (err) {
+    console.log(err)
   }
 }
 
@@ -457,23 +511,28 @@ onMounted(() => {
 }
 
 /* Dugme za brisanje */
-.card-delete-btn {
+.card-delete-btnn {
   position: absolute;
   top: 8px;
   right: 8px;
-  background-color: #e74c3c;
-  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
   border: none;
-  border-radius: 6px;
-  padding: 4px 8px;
+  background: red;
+  color: white;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  font-weight: bold;
-  z-index: 2;
-  transition: background 0.2s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-.card-delete-btn:hover {
-  background-color: #c0392b;
+.card-delete-btnn:hover {
+  background: #832c23;
+  color: #fff;
+  transition: 0.2s;
 }
 
 .category-info h4 {
@@ -610,5 +669,112 @@ onMounted(() => {
 
 .card-delete-btn:hover {
   background-color: #c0392b;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  animation: fadeIn 0.2s ease-in;
+}
+
+.popup-card {
+  background: linear-gradient(145deg, #ffffff, #f0f0f0);
+  padding: 25px 30px;
+  border-radius: 16px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+  min-width: 320px;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  transform: scale(0.8);
+  animation: scaleUp 0.2s forwards;
+}
+
+.popup-card h3 {
+  font-size: 1.4rem;
+  margin: 0;
+  text-align: center;
+  color: #333;
+}
+
+.popup-input {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.popup-input:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-add {
+  background: #743f3f;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-add:hover {
+  background: #743f3f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-cancel {
+  background: #c7c7c7;
+  color: #555;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancel:hover {
+  background: #e0e0e0;
+  transform: translateY(-1px);
+}
+
+/* Animacije */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0.8);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 </style>
