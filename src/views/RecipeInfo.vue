@@ -88,12 +88,24 @@
             <div class="comment-header">
               <span class="comment-user">{{ c.usr_username }}</span>
               <span class="comment-date"> Objavljen: {{ new Date(c.com_timecreated).toLocaleString() }}</span>
+
+              <!-- Dugme za brisanje samo za autora -->
+              <button
+                v-if="c.usr_id && c.usr_id === session.user?.usr_id"
+                class="comment-delete-btn"
+                @click="deleteComment(c.com_id)"
+              >
+                ✖ Obriši
+              </button>
             </div>
             <hr class="comment-separator" />
             <p class="comment-text">{{ c.com_text }}</p>
           </div>
         </div>
       </div>
+    </div>
+    <div v-if="showSuccess" class="success-popup">
+      {{ successMessage }}
     </div>
   </div>
 
@@ -153,9 +165,34 @@ async function postComment() {
     console.log(res.data)
     newComment.value = ''
     getComments()
+    triggerSuccess('Komentar uspešno dodat ✅')
   } catch (error) {
     console.log(error)
   }
+}
+
+async function deleteComment(com_id) {
+  const confirmDelete = window.confirm('Da li si siguran da želiš da obrišeš svoj komentar?')
+  if (!confirmDelete) return
+  if (!isLoggedIn) return
+  try {
+    await api.deleteOwnComment(session.sid, com_id)
+    await getComments()
+    triggerSuccess('Komentar uspešno obrisan ✅')
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+const successMessage = ref('') // poruka za zeleni popup
+const showSuccess = ref(false) // da li prikazati popup
+
+function triggerSuccess(msg) {
+  successMessage.value = msg
+  showSuccess.value = true
+  setTimeout(() => {
+    showSuccess.value = false
+  }, 2000) // 2 sekunde prikaz
 }
 
 
@@ -403,6 +440,24 @@ watch(
   padding-top: 20px;
 }
 
+.comment-delete-btn {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  padding-top: 4px;
+  padding-bottom: 6px;
+  padding-left: 12px;
+  padding-right: 12px;
+  margin-left: 10px;
+}
+
+.comment-delete-btn:hover {
+  background: #c0392b;
+}
+
 .login-box {
   display: flex;
   align-items: center;
@@ -463,6 +518,39 @@ watch(
 
 .prep-time img {
   height: 50px;
+}
+
+.success-popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #2e794d; /* zeleno */
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  font-weight: bold;
+  z-index: 2000;
+  animation:
+    slideIn 0.3s ease,
+    fadeOut 0.3s ease 1.7s forwards;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
 }
 
 </style>

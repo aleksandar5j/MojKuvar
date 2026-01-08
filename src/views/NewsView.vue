@@ -62,7 +62,13 @@
         >
           <div class="img-box">
             <img :src="`http://565q123.e2.mars-hosting.com${food.image}`" />
-            <button class="fav-btn">❤</button>
+            <button
+              class="fav-btn"
+              :class="{ active: food.isFavorite }"
+              @click="toggleFavorite(food)"
+            >
+              ❤
+            </button>
             <span class="food-tag">{{ food.rec_name }}</span>
 
             <div class="food-desc">{{ food.rec_description }}</div>
@@ -78,10 +84,14 @@
 <script setup>
 import router from '@/router'
 import api from '@/api'
-
 import { ref, onMounted } from 'vue'
+import { useSessionStore } from '@/stores/sessionUser'
+
+const session = useSessionStore()
+const isLoggedIn = session.isLoggedIn
 
 const latestRecipes = ref([])
+const userFavorites = ref([])
 
 async function getLatestRecipes() {
   try {
@@ -93,8 +103,46 @@ async function getLatestRecipes() {
   }
 }
 
-onMounted(() => {
-  getLatestRecipes()
+async function getUserFavorites() {
+  if (!isLoggedIn) return
+  try {
+    const res = await api.userFavoriteRecipes(session.sid)
+    userFavorites.value = res.data.data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+function markFavoriteRecipes() {
+  latestRecipes.value.forEach((food) => {
+    food.isFavorite = userFavorites.value.some((uf) => uf.rec_id === food.rec_id)
+  })
+}
+
+async function toggleFavorite(food) {
+  if (!isLoggedIn) {
+    router.push('/login')
+    return
+  }
+  try {
+    if (!food.isFavorite) {
+      const res = await api.addFavoriteRecipe(session.sid, food.rec_id)
+      console.log(res.data)
+    } else {
+      const res = await api.deleteFavoriteRecipe(session.sid, food.rec_id)
+      console.log(res.data)
+    }
+    await getUserFavorites()
+    markFavoriteRecipes()
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+onMounted(async () => {
+  await getLatestRecipes()
+  await getUserFavorites()
+  markFavoriteRecipes()
 })
 </script>
 
@@ -102,7 +150,7 @@ onMounted(() => {
 .news-page {
   margin-top: 76px;
   padding: 0 40px 60px;
-  background: #f7f3f2;
+  background-color: rgba(116, 63, 63, 0.2); /* #743f3f sa 50% providnosti */
 }
 
 /* HERO */
@@ -509,7 +557,7 @@ onMounted(() => {
 .fav-btn:hover {
   background: #e53935;
   border-color: #e53935;
-  transform: scale(1.1);
+  transform: scale(1.1); /* malo veći hover efekat */
 }
 
 .fav-btn.active {

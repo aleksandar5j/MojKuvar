@@ -76,16 +76,13 @@ router.beforeEach((to, from, next) => {
   const session = useSessionStore()
 
   if (to.meta.requiresAdmin && !session.isAdmin) {
-    next('/')
-  } else {
-    next()
+    return next('/')
+  }
+  if (to.meta.requiresAuth && !session.isLoggedIn) {
+    return next('/login')
   }
 
-  if (to.meta.requiresAuth && !session.isLoggedIn) {
-    next('/login')
-  } else {
-    next()
-  }
+  next()
 })
 
 export default router

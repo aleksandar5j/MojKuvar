@@ -38,12 +38,25 @@ export default {
   latestRecipes: (data) => axios.get('recipes/latest-added-recipes', data),
 
   adminRecipes: (sid) => axios.get('admin/recipes', { params: { sid } }),
+  adminDeleteRecipes: (rec_id) => axios.delete('admin/recipes', { params: { rec_id } }),
+  adminEditRecipes: (data) => axios.put('admin/recipes', data),
 
   adminCategories: (sid) => axios.get('admin/categories', { params: { sid } }),
   adminDeleteCategories: (cat_id) => axios.delete('admin/categories', { params: { cat_id } }),
   adminPostCategory: (cat_name) => axios.post('admin/categories', { cat_name }),
 
   adminIngredients: (sid) => axios.get('admin/ingredients', { params: { sid } }),
+  adminDeleteIngredients: (ing_id) => axios.delete('admin/ingredients', { params: { ing_id } }),
+  adminPostIngredients: (ing_name) => axios.post('admin/ingredients', { ing_name }),
+
   adminComments: (sid) => axios.get('admin/comments', { params: { sid } }),
+  adminDeleteComment: (com_id) => axios.delete('admin/comments', { params: { com_id } }),
+
   adminUsers: (sid) => axios.get('admin/users', { params: { sid } }),
+  adminDeleteUser: (usr_id) => axios.delete('admin/users', { params: { usr_id } }),
+
+  adminUpdateUserRole: (data) => axios.put('admin/give-role', data),
+
+  deleteOwnComment: (sid, com_id) =>
+    axios.delete('recipes/delete-own-comment', { params: { sid, com_id } }),
 }
