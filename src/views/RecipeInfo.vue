@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/no-parsing-error -->
 <template>
   <div>
-    <h1 style="color: #743f3f; padding-top: 120px; text-align: center; font-size: 40px; background-color: rgba(116, 63, 63, 0.2); font-weight: bold;/* #743f3f sa 50% providnosti */">
+    <h1 style="color: #743f3f; padding-top: 120px; text-align: center; font-size: 40px; background-color: rgba(83, 12, 12, 0.2); font-weight: bold;/* #743f3f sa 50% providnosti */">
       Instrukcije za pravljenje recepta
     </h1>
 
@@ -15,59 +15,31 @@
           <p>{{ recipe.rec_preparation }}</p>
         </div>
 
-        <br><hr></br>
+        <br><hr style="height: 2px; border: 0; background-color: #743f3f;"></br>
 
         <h2 class="sub-title">Sastojci</h2>
         <ul class="ingredients">
-          <li v-for="ing in ingredients" :key="ing.ing_id" style="background-color: #743f3f; border: 0;">
+          <li v-for="ing in ingredients" :key="ing.ing_id" style="border: 0;">
             <span class="ing-name">{{ ing.ing_name }}</span>
             <span class="ing-qty">{{ ing.rig_quantity }}</span>
           </li>
         </ul>
 
-        <br><hr></br>
+        <br><hr style="height: 2px; border: 0; background-color: #743f3f;"></br>
 
-        <h3 style="font-weight: bold; margin-top: 20px; color: white;">Instrukcije</h3>
-        <p class="recipe-inst" style="color: white">{{ recipe.rec_instructions }}</p>
+        <h3 style="font-weight: bold; margin-top: 20px; color: #743f3f; font-size: 25px;margin-bottom: 10px; text-align: center;">Instrukcije</h3>
+        <p class="recipe-inst" style="color: #743f3f">{{ recipe.rec_instructions }}</p>
 
-        <br><hr></br>
-
-        <h3 style="font-weight: bold; margin-top: 25px; color: white;">Deskripcija</h3>
-        <p class="recipe-desc">{{ recipe.rec_description }}</p>
       </div>
 
-      <hr style="width: 150vh; margin-top: 40px; height: 3px; background-color: #5c2e2e; border: 0;"></hr>
-
-      <div v-if="relatedRecipes.length" class="related-section">
-        <h3 style="font-weight: bold;">Slični recepti</h3>
-        <div class="related-wrapper">
-          <RouterLink
-            v-for="r in relatedRecipes"
-            :key="r.rec_id"
-            :to="{ name: 'detalji-recepta', params: { id: r.rec_id } }"
-            class="related-card-link"
-          >
-            <div class="related-card">
-              <img :src="`http://565q123.e2.mars-hosting.com${r.image}`" class="related-image" />
-              <p class="related-name">{{ r.rec_name }}</p>
-              <p class="related-desc">{{ r.rec_description }}</p>
-            </div>
-          </RouterLink>
-        </div>
-      </div>
-
-      <div v-else>
-        <h1 style="color: white; margin-top: 120px; margin-bottom: 80px; font-weight: bold; font-size: 40px;">Nema sličnih recepta!</h1>
-      </div>
-
-      <hr style="width: 150vh; margin-top: 40px; height: 3px; background-color: #5c2e2e; border: 0;"></hr>
+      <hr style="width: 120vh; margin-top: 40px; height: 2px; background-color: #5c2e2e; border: 0;"></hr>
 
       <div class="comments-section">
         <h2>Komentari</h2>
 
         <!-- Forma za dodavanje komentara -->
         <div v-if="isLoggedIn" class="add-comment">
-          <h3>Dodaj komentar</h3>
+          <h3 style="color: #743f3f;">Dodaj komentar</h3>
           <textarea v-model="newComment"></textarea>
           <button @click="postComment">Pošalji</button>
         </div>
@@ -79,14 +51,14 @@
         </div>
 
         <!-- Lista komentara -->
-        <div v-if="comments.length === 0" class="no-comments">
+        <div v-if="comments.length === 0" class="no-comments" style="color: #743f3f;">
           Nema komentara za ovaj recept.
         </div>
 
         <div v-else class="comments-list">
           <div v-for="c in comments" :key="c.com_id" class="comment-card">
             <div class="comment-header">
-              <span class="comment-user">{{ c.usr_username }}</span>
+              <span class="comment-user"><img src="/src/components/avatar.png" style="height: 40px; margin-right: 10px; margin-bottom: 7px;">{{ c.usr_username }}</span>
               <span class="comment-date"> Objavljen: {{ new Date(c.com_timecreated).toLocaleString() }}</span>
 
               <div>
@@ -110,8 +82,34 @@
             <p class="comment-text">{{ c.com_text }}</p>
           </div>
         </div>
+      </div>
 
-        <div v-if="isEditPopupOpen" class="edit-popup-overlay" @click.self="closeEditPopup">
+      <hr style="width: 120vh; margin-top: 40px; height: 2px; background-color: #5c2e2e; border: 0;"></hr>
+
+      <div v-if="relatedRecipes.length" class="related-section">
+        <h3 style="font-weight: bold; color: #743f3f; font-size: 25px;">Slični recepti</h3>
+        <div class="related-wrapper">
+          <RouterLink
+            v-for="r in relatedRecipes"
+            :key="r.rec_id"
+            :to="{ name: 'detalji-recepta', params: { id: r.rec_id } }"
+            class="related-card-link"
+          >
+            <div class="related-card">
+              <img :src="`http://565q123.e2.mars-hosting.com${r.image}`" class="related-image" />
+              <p class="related-name">{{ r.rec_name }}</p>
+              <p class="related-desc">{{ r.rec_description }}</p>
+            </div>
+          </RouterLink>
+        </div>
+      </div>
+
+      <div v-else>
+        <h1 style="color: #743f3f; margin-top: 120px; margin-bottom: 80px; font-weight: bold; font-size: 40px;">Nema sličnih recepta!</h1>
+      </div>
+    </div>
+
+      <div v-if="isEditPopupOpen" class="edit-popup-overlay" @click.self="closeEditPopup">
           <div class="edit-popup">
             <h3>Izmeni komentar</h3>
 
@@ -127,8 +125,7 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
+
     <div v-if="showSuccess" class="success-popup">
       {{ successMessage }}
     </div>
@@ -281,12 +278,12 @@ watch(
   align-items: center;
   flex-direction: column;
   padding: 30px;
-  background-color: rgba(116, 63, 63, 0.2); /* #743f3f sa 50% providnosti */
+  background-color: rgba(83, 12, 12, 0.2);
 }
 
 .recipe-card {
-  width: 700px;
-  background: #854848;
+  width: 900px;
+  background: #ffc7c7;
   padding: 25px;
   border-radius: 15px;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15);
@@ -304,7 +301,7 @@ watch(
   margin: 0;
   font-size: 26px;
   font-weight: bold;
-  color: white;
+  color: #743f3f;
   padding-bottom: 20px;
 }
 
@@ -315,8 +312,10 @@ watch(
 }
 .sub-title {
   margin-top: 20px;
-  font-size: 22px;
-  color: white;
+  font-size: 25px;
+  text-align: center;
+  font-weight: bold;
+  color: #743f3f;
 }
 
 .ingredients {
@@ -328,7 +327,7 @@ watch(
 .ingredients li {
   display: flex;
   justify-content: space-between;
-  background: #fafafa;
+  background-color: rgba(83, 12, 12, 0.2);
   padding: 12px;
   margin-bottom: 8px;
   border-radius: 8px;
@@ -337,11 +336,11 @@ watch(
 
 .ing-name {
   font-weight: 600;
-  color: white
+  color: #743f3f
 }
 
 .ing-qty {
-  color: white;
+  color: #743f3f;
   font-weight: 500;
 }
 
@@ -352,10 +351,11 @@ watch(
 }
 
 .related-section {
-  background: #854848;
+  background: #ffc7c7;
   padding: 50px;
   border-radius: 15px;
   margin-top: 30px;
+  min-width: 900px;
 }
 
 .related-section h3 {
@@ -374,7 +374,7 @@ watch(
 
 .related-card {
   width: 250px;       /* veće kartice */
-  background: #743f3f; /* malo tamnija nijansa */
+  background-color: rgba(83, 12, 12, 0.2);
   border-radius: 12px;
   overflow: hidden;
   text-align: center;
@@ -395,30 +395,32 @@ watch(
 .related-name {
   font-size: 20px;
   font-weight: bold;
-  color: white;
+  color: #743f3f;
   padding: 20px 5px;
 }
 
 .related-desc {
-  color: white;
+  color: #743f3f;
   padding-bottom: 20px;
-  font-size: 12px;
+  font-size: 13px;
   margin-left: 30px;
   margin-right: 30px;
 }
 .comments-section {
   width: 100%;
-  max-width: 800px;
+  max-width: 900px;
   margin-top: 40px;
   padding: 20px;
-  background: #854848;
+  background: #ffc7c7;
   border-radius: 15px;
   color: white;
 }
 
 .comments-section h2 {
   margin-bottom: 15px;
-  font-size: 24px;
+  font-size: 25px;
+  color: #743f3f;
+  font-weight: bold;
   text-align: center;
 }
 
@@ -438,7 +440,7 @@ watch(
   border: none;
   font-size: 14px;
   color: white;
-  background-color: #743f3f;
+  background-color: rgba(83, 12, 12, 0.2);
 }
 
 .add-comment button {
@@ -466,7 +468,7 @@ watch(
 }
 
 .comment-card {
-  background-color: #743f3f;
+  background-color: rgba(83, 12, 12, 0.2);
   padding: 15px;
   border-radius: 10px;
 }
@@ -481,13 +483,16 @@ watch(
 
 .comment-user {
   font-size: 25px;
-  color: rgb(179, 179, 179);
+  color: #743f3f;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .comment-date {
   font-size: 12px;
   font-weight: normal;
-  color: #ccc;
+  color: #743f3f;
 }
 
 .comment-separator {
@@ -498,7 +503,7 @@ watch(
 
 .comment-text {
   font-size: 14px;
-  color: #f5f5f5;
+  color: #743f3f;
   line-height: 1.5;
   padding-top: 20px;
 }
@@ -547,7 +552,7 @@ watch(
   padding: 15px 20px;
   margin: 20px 0;
 
-  background:#743f3f;
+  background-color: rgba(83, 12, 12, 0.2);
   border-radius: 10px;
 
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
@@ -556,11 +561,11 @@ watch(
 .login-box p {
   margin: 0;
   font-size: 16px;
-  color: white;
+  color: #743f3f;
 }
 
 .login-box button {
-  background-color: #a85c5c;
+  background-color: #b46e6e;
   color: #fff;
 
   border: none;
@@ -582,7 +587,7 @@ watch(
 .prep-time {
   display: flex;
   flex-direction: row;
-  background: #743f3f;
+  background-color: rgba(83, 12, 12, 0.2);
   border-radius: 10px;
   padding: 5px;
   gap: 15px;
@@ -594,6 +599,8 @@ watch(
 
 .prep-time p {
   font-weight: bold;
+  font-size: 20px;
+  color: #743f3f;
 }
 
 .prep-time img {

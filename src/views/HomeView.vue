@@ -393,22 +393,42 @@ function triggerSuccess(msg) {
   width: 100%;
   height: 70vh;
   position: relative;
+  overflow: hidden;
+
   background-image: url('@/components/backgroundimage.jpeg');
   background-size: cover;
   background-position: center;
 }
 
-.hero::before {
+/* BLUR SAMO NA DONJEM DELU */
+.hero::after {
   content: '';
   position: absolute;
   inset: 0;
+
   background-image: inherit;
   background-size: inherit;
   background-position: inherit;
-  filter: blur(5px);
+
+  filter: blur(18px);
+  transform: scale(1.1);
   z-index: 1;
-  -webkit-mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 100%, transparent 100%);
+
+  /* VIDLJIVO SAMO DOLE */
+  -webkit-mask-image: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.85) 30%,
+    rgba(0, 0, 0, 0.4) 55%,
+    rgba(0, 0, 0, 0) 75%
+  );
+  mask-image: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.85) 30%,
+    rgba(0, 0, 0, 0.4) 55%,
+    rgba(0, 0, 0, 0) 75%
+  );
 }
 
 .content {

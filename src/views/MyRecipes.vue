@@ -115,6 +115,8 @@ async function myRecipes() {
 }
 
 async function deleteRecipe(rec_id) {
+  const confirmDelete = window.confirm('Da li si siguran da želiš da obrišeš svoj recept?')
+  if (!confirmDelete) return
   try {
     const res = await api.deleteOwnRecipe(session.sid, rec_id)
     console.log(res.data)
