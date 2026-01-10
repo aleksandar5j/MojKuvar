@@ -168,6 +168,10 @@
       © {{ new Date().getFullYear() }} Moj Kuvar — Sva prava zadržana
     </div>
   </footer>
+
+  <div v-if="showSuccess" class="success-popup">
+    {{ successMessage }}
+  </div>
 </template>
 
 <script setup>
@@ -279,10 +283,12 @@ async function toggleFavorite(recipe) {
       }
       await api.addFavoriteRecipe(session.sid, recipe.rec_id)
       await getUserFavorites()
+      triggerSuccess('Uspesno si dodao recept u favorite ✅')
       markFavoriteRecipes()
     } else {
       await api.deleteFavoriteRecipe(session.sid, recipe.rec_id)
       await getUserFavorites()
+      triggerSuccess('Uspesno si uklonio recept iz favorita ✅')
       markFavoriteRecipes()
     }
   } catch (error) {
@@ -368,6 +374,17 @@ const displayedRecipes = computed(() => {
 
 const loadMoreRecipes = () => {
   visibleCount.value += STEP
+}
+
+const successMessage = ref('') // poruka za zeleni popup
+const showSuccess = ref(false) // da li prikazati popup
+
+function triggerSuccess(msg) {
+  successMessage.value = msg
+  showSuccess.value = true
+  setTimeout(() => {
+    showSuccess.value = false
+  }, 4000) // 2 sekunde prikaz
 }
 </script>
 
@@ -961,5 +978,38 @@ a {
   width: 380px;
   height: 260px; /* ISTO kao grid-auto-rows */
   flex-shrink: 0;
+}
+
+.success-popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #2e794d; /* zeleno */
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  font-weight: bold;
+  z-index: 2000;
+  animation:
+    slideIn 0.3s ease,
+    fadeOut 0.3s ease 1.7s forwards;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
 }
 </style>

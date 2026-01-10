@@ -46,6 +46,9 @@
       <button @click="router.push('/login')">Uloguj se</button>
     </div>
   </div>
+  <div v-if="showSuccess" class="success-popup">
+    {{ successMessage }}
+  </div>
 </template>
 
 <script setup>
@@ -75,6 +78,7 @@ async function toggleFavorite(fav) {
   try {
     const res = await api.deleteFavoriteRecipe(session.sid, fav.rec_id)
     await favoriteRecipes()
+    triggerSuccess('Uspesno si uklonio recept iz favorita ✅')
     console.log(res.data)
   } catch (error) {
     console.log(error)
@@ -86,6 +90,17 @@ onMounted(() => {
     favoriteRecipes()
   }
 })
+
+const successMessage = ref('') // poruka za zeleni popup
+const showSuccess = ref(false) // da li prikazati popup
+
+function triggerSuccess(msg) {
+  successMessage.value = msg
+  showSuccess.value = true
+  setTimeout(() => {
+    showSuccess.value = false
+  }, 4000) // 2 sekunde prikaz
+}
 </script>
 
 <style scoped>
@@ -252,5 +267,38 @@ a {
   opacity: 1;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px #743f3f;
+}
+
+.success-popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #2e794d; /* zeleno */
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  font-weight: bold;
+  z-index: 2000;
+  animation:
+    slideIn 0.3s ease,
+    fadeOut 0.3s ease 1.7s forwards;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
 }
 </style>

@@ -89,17 +89,42 @@
               <span class="comment-user">{{ c.usr_username }}</span>
               <span class="comment-date"> Objavljen: {{ new Date(c.com_timecreated).toLocaleString() }}</span>
 
-              <!-- Dugme za brisanje samo za autora -->
-              <button
-                v-if="c.usr_id && c.usr_id === session.user?.usr_id"
-                class="comment-delete-btn"
-                @click="deleteComment(c.com_id)"
-              >
-                ✖ Obriši
-              </button>
+              <div>
+                <button
+                  v-if="c.usr_id && c.usr_id === session.user?.usr_id"
+                  class="comment-delete-btn"
+                  @click="deleteComment(c.com_id)"
+                >
+                  ✖ Obriši
+                </button>
+                <button
+                  v-if="c.usr_id && c.usr_id === session.user?.usr_id"
+                  class="comment-update-btn"
+                  @click="openEditPopup(c)"
+                >
+                  ✎ Izmeni
+                </button>
+              </div>
             </div>
             <hr class="comment-separator" />
             <p class="comment-text">{{ c.com_text }}</p>
+          </div>
+        </div>
+
+        <div v-if="isEditPopupOpen" class="edit-popup-overlay" @click.self="closeEditPopup">
+          <div class="edit-popup">
+            <h3>Izmeni komentar</h3>
+
+            <textarea
+              v-model="editRecipeData.com_text"
+              rows="4"
+              class="edit-textarea"
+            ></textarea>
+
+            <div class="edit-actions">
+              <button @click="updateComment" class="btn-save">Sačuvaj</button>
+              <button @click="closeEditPopup" class="btn-cancel">Otkaži</button>
+            </div>
           </div>
         </div>
       </div>
@@ -184,6 +209,44 @@ async function deleteComment(com_id) {
   }
 }
 
+const isEditPopupOpen = ref(false)
+
+const editRecipeData = ref({
+  com_id: null,
+  usr_id: null,
+  com_text: '',
+})
+
+function openEditPopup(c) {
+  editRecipeData.value = {
+    com_id: c.com_id,
+    com_text: c.com_text
+  }
+  isEditPopupOpen.value = true
+}
+
+function closeEditPopup() {
+  isEditPopupOpen.value = false
+}
+
+async function updateComment() {
+  if (!isLoggedIn) return
+
+  try {
+    await api.updateOwnComment({
+      com_id: editRecipeData.value.com_id,
+      com_text: editRecipeData.value.com_text,
+      sid: session.sid
+    })
+
+    isEditPopupOpen.value = false
+    await getComments()
+    triggerSuccess('Komentar uspešno izmenjen ✏️')
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 const successMessage = ref('') // poruka za zeleni popup
 const showSuccess = ref(false) // da li prikazati popup
 
@@ -192,7 +255,7 @@ function triggerSuccess(msg) {
   showSuccess.value = true
   setTimeout(() => {
     showSuccess.value = false
-  }, 2000) // 2 sekunde prikaz
+  }, 3000) // 2 sekunde prikaz
 }
 
 
@@ -451,11 +514,28 @@ watch(
   padding-bottom: 6px;
   padding-left: 12px;
   padding-right: 12px;
-  margin-left: 10px;
 }
 
 .comment-delete-btn:hover {
-  background: #c0392b;
+  background: #992e22;
+}
+
+.comment-update-btn {
+  background: #af8000;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  padding-top: 4px;
+  padding-bottom: 6px;
+  padding-left: 12px;
+  padding-right: 12px;
+  margin-left: 10px;
+}
+
+.comment-update-btn:hover {
+  background: #9c7300;
 }
 
 .login-box {
@@ -550,6 +630,115 @@ watch(
 @keyframes fadeOut {
   to {
     opacity: 0;
+  }
+}
+
+.edit-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* Popup box */
+.edit-popup {
+  background: #fff;
+  width: 100%;
+  max-width: 480px;
+  border-radius: 14px;
+  padding: 20px 22px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  animation: popupFadeIn 0.25s ease;
+}
+
+/* Title */
+.edit-popup h3 {
+  margin: 0 0 14px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+}
+
+/* Textarea */
+.edit-textarea {
+  width: 100%;
+  resize: none;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  padding: 10px 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.edit-textarea:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.15);
+}
+
+/* Buttons */
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.btn-save {
+  background: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-save:hover {
+  background: #2e86c1;
+}
+
+.btn-save:active {
+  transform: scale(0.97);
+}
+
+.btn-cancel {
+  background: #eee;
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-cancel:hover {
+  background: #ddd;
+}
+
+/* Animation */
+@keyframes popupFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .edit-popup {
+    margin: 0 14px;
   }
 }
 

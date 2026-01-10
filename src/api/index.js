@@ -16,7 +16,7 @@ export default {
   getRecipesSearch: ({ search, category, ingredient } = {}) =>
     axios.get('recipes/search-recipes', { params: { search, category, ingredient } }),
 
-  getFavoriteRecipes: (data) => axios.get('recipes/favorite-recipes', data),
+  getFavoriteRecipes: (data) => axios.get('recipes/most-favorited-recipes', data),
 
   registerUser: ({ fullname, username, password, email }) =>
     axios.post('auth/register', { fullname, username, password, email }),
@@ -27,11 +27,13 @@ export default {
   addComment: ({ id, comment, sid }) => axios.post('recipes/comments', { id, comment, sid }),
 
   userFavoriteRecipes: (sid) => axios.get('recipes/favorites', { params: { sid } }),
-  addFavoriteRecipe: (sid, rec_id) => axios.post('recipes/add-favorite-recipe', { sid, rec_id }),
+  addFavoriteRecipe: (sid, rec_id) => axios.post('recipes/favorites', { sid, rec_id }),
   deleteFavoriteRecipe: (sid, rec_id) =>
-    axios.post('recipes/delete-favorite-recipe', { sid, rec_id }),
+    axios.delete('recipes/favorites', { params: { sid, rec_id } }),
 
-  postRecipe: (data) => axios.post('recipes/post-recipe', data),
+  postRecipe: (data) => axios.post('recipes', data),
+  deleteOwnRecipe: (sid, rec_id) => axios.delete('recipes', { params: { sid, rec_id } }),
+  updateOwnRecipe: (data) => axios.put('recipes', data),
 
   myRecipes: (sid) => axios.get('recipes/my-recipes', { params: { sid } }),
 
@@ -57,6 +59,6 @@ export default {
 
   adminUpdateUserRole: (data) => axios.put('admin/give-role', data),
 
-  deleteOwnComment: (sid, com_id) =>
-    axios.delete('recipes/delete-own-comment', { params: { sid, com_id } }),
+  deleteOwnComment: (sid, com_id) => axios.delete('recipes/comments', { params: { sid, com_id } }),
+  updateOwnComment: (data) => axios.put('recipes/comments', data),
 }
