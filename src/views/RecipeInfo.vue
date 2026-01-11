@@ -109,12 +109,12 @@
       </div>
     </div>
 
-      <div v-if="isEditPopupOpen" class="edit-popup-overlay" @click.self="closeEditPopup">
+      <div v-if="isEditPopupOpen" class="edit-popup-overlay">
           <div class="edit-popup">
             <h3>Izmeni komentar</h3>
 
             <textarea
-              v-model="editRecipeData.com_text"
+              v-model="editCommentData.com_text"
               rows="4"
               class="edit-textarea"
             ></textarea>
@@ -208,14 +208,14 @@ async function deleteComment(com_id) {
 
 const isEditPopupOpen = ref(false)
 
-const editRecipeData = ref({
+const editCommentData = ref({
   com_id: null,
   usr_id: null,
   com_text: '',
 })
 
 function openEditPopup(c) {
-  editRecipeData.value = {
+  editCommentData.value = {
     com_id: c.com_id,
     com_text: c.com_text
   }
@@ -231,8 +231,8 @@ async function updateComment() {
 
   try {
     await api.updateOwnComment({
-      com_id: editRecipeData.value.com_id,
-      com_text: editRecipeData.value.com_text,
+      com_id: editCommentData.value.com_id,
+      com_text: editCommentData.value.com_text,
       sid: session.sid
     })
 
@@ -609,7 +609,7 @@ watch(
 
 .success-popup {
   position: fixed;
-  top: 20px;
+  top: 90px;
   right: 20px;
   background-color: #2e794d; /* zeleno */
   color: white;
@@ -696,7 +696,7 @@ watch(
 }
 
 .btn-save {
-  background: #3498db;
+  background: #743f3f;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -708,7 +708,7 @@ watch(
 }
 
 .btn-save:hover {
-  background: #2e86c1;
+  background: #532d2d;
 }
 
 .btn-save:active {

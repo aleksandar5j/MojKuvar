@@ -5,7 +5,6 @@
       <h1
         style="
           padding-top: 30px;
-          padding-bottom: 50px;
           text-align: center;
           font-weight: bold;
           color: #743f3f;
@@ -34,8 +33,10 @@
       </div>
 
       <div v-else class="nofav">
-        <img src="/src/components/nosearch.png" style="height: 200px" />
-        <h3 style="text-align: center">Trenutno nemate omiljene recepte!</h3>
+        <img src="/src/components/nosearch.png" style="height: 300px" />
+        <h3 style="text-align: center; font-size: 30px; color: #743f3f; font-weight: bold">
+          Trenutno nemate omiljene recepte!
+        </h3>
       </div>
     </div>
 
@@ -99,7 +100,7 @@ function triggerSuccess(msg) {
   showSuccess.value = true
   setTimeout(() => {
     showSuccess.value = false
-  }, 4000) // 2 sekunde prikaz
+  }, 1000) // 2 sekunde prikaz
 }
 </script>
 
@@ -271,7 +272,7 @@ a {
 
 .success-popup {
   position: fixed;
-  top: 20px;
+  top: 90px;
   right: 20px;
   background-color: #2e794d; /* zeleno */
   color: white;

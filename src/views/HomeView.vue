@@ -147,8 +147,8 @@
         <h4>Navigacija</h4>
         <ul>
           <li><RouterLink to="/novosti">Novosti</RouterLink></li>
-          <li><RouterLink to="/vasa-omiljena-jela">Omiljeni recepti</RouterLink></li>
-          <li><RouterLink to="/dodaj-recept">Dodaj recept</RouterLink></li>
+          <li><a href="#" @click.prevent="goToFavorites"> Omiljeni recepti </a></li>
+          <li><a href="#" @click.prevent="goToAddRecipe"> Dodaj recept </a></li>
         </ul>
       </div>
 
@@ -171,6 +171,10 @@
 
   <div v-if="showSuccess" class="success-popup">
     {{ successMessage }}
+  </div>
+
+  <div v-if="showError" class="error-popup">
+    {{ errorMessage }}
   </div>
 </template>
 
@@ -278,7 +282,10 @@ async function toggleFavorite(recipe) {
   try {
     if (!recipe.isFavorite) {
       if (!isLoggedIn) {
-        router.push('/login')
+        triggerError('Morate biti ulogovani!')
+        setTimeout(() => {
+          router.push('/login')
+        }, 1000)
         return
       }
       await api.addFavoriteRecipe(session.sid, recipe.rec_id)
@@ -300,7 +307,11 @@ async function dodajRecept() {
   if (isLoggedIn) {
     router.push('/dodaj-recept')
   } else {
-    router.push('/login')
+    triggerError('Morate biti ulogovani!')
+    setTimeout(() => {
+      router.push('/login')
+    }, 1000)
+    return
   }
 }
 
@@ -316,6 +327,30 @@ onMounted(async () => {
     markFavoriteRecipes()
   }
 })
+
+function goToFavorites() {
+  if (!isLoggedIn) {
+    triggerError('Morate biti ulogovani!')
+    setTimeout(() => {
+      router.push('/login')
+    }, 1000)
+    return
+  } else {
+    router.push('/vasa-omiljena-jela')
+  }
+}
+
+function goToAddRecipe() {
+  if (!isLoggedIn) {
+    triggerError('Morate biti ulogovani!')
+    setTimeout(() => {
+      router.push('/login')
+    }, 1000)
+    return
+  } else {
+    router.push('/dodaj-recept')
+  }
+}
 
 const slider = ref(null)
 
@@ -384,7 +419,18 @@ function triggerSuccess(msg) {
   showSuccess.value = true
   setTimeout(() => {
     showSuccess.value = false
-  }, 4000) // 2 sekunde prikaz
+  }, 1000) // 2 sekunde prikaz
+}
+
+const errorMessage = ref('') // poruka za zeleni popup
+const showError = ref(false) // da li prikazati popup
+
+function triggerError(msg) {
+  errorMessage.value = msg
+  showError.value = true
+  setTimeout(() => {
+    showError.value = false
+  }, 1000) // 2 sekunde prikaz
 }
 </script>
 
@@ -751,7 +797,6 @@ a {
 .tip2 p {
   font-size: 30px;
   color: black;
-  font-weight: bold;
 }
 
 .tip img {
@@ -1002,9 +1047,42 @@ a {
 
 .success-popup {
   position: fixed;
-  top: 20px;
+  top: 90px;
   right: 20px;
   background-color: #2e794d; /* zeleno */
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  font-weight: bold;
+  z-index: 2000;
+  animation:
+    slideIn 0.3s ease,
+    fadeOut 0.3s ease 1.7s forwards;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
+}
+
+.error-popup {
+  position: fixed;
+  top: 90px;
+  right: 20px;
+  background-color: #8f1c0d;
   color: white;
   padding: 12px 20px;
   border-radius: 8px;

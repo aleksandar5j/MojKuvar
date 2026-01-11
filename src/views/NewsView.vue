@@ -79,6 +79,14 @@
       </div>
     </section>
   </div>
+
+  <div v-if="showSuccess" class="success-popup">
+    {{ successMessage }}
+  </div>
+
+  <div v-if="showError" class="error-popup">
+    {{ errorMessage }}
+  </div>
 </template>
 
 <script setup>
@@ -121,15 +129,20 @@ function markFavoriteRecipes() {
 
 async function toggleFavorite(food) {
   if (!isLoggedIn) {
-    router.push('/login')
+    triggerError('Morate biti ulogovani!')
+    setTimeout(() => {
+      router.push('/login')
+    }, 1000)
     return
   }
   try {
     if (!food.isFavorite) {
       const res = await api.addFavoriteRecipe(session.sid, food.rec_id)
+      triggerSuccess('Uspesno si dodao recept u favorite ✅')
       console.log(res.data)
     } else {
       const res = await api.deleteFavoriteRecipe(session.sid, food.rec_id)
+      triggerSuccess('Uspesno si uklonio recept iz favorita ✅')
       console.log(res.data)
     }
     await getUserFavorites()
@@ -144,6 +157,28 @@ onMounted(async () => {
   await getUserFavorites()
   markFavoriteRecipes()
 })
+
+const successMessage = ref('') // poruka za zeleni popup
+const showSuccess = ref(false) // da li prikazati popup
+
+function triggerSuccess(msg) {
+  successMessage.value = msg
+  showSuccess.value = true
+  setTimeout(() => {
+    showSuccess.value = false
+  }, 1000) // 2 sekunde prikaz
+}
+
+const errorMessage = ref('') // poruka za zeleni popup
+const showError = ref(false) // da li prikazati popup
+
+function triggerError(msg) {
+  errorMessage.value = msg
+  showError.value = true
+  setTimeout(() => {
+    showError.value = false
+  }, 1000) // 2 sekunde prikaz
+}
 </script>
 
 <style scoped>
@@ -585,6 +620,72 @@ onMounted(async () => {
 
   .food-card.featured {
     grid-column: span 1;
+  }
+}
+
+.success-popup {
+  position: fixed;
+  top: 90px;
+  right: 20px;
+  background-color: #2e794d; /* zeleno */
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  font-weight: bold;
+  z-index: 2000;
+  animation:
+    slideIn 0.3s ease,
+    fadeOut 0.3s ease 1.7s forwards;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
+}
+
+.error-popup {
+  position: fixed;
+  top: 90px;
+  right: 20px;
+  background-color: #8f1c0d;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  font-weight: bold;
+  z-index: 2000;
+  animation:
+    slideIn 0.3s ease,
+    fadeOut 0.3s ease 1.7s forwards;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
   }
 }
 </style>
