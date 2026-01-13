@@ -1,7 +1,9 @@
 import axios from 'axios'
+const baseURL = import.meta.env.VITE_API_BASE_URL
+console.log(baseURL)
 
 const instance = axios.create({
-  baseURL: 'http://565q123.e2.mars-hosting.com/api',
+  baseURL,
 })
 
 export default instance
