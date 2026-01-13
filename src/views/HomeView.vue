@@ -480,7 +480,7 @@ function triggerError(msg) {
 
   width: fit-content;
   padding: 30px;
-  margin: 100px auto 0;
+  margin: 80px auto 0;
 
   display: flex;
   flex-direction: column;
