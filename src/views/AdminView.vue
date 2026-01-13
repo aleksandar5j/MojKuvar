@@ -41,10 +41,16 @@
           <h2>{{ activeTitle }}</h2>
           <button class="close" @click="closeModal">✕</button>
         </div>
-        <h2><strong style="color: red; padding-left: 20px">✖ - </strong>Direktno brisanje</h2>
-        <h2><strong style="color: black; padding-left: 20px">✎ - </strong>Direktna izmena</h2>
+
         <div class="modal-content">
           <div v-if="activeTable === 'recipes'" class="cards-container">
+            <h2>
+              <strong style="color: red">✖ - </strong>Direktno brisanje <br /><strong
+                style="color: black"
+                >✎ - </strong
+              >Direktna izmena
+            </h2>
+            <h2></h2>
             <!-- KARTICE RECEPATA -->
             <div v-for="rec in recipes" :key="rec.rec_id" class="recipe-card">
               <button class="card-delete-btnn" @click="deleteRecipe(rec.rec_id)">✖</button>
@@ -103,6 +109,7 @@
           </div>
 
           <div v-if="activeTable === 'categories'" class="cards-container-wrapper">
+            <h2><strong style="color: red">✖ - </strong>Direktno brisanje</h2>
             <!-- Dugme za otvaranje popup-a -->
             <div class="add-category-wrapper">
               <button class="add-btn" @click="showAddPopup = true">+ Dodaj kategoriju</button>
@@ -141,6 +148,7 @@
           </div>
 
           <div v-if="activeTable === 'ingredients'" class="cards-container-wrapper">
+            <h2><strong style="color: red">✖ - </strong>Direktno brisanje</h2>
             <div class="add-ingredient-wrapper">
               <button class="add-btn" @click="showAddPopup = true">➕ Dodaj sastojak</button>
             </div>
@@ -174,6 +182,7 @@
           </div>
 
           <div v-if="activeTable === 'comments'" class="cards-comment-wrapper">
+            <h2><strong style="color: red">✖ - </strong>Direktno brisanje</h2>
             <!-- Tabela komentara -->
             <div class="comments-table-wrapper">
               <table class="comments-table">
@@ -202,6 +211,7 @@
           </div>
 
           <div v-if="activeTable === 'users'" class="cards-users-wrapper">
+            <h2><strong style="color: red">✖ - </strong>Direktno brisanje</h2>
             <div class="users-table-wrapper">
               <table class="users-table">
                 <thead>

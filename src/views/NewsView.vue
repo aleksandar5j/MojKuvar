@@ -66,6 +66,7 @@
               class="fav-btn"
               :class="{ active: food.isFavorite }"
               @click="toggleFavorite(food)"
+              v-if="isLoggedIn"
             >
               ❤
             </button>

@@ -114,7 +114,7 @@ header {
 }
 
 .logo {
-  height: 80px;
+  height: 150px;
   width: auto;
   padding-top: 5px;
 }

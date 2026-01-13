@@ -66,6 +66,7 @@
         :class="{ active: recipe.isFavorite }"
         @click.stop.prevent="toggleFavorite(recipe)"
         title="Dodaj u omiljene"
+        v-if="isLoggedIn"
       >
         ❤
       </button>
@@ -105,7 +106,7 @@
   </div>
 
   <!-- OMILJENA JELA -->
-  <h1 class="section-title">OMILJENA JELA</h1>
+  <h1 class="section-title">OMILJENA JELA NAŠIH KORISNIKA</h1>
   <div class="slider-container">
     <button class="arrow left" @click="scrollLeft">‹</button>
     <div class="slider-wrapper" ref="slider">
@@ -320,10 +321,10 @@ onMounted(async () => {
   await getIngredients()
   await getRecipes()
 
-  await getPopularRecipes() // 🔥 popularno (slider)
+  await getPopularRecipes()
 
   if (isLoggedIn) {
-    await getUserFavorites() // ❤️ user
+    await getUserFavorites()
     markFavoriteRecipes()
   }
 })
@@ -384,7 +385,6 @@ function searchByName() {
   scrollToRecipes()
 }
 
-// Kad se promeni kategorija
 function onCategoryChange() {
   imeRecepta.value = ''
   selectedIngredient.value = ''
@@ -392,7 +392,6 @@ function onCategoryChange() {
   scrollToRecipes()
 }
 
-// Kad se promeni sastojak
 function onIngredientChange() {
   imeRecepta.value = ''
   selectedCategory.value = ''
@@ -411,26 +410,26 @@ const loadMoreRecipes = () => {
   visibleCount.value += STEP
 }
 
-const successMessage = ref('') // poruka za zeleni popup
-const showSuccess = ref(false) // da li prikazati popup
+const successMessage = ref('')
+const showSuccess = ref(false)
 
 function triggerSuccess(msg) {
   successMessage.value = msg
   showSuccess.value = true
   setTimeout(() => {
     showSuccess.value = false
-  }, 1000) // 2 sekunde prikaz
+  }, 1000)
 }
 
-const errorMessage = ref('') // poruka za zeleni popup
-const showError = ref(false) // da li prikazati popup
+const errorMessage = ref('')
+const showError = ref(false)
 
 function triggerError(msg) {
   errorMessage.value = msg
   showError.value = true
   setTimeout(() => {
     showError.value = false
-  }, 1000) // 2 sekunde prikaz
+  }, 1000)
 }
 </script>
 
@@ -446,7 +445,6 @@ function triggerError(msg) {
   background-position: center;
 }
 
-/* BLUR SAMO NA DONJEM DELU */
 .hero::after {
   content: '';
   position: absolute;
@@ -460,7 +458,6 @@ function triggerError(msg) {
   transform: scale(1.1);
   z-index: 1;
 
-  /* VIDLJIVO SAMO DOLE */
   -webkit-mask-image: linear-gradient(
     to top,
     rgba(0, 0, 0, 1) 0%,
@@ -480,15 +477,39 @@ function triggerError(msg) {
 .content {
   position: relative;
   z-index: 2;
-  color: rgb(255, 255, 255);
-  width: 100%;
-  height: 100%;
+
+  width: fit-content;
+  padding: 30px;
+  margin: 100px auto 0;
+
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: 18px;
   align-items: center;
   text-align: center;
-  padding-top: 70px;
+
+  color: #fff;
+}
+
+.content::before {
+  content: '';
+  position: absolute;
+  inset: -20px;
+
+  background: rgba(0, 0, 0, 0.02);
+  backdrop-filter: blur(10px);
+
+  mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
+
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 18%,
+    black 40%,
+    transparent 100%
+  );
+
+  z-index: -1;
 }
 
 .row {
