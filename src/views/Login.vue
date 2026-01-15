@@ -229,9 +229,8 @@ button:hover {
 
 /* LOGO */
 .logo {
-  width: 100px;
-  height: 100px;
-  margin-bottom: 20px;
+  width: 150px;
+  height: 150px;
 }
 
 /* TEKST */

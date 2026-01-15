@@ -46,7 +46,7 @@
       </div>
     </section>
 
-    <h2 class="section-title" style="font-size: 60px">Najnovija jela</h2>
+    <h2 class="section-title" style="font-size: 60px">NAJNOVIJA JELA</h2>
     <section class="latest-section">
       <div class="latest-grid">
         <div
@@ -466,7 +466,7 @@ function triggerError(msg) {
 
 .section-title {
   font-size: 28px;
-  padding-left: 260px;
+  text-align: center;
   color: #743f3f;
   font-weight: bold;
   margin-top: 100px;

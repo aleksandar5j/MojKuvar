@@ -373,7 +373,7 @@ const recipesWrapper = ref(null)
 
 function scrollToRecipes() {
   if (recipesWrapper.value) {
-    const y = recipesWrapper.value.getBoundingClientRect().top + window.scrollY - 300 // 100px gore
+    const y = recipesWrapper.value.getBoundingClientRect().top + window.scrollY - 200 // 100px gore
     window.scrollTo({ top: y, behavior: 'smooth' })
   }
 }
@@ -484,7 +484,7 @@ function triggerError(msg) {
 
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 10px;
   align-items: center;
   text-align: center;
 
@@ -649,7 +649,7 @@ function triggerError(msg) {
   margin-top: 100px;
   color: #743f3f;
   font-weight: bold;
-  margin-left: 310px;
+  text-align: center;
 }
 
 .section-title::after {
@@ -701,12 +701,12 @@ function triggerError(msg) {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(116, 63, 63, 0.06); /* #743f3f sa 50% providnosti */
+  background-color: rgba(116, 63, 63, 0.06);
   border-radius: 50px;
   margin: 30px;
-  max-width: 1300px;
+  max-width: 1100px;
   margin: auto;
-  padding: 30px;
+  padding: 30px 60px;
 }
 
 .arrow {
@@ -749,14 +749,14 @@ function triggerError(msg) {
   gap: 25px;
   padding: 10px;
   flex-wrap: nowrap;
-  align-items: flex-start; /* ovo je ključno */
+  align-items: flex-start;
 }
 
 .main-wrapper2 .rec-card {
-  width: 380px;
-  height: 260px; /* ista visina kao grid */
+  width: 360px;
+  height: 260px;
   flex-shrink: 0;
-  display: block; /* osigurava da img height:100% radi */
+  display: block;
 }
 
 .main-wrapper2 .rec-card img {
@@ -776,9 +776,9 @@ a {
 .tips {
   display: flex;
   flex-direction: row;
-  max-width: 1300px;
+  max-width: 1100px;
   margin: auto;
-  gap: 15px;
+  gap: 25px;
   justify-content: center;
   background-color: rgba(116, 63, 63, 0.06);
   margin-top: 20px;
@@ -786,7 +786,8 @@ a {
   border-radius: 50px;
 }
 
-.tip {
+.tip,
+.tip2 {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -798,17 +799,12 @@ a {
 }
 
 .tip2 {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
+  max-width: 1100px;
   margin: auto;
-  align-items: center;
-  background-color: rgba(116, 63, 63, 0.06);
-  border-radius: 50px;
   padding: 20px;
-  gap: 20px;
-  max-width: 1300px;
   margin-top: 100px;
+  gap: 20px;
+  border-radius: 50px;
 }
 
 .tip2 img {
@@ -816,7 +812,8 @@ a {
 }
 
 .tip2 p {
-  font-size: 30px;
+  font-size: 25px;
+  margin-left:;
   color: black;
 }
 
@@ -826,13 +823,13 @@ a {
 }
 
 .tip p {
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  font-size: 17px;
+  font-weight: bold;
+  font-size: 12px;
   color: black;
 }
 
 .recipes-wrapper {
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 5px;
   display: grid;
@@ -1038,7 +1035,7 @@ a {
 }
 
 .footer-col img {
-  height: 80px;
+  height: 120px;
 }
 
 .footer-col a {

@@ -116,7 +116,8 @@ async function handleRegister() {
 .register-layout {
   width: 100%;
   max-width: 1000px;
-  min-height: 520px;
+  min-height: 510px;
+  margin-top: 60px;
   display: flex;
   background: #fff;
   border-radius: 28px;
@@ -154,9 +155,8 @@ async function handleRegister() {
 }
 
 .overlay .logo {
-  width: 100px;
-  height: 100px;
-  margin-bottom: 20px;
+  width: 150px;
+  height: 150px;
 }
 
 .overlay h2 {
