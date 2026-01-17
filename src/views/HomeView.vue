@@ -813,7 +813,6 @@ a {
 
 .tip2 p {
   font-size: 25px;
-  margin-left:;
   color: black;
 }
 
