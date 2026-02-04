@@ -1,7 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="news-page">
-    <!-- HERO -->
     <section class="hero">
       <div class="hero-overlay">
         <h1>Sreća se pravi kod kuće!</h1>
@@ -12,8 +11,7 @@
       </div>
     </section>
 
-    <!-- CTA / PROMO -->
-    <section class="cta">
+    <section class="cta" v-if="!isLoggedIn">
       <div class="cta-img"></div>
 
       <div class="cta-content">
@@ -49,10 +47,11 @@
     <h2 class="section-title" style="font-size: 60px">NAJNOVIJA JELA</h2>
     <section class="latest-section">
       <div class="latest-grid">
-        <div
+        <RouterLink
           class="food-card"
           v-for="(food, index) in latestRecipes"
           :key="food.rec_id"
+          :to="{ name: 'detalji-recepta', params: { id: food.rec_id } }"
           :class="{
             featured: index === 0,
             'side-top': index === 1,
@@ -76,7 +75,7 @@
 
             <div class="overlay"></div>
           </div>
-        </div>
+        </RouterLink>
       </div>
     </section>
   </div>
@@ -159,26 +158,26 @@ onMounted(async () => {
   markFavoriteRecipes()
 })
 
-const successMessage = ref('') // poruka za zeleni popup
-const showSuccess = ref(false) // da li prikazati popup
+const successMessage = ref('')
+const showSuccess = ref(false)
 
 function triggerSuccess(msg) {
   successMessage.value = msg
   showSuccess.value = true
   setTimeout(() => {
     showSuccess.value = false
-  }, 1000) // 2 sekunde prikaz
+  }, 1000)
 }
 
-const errorMessage = ref('') // poruka za zeleni popup
-const showError = ref(false) // da li prikazati popup
+const errorMessage = ref('')
+const showError = ref(false)
 
 function triggerError(msg) {
   errorMessage.value = msg
   showError.value = true
   setTimeout(() => {
     showError.value = false
-  }, 1000) // 2 sekunde prikaz
+  }, 1000)
 }
 </script>
 
@@ -186,10 +185,9 @@ function triggerError(msg) {
 .news-page {
   margin-top: 76px;
   padding: 0 40px 60px;
-  background-color: rgba(116, 63, 63, 0.2); /* #743f3f sa 50% providnosti */
+  background-color: rgba(116, 63, 63, 0.1);
 }
 
-/* HERO */
 .hero {
   position: relative;
   height: 420px;
@@ -199,7 +197,6 @@ function triggerError(msg) {
   margin-bottom: 100px;
 }
 
-/* BLUR LAYER */
 .hero::after {
   content: '';
   position: absolute;
@@ -225,11 +222,10 @@ function triggerError(msg) {
   );
 }
 
-/* TEKST I OVERLAY IZNAD BLURA */
 .hero-overlay {
   position: absolute;
   inset: 0;
-  z-index: 2; /* ⬅ iznad blura */
+  z-index: 2;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -249,7 +245,6 @@ function triggerError(msg) {
   font-size: 18px;
 }
 
-/* CTA */
 .cta {
   max-width: 1200px;
   min-height: 420px;
@@ -261,13 +256,11 @@ function triggerError(msg) {
   background: #743f3f;
 }
 
-/* LEVO – SLIKA */
 .cta-img {
-  background: url('src/components/cooking.jpeg') center / cover no-repeat;
+  background: url('/public/images/cooking.jpeg') center / cover no-repeat;
   min-height: 260px;
 }
 
-/* DESNO – SADRŽAJ */
 .cta-content {
   padding: 36px;
   display: flex;
@@ -314,7 +307,7 @@ function triggerError(msg) {
 }
 
 .cta-img2 {
-  background: url('src/components/asaa.jpg') center / cover no-repeat;
+  background: url('/public/images/asaa.jpg') center / cover no-repeat;
   min-height: 260px;
 }
 
@@ -366,7 +359,7 @@ function triggerError(msg) {
 
 /* LEVO – SLIKA */
 .cta-img3 {
-  background: url('src/components/favorite-meal.jpg') center / cover no-repeat;
+  background: url('/public/images/favorite-meal.jpg') center / cover no-repeat;
   min-height: 260px;
 }
 
@@ -687,6 +680,139 @@ function triggerError(msg) {
 @keyframes fadeOut {
   to {
     opacity: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .news-page {
+    padding: 0 16px 40px;
+    margin-top: 60px;
+  }
+
+  /* HERO */
+  .hero {
+    height: 320px;
+    border-radius: 16px;
+    margin-bottom: 60px;
+  }
+
+  .hero-overlay {
+    padding: 20px;
+  }
+
+  .hero h1 {
+    font-size: 34px;
+    line-height: 1.2;
+  }
+
+  .hero p {
+    font-size: 15px;
+    max-width: 100%;
+  }
+
+  /* CTA BLOKOVI */
+  .cta,
+  .cta2,
+  .cta3 {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    border-radius: 18px;
+  }
+
+  .cta-img,
+  .cta-img2,
+  .cta-img3 {
+    min-height: 200px;
+  }
+
+  .cta-content,
+  .cta-content2,
+  .cta-content3 {
+    padding: 22px;
+    text-align: center;
+    align-items: center;
+  }
+
+  .cta-content h2,
+  .cta-content2 h2,
+  .cta-content3 h2 {
+    font-size: 26px;
+  }
+
+  .cta-content p,
+  .cta-content2 p,
+  .cta-content3 p {
+    font-size: 14px;
+  }
+
+  .cta-btn,
+  .cta-btn2,
+  .cta-btn3 {
+    align-self: center;
+    width: 100%;
+    max-width: 260px;
+    padding: 14px 0;
+    border-radius: 50px;
+    font-size: 16px;
+  }
+
+  /* NASLOV SEKCIJE */
+  .section-title {
+    font-size: 32px !important;
+    margin-top: 60px;
+    margin-bottom: 20px;
+  }
+
+  /* NAJNOVIJA JELA GRID */
+  .latest-section {
+    padding: 0;
+  }
+
+  .latest-grid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: 260px;
+    gap: 18px;
+  }
+
+  .food-card {
+    border-radius: 20px;
+  }
+
+  .food-card.featured {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+
+  .food-card .food-tag {
+    font-size: 12px;
+    padding: 5px 12px;
+  }
+
+  .food-card .food-desc {
+    font-size: 14px;
+    bottom: 42px;
+    left: 14px;
+    right: 14px;
+  }
+
+  /* SRCE */
+  .fav-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 26px;
+    top: 12px;
+    right: 12px;
+  }
+
+  /* POPUP PORUKE */
+  .success-popup,
+  .error-popup {
+    top: auto;
+    bottom: 20px;
+    right: 50%;
+    transform: translateX(50%);
+    border-radius: 16px;
+    font-size: 14px;
   }
 }
 </style>

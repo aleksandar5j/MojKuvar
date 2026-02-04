@@ -302,4 +302,85 @@ a {
     opacity: 0;
   }
 }
+
+@media (max-width: 480px) {
+  .favorites-page {
+    padding-top: 90px; /* manje od headera */
+  }
+
+  h1 {
+    font-size: 26px !important;
+    padding-top: 10px !important;
+    margin-bottom: 10px;
+  }
+
+  .main-wrapper {
+    grid-template-columns: 1fr; /* jedna kolona */
+    gap: 20px;
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .recipe-card {
+    max-width: 100%;
+    border-radius: 18px;
+  }
+
+  .recipe-card img {
+    height: 210px; /* veća slika */
+  }
+
+  .recipe-card h2 {
+    font-size: 18px;
+    margin: 12px 10px 6px;
+  }
+
+  .recipe-card .difficulty {
+    font-size: 15px;
+    margin-bottom: 14px;
+  }
+
+  .fav-btn {
+    width: 46px;
+    height: 46px;
+    font-size: 26px;
+    top: 12px;
+    right: 12px;
+  }
+
+  .nofav img {
+    height: 200px;
+  }
+
+  .nofav h3 {
+    font-size: 22px !important;
+    text-align: center;
+  }
+
+  .notlogged {
+    margin-top: 180px;
+    padding: 0 20px;
+    text-align: center;
+  }
+
+  .notlogged p {
+    font-size: 22px !important;
+  }
+
+  .notlogged button {
+    width: 100%;
+    max-width: 280px;
+    font-size: 18px;
+    padding: 12px 0;
+  }
+
+  .success-popup {
+    top: auto;
+    bottom: 20px;
+    right: 50%;
+    transform: translateX(50%);
+    border-radius: 14px;
+    font-size: 15px;
+  }
+}
 </style>

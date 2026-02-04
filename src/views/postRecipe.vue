@@ -20,7 +20,7 @@
 
       <div class="form-group">
         <label>Slika:</label>
-        <input type="file" @change="onFileChange" />
+        <input type="file" @change="onFileChange" class="imageUpload" />
       </div>
 
       <div class="form-group">
@@ -40,7 +40,6 @@
 
       <h3>Sastojci</h3>
 
-      <!-- Dodavanje postojećeg sastojka -->
       <div class="ingredient-row">
         <select v-model="selectedIngredient">
           <option disabled value="">Izaberi sastojak...</option>
@@ -270,18 +269,22 @@ function showToast(msg, type = 'error') {
   font-size: 13px;
   font-weight: 600;
   color: #743f3f;
-  margin-bottom: 4px;
 }
 
 /* INPUTS – KOMPAKTNI */
-.form-group input,
 .form-group textarea,
 .form-group select {
-  padding: 8px 10px;
-  font-size: 13px;
+  padding: 11px 12px;
+  padding-bottom: 14px;
+  font-size: 12px;
   border-radius: 12px;
   border: 1px solid #d2c0c0;
   transition: 0.2s;
+}
+
+.form-group input {
+  padding: 12px 10px;
+  padding-bottom: 13px;
 }
 
 .form-group textarea {
@@ -518,6 +521,121 @@ textarea {
   to {
     transform: translateX(0);
     opacity: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  /* HERO */
+  .hero {
+    margin-top: 65px;
+    padding: 16px;
+    align-items: flex-start;
+  }
+
+  /* WRAPPER */
+  .add-recipe-wrapper {
+    padding: 22px 18px;
+    border-radius: 18px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* TITLE */
+  .form-title {
+    font-size: 26px;
+    margin-bottom: 6px;
+  }
+
+  /* FORM GROUP */
+  .form-group {
+    gap: 4px;
+  }
+
+  .form-group label {
+    font-size: 12px;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 15px;
+    padding: 12px 14px;
+    border-radius: 14px;
+  }
+
+  textarea {
+    min-height: 120px;
+  }
+
+  /* FILE INPUT */
+  .form-group input[type='file'] {
+    padding: 12px;
+    border-radius: 14px;
+    font-size: 14px;
+  }
+
+  /* SASTOJCI NASLOV */
+  .add-recipe-wrapper h3 {
+    font-size: 18px;
+    margin-top: 12px;
+  }
+
+  /* INGREDIENT ROW */
+  .ingredient-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .ingredient-row select,
+  .ingredient-row input {
+    width: 100%;
+    height: 46px;
+    font-size: 15px;
+  }
+
+  .btn-add {
+    width: 100%;
+    height: 46px;
+    border-radius: 50px;
+    font-size: 15px;
+  }
+
+  /* INGREDIENT TAGS */
+  .ingredient-list {
+    gap: 10px;
+  }
+
+  .ingredient-item {
+    font-size: 14px;
+    padding: 10px 14px;
+    border-radius: 30px;
+  }
+
+  /* SUBMIT */
+  .submit-btn {
+    margin-top: 16px;
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 16px 0;
+    font-size: 16px;
+    border-radius: 50px;
+  }
+
+  /* TOAST */
+  .toast {
+    top: auto;
+    bottom: 20px;
+    right: 50%;
+    transform: translateX(50%);
+    min-width: auto;
+    width: calc(100% - 40px);
+    border-radius: 18px;
+    font-size: 14px;
   }
 }
 </style>

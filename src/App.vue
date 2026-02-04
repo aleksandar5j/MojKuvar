@@ -1,5 +1,6 @@
 <template>
   <header>
+    <button class="hamburger" @click="mobileOpen = !mobileOpen">☰</button>
     <RouterLink to="/"><img alt="Logo" class="logo" :src="logo" /></RouterLink>
 
     <div class="center-nav">
@@ -40,6 +41,46 @@
     </div>
   </header>
 
+  <div class="mobile-menu" v-if="mobileOpen">
+    <RouterLink to="/" @click="closeMobile">Početna</RouterLink>
+    <RouterLink to="/vasa-omiljena-jela" @click="closeMobile">Moji favoriti</RouterLink>
+    <RouterLink to="/o-nama" @click="closeMobile">O nama</RouterLink>
+    <RouterLink to="/novosti" @click="closeMobile">Novosti</RouterLink>
+
+    <hr />
+
+    <template v-if="!isLoggedIn">
+      <RouterLink to="/register" @click="closeMobile">Registruj se</RouterLink>
+      <RouterLink to="/login" @click="closeMobile">Uloguj se</RouterLink>
+    </template>
+
+    <template v-else>
+      <button @click="goToAddRecipeMobile">➕ Dodaj recept</button>
+      <button
+        @click="
+          () => {
+            router.push('/moji-recepti')
+            closeMobile()
+          }
+        "
+      >
+        📖 Moji recepti
+      </button>
+      <button
+        v-if="session.isAdmin"
+        @click="
+          () => {
+            router.push('/admin-komande')
+            closeMobile()
+          }
+        "
+      >
+        🛠 Admin panel
+      </button>
+      <button class="logout" @click="logoutUser">🚪 Odjavi se</button>
+    </template>
+  </div>
+
   <main>
     <RouterView />
   </main>
@@ -70,6 +111,17 @@ const menuOpen = ref(false)
 
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value
+}
+
+const mobileOpen = ref(false)
+
+const closeMobile = () => {
+  mobileOpen.value = false
+}
+
+const goToAddRecipeMobile = () => {
+  router.push('/dodaj-recept')
+  closeMobile()
 }
 </script>
 
@@ -108,15 +160,16 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 2rem;
+  padding: 0 1.5rem;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }
 
 .logo {
-  height: 150px;
+  height: 90px;
+  max-height: 100%;
   width: auto;
-  padding-top: 5px;
+  display: block;
 }
 
 .center-nav {
@@ -223,5 +276,93 @@ header {
 
 .dropdown-btn:hover {
   background-color: #f2f2f2;
+}
+
+.hamburger {
+  display: none;
+  font-size: 30px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 75px;
+  left: 0;
+  width: 100%;
+  background: #743f3f;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 15px;
+  z-index: 999;
+  animation: slideDown 0.3s ease;
+}
+
+.mobile-menu a,
+.mobile-menu button {
+  color: white;
+  font-size: 18px;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.mobile-menu a:hover,
+.mobile-menu button:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.mobile-menu hr {
+  border: none;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.mobile-menu .logout {
+  background: #a0643c;
+  font-weight: bold;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 900px) {
+  .center-nav,
+  .right-nav {
+    display: none;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .logo {
+    height: 90px;
+  }
+}
+
+@media (max-width: 900px) {
+  header {
+    height: 65px;
+    padding: 0 1rem;
+  }
+
+  .logo {
+    height: 55px;
+  }
 }
 </style>

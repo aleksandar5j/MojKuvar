@@ -130,7 +130,7 @@
     <button class="arrow right" @click="scrollRight">›</button>
   </div>
 
-  <div class="tip2">
+  <div class="tip2" v-if="!isLoggedIn">
     <img src="/src/components/avatar.png" />
     <p>Registrujte se i dodajte vaš recept, kao i da sačuvate vaše omiljene recepte.</p>
   </div>
@@ -373,7 +373,7 @@ const recipesWrapper = ref(null)
 
 function scrollToRecipes() {
   if (recipesWrapper.value) {
-    const y = recipesWrapper.value.getBoundingClientRect().top + window.scrollY - 200 // 100px gore
+    const y = recipesWrapper.value.getBoundingClientRect().top + window.scrollY - 200
     window.scrollTo({ top: y, behavior: 'smooth' })
   }
 }
@@ -644,7 +644,7 @@ function triggerError(msg) {
 
 .section-title {
   position: relative;
-  font-size: 55px;
+  font-size: 35px;
   letter-spacing: 1px;
   margin-top: 100px;
   color: #743f3f;
@@ -1125,6 +1125,122 @@ a {
 @keyframes fadeOut {
   to {
     opacity: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    height: auto;
+    padding-bottom: 40px;
+  }
+
+  .content {
+    width: 100%;
+    padding: 20px;
+    margin-top: 60px;
+  }
+
+  #naslov {
+    font-size: 26px;
+    margin-bottom: 25px;
+  }
+
+  .row {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .row label {
+    font-size: 18px;
+  }
+
+  .content input {
+    width: 100%;
+    height: 44px;
+    font-size: 15px;
+  }
+
+  #search {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  .select {
+    width: 100%;
+    height: 44px;
+  }
+
+  .newRecipe {
+    margin-top: 30px;
+  }
+
+  .newRecipe label {
+    font-size: 18px;
+  }
+
+  .newRecipe button {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .recipes-wrapper {
+    grid-template-columns: 1fr;
+    grid-auto-rows: 220px;
+    padding: 10px;
+  }
+
+  .rec-card.big {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+
+  .rec-card h2 {
+    font-size: 16px;
+    bottom: 16px;
+  }
+
+  .rec-card .badge {
+    font-size: 12px;
+    padding: 5px 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .tips {
+    flex-direction: column;
+    margin: 20px;
+    padding-right: 40px;
+    border-radius: 30px;
+  }
+
+  .tip {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 15px;
+  }
+
+  .tip p {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .footer-col {
+    max-width: 100%;
+  }
+
+  .footer-col img {
+    height: 90px;
   }
 }
 </style>
