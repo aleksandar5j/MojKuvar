@@ -525,14 +525,12 @@ textarea {
 }
 
 @media (max-width: 600px) {
-  /* HERO */
   .hero {
     margin-top: 65px;
     padding: 16px;
     align-items: flex-start;
   }
 
-  /* WRAPPER */
   .add-recipe-wrapper {
     padding: 22px 18px;
     border-radius: 18px;
@@ -541,14 +539,11 @@ textarea {
     flex-direction: column;
     gap: 16px;
   }
-
-  /* TITLE */
   .form-title {
     font-size: 26px;
     margin-bottom: 6px;
   }
 
-  /* FORM GROUP */
   .form-group {
     gap: 4px;
   }
@@ -569,20 +564,17 @@ textarea {
     min-height: 120px;
   }
 
-  /* FILE INPUT */
   .form-group input[type='file'] {
     padding: 12px;
     border-radius: 14px;
     font-size: 14px;
   }
 
-  /* SASTOJCI NASLOV */
   .add-recipe-wrapper h3 {
     font-size: 18px;
     margin-top: 12px;
   }
 
-  /* INGREDIENT ROW */
   .ingredient-row {
     flex-direction: column;
     align-items: stretch;
@@ -603,7 +595,6 @@ textarea {
     font-size: 15px;
   }
 
-  /* INGREDIENT TAGS */
   .ingredient-list {
     gap: 10px;
   }
@@ -614,7 +605,6 @@ textarea {
     border-radius: 30px;
   }
 
-  /* SUBMIT */
   .submit-btn {
     margin-top: 16px;
   }
@@ -626,7 +616,6 @@ textarea {
     border-radius: 50px;
   }
 
-  /* TOAST */
   .toast {
     top: auto;
     bottom: 20px;

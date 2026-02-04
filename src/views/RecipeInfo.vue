@@ -749,4 +749,181 @@ watch(
   }
 }
 
+@media (max-width: 600px) {
+
+  h1 {
+    font-size: 26px !important;
+    padding-top: 90px !important;
+  }
+
+  .wrapper {
+    padding: 16px;
+  }
+
+  /* CARD */
+  .recipe-card {
+    width: 100%;
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .recipe-title {
+    font-size: 22px;
+    text-align: center;
+  }
+
+  .recipe-image {
+    height: 220px;
+    border-radius: 14px;
+  }
+
+  /* PREP TIME */
+  .prep-time {
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .prep-time img {
+    height: 36px;
+  }
+
+  .prep-time p {
+    font-size: 16px;
+  }
+
+  /* INGREDIENTS */
+  .sub-title {
+    font-size: 20px;
+  }
+
+  .ingredients li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .ing-name {
+    font-size: 15px;
+  }
+
+  .ing-qty {
+    font-size: 14px;
+  }
+
+  /* INSTRUCTIONS */
+  .recipe-inst {
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: left;
+  }
+
+  hr {
+    width: 100% !important;
+  }
+
+  /* COMMENTS */
+  .comments-section {
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .comments-section h2 {
+    font-size: 22px;
+  }
+
+  .add-comment textarea {
+    font-size: 14px;
+    min-height: 100px;
+  }
+
+  .add-comment button {
+    align-self: stretch;
+    padding: 12px 0;
+    font-size: 15px;
+  }
+
+  .comment-card {
+    padding: 14px;
+  }
+
+  .comment-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .comment-user {
+    font-size: 18px;
+  }
+
+  .comment-date {
+    font-size: 11px;
+  }
+
+  .comment-text {
+    font-size: 14px;
+    padding-top: 10px;
+  }
+
+  .comment-delete-btn,
+  .comment-update-btn {
+    font-size: 13px;
+    padding: 6px 12px;
+    margin-top: 6px;
+  }
+
+  /* LOGIN BOX */
+  .login-box {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .login-box button {
+    width: 100%;
+    padding: 10px 0;
+  }
+
+  /* RELATED */
+  .related-section {
+    min-width: auto;
+    padding: 20px;
+  }
+
+  .related-wrapper {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .related-card {
+    width: 100%;
+  }
+
+  .related-image {
+    height: 180px;
+  }
+
+  .related-name {
+    font-size: 18px;
+    padding: 12px 6px;
+  }
+
+  .related-desc {
+    font-size: 13px;
+    margin: 0 16px 12px;
+  }
+
+  /* SUCCESS POPUP */
+  .success-popup {
+    top: auto;
+    bottom: 20px;
+    right: 50%;
+    transform: translateX(50%);
+    width: calc(100% - 40px);
+    text-align: center;
+    border-radius: 14px;
+    font-size: 14px;
+  }
+}
+
 </style>

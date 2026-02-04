@@ -155,7 +155,7 @@ header {
   top: 0;
   left: 0;
   width: 100%;
-  height: 75px;
+  height: 65px;
   background-color: #743f3f;
   display: flex;
   align-items: center;
@@ -166,7 +166,7 @@ header {
 }
 
 .logo {
-  height: 90px;
+  height: 150px;
   max-height: 100%;
   width: auto;
   display: block;
