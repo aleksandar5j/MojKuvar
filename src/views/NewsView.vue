@@ -183,7 +183,7 @@ function triggerError(msg) {
 
 <style scoped>
 .news-page {
-  margin-top: 76px;
+  margin-top: 50px;
   padding: 0 40px 60px;
   background-color: rgba(116, 63, 63, 0.1);
 }

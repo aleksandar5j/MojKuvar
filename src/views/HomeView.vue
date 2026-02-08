@@ -3,7 +3,6 @@
     <div class="content">
       <label id="naslov">Pronadji recept po tvom ukusu ↓</label>
 
-      <!-- INPUT I SEARCH DUGME -->
       <div class="row">
         <input type="text" v-model="imeRecepta" placeholder="Pretraži recept po imenu..." />
         <button @click="searchByName" id="search">Pretraži</button>
@@ -11,7 +10,7 @@
 
       <!-- KATEGORIJA -->
       <div class="row">
-        <label>Kategorija jela</label>
+        <label class="cat">Kategorija jela</label>
         <select class="select" v-model="selectedCategory" @change="onCategoryChange">
           <option value="" style="color: black">Sve kategorije</option>
           <option
@@ -24,10 +23,8 @@
           </option>
         </select>
       </div>
-
-      <!-- SASTOJCI -->
       <div class="row">
-        <label>Po sastojku</label>
+        <label class="sas">Po sastojku</label>
         <select class="select" v-model="selectedIngredient" @change="onIngredientChange">
           <option value="" style="color: black">Svi sastojci</option>
           <option
@@ -43,7 +40,7 @@
 
       <!-- DODAJ NOVI RECEPT -->
       <div class="newRecipe">
-        <label>Dodaj svoj recept →</label>
+        <label class="dodaj">Dodaj svoj recept →</label>
         <button @click="dodajRecept">Dodaj</button>
       </div>
     </div>
@@ -1056,6 +1053,22 @@ a {
   color: #aaa;
 }
 
+#naslov {
+  text-shadow: 1px 1px 1px black;
+}
+
+.cat {
+  text-shadow: 1px 1px 1px black;
+}
+
+.sas {
+  text-shadow: 1px 1px 1px black;
+}
+
+.dodaj {
+  text-shadow: 1px 1px 1px black;
+}
+
 .main-wrapper2 .rec-card {
   width: 380px;
   height: 260px; /* ISTO kao grid-auto-rows */
@@ -1181,8 +1194,22 @@ a {
   }
 
   #naslov {
-    font-size: 26px;
+    font-size: 30px;
     margin-bottom: 25px;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px black;
+  }
+
+  .cat {
+    text-shadow: 1px 1px 1px black;
+  }
+
+  .sas {
+    text-shadow: 1px 1px 1px black;
+  }
+
+  .dodaj {
+    text-shadow: 1px 1px 1px black;
   }
 
   .row {

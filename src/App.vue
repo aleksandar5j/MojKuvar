@@ -1,7 +1,8 @@
 <template>
   <header>
-    <button class="hamburger" @click="mobileOpen = !mobileOpen">☰</button>
     <RouterLink to="/"><img alt="Logo" class="logo" :src="logo" /></RouterLink>
+
+    <button class="hamburger" @click="mobileOpen = !mobileOpen">☰</button>
 
     <div class="center-nav">
       <RouterLink to="/vasa-omiljena-jela">Moji favoriti</RouterLink>
@@ -340,7 +341,7 @@ header {
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 800px) {
   .center-nav,
   .right-nav {
     display: none;
@@ -355,7 +356,7 @@ header {
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 800px) {
   header {
     height: 65px;
     padding: 0 1rem;
