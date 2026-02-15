@@ -23,7 +23,6 @@ onMounted(async () => {
   try {
     const res = await api.verifyEmail(token)
     message.value = res.data.data || 'Email uspešno verifikovan!'
-    // opcionalno: redirect na login nakon par sekundi
     setTimeout(() => router.push('/login'), 3000)
   } catch (err) {
     message.value = err.response?.data?.data || 'Greška pri verifikaciji'

@@ -9,7 +9,6 @@ import postRecipe from '@/views/postRecipe.vue'
 import MyRecipes from '@/views/MyRecipes.vue'
 import NewsView from '@/views/NewsView.vue'
 import AdminView from '@/views/AdminView.vue'
-import VerifyEmail from '@/views/VerifyEmail.vue'
 
 import { useSessionStore } from '@/stores/sessionUser'
 

@@ -37,7 +37,6 @@
       <div class="comments-section">
         <h2>Komentari</h2>
 
-        <!-- Forma za dodavanje komentara -->
         <div v-if="isLoggedIn" class="add-comment">
           <h3 style="color: #743f3f;">Dodaj komentar</h3>
           <textarea v-model="newComment"></textarea>
@@ -50,7 +49,6 @@
           <button @click="router.push('/login')">Uloguj se</button>
         </div>
 
-        <!-- Lista komentara -->
         <div v-if="comments.length === 0" class="no-comments" style="color: #743f3f;">
           Nema komentara za ovaj recept.
         </div>
@@ -244,15 +242,15 @@ async function updateComment() {
   }
 }
 
-const successMessage = ref('') // poruka za zeleni popup
-const showSuccess = ref(false) // da li prikazati popup
+const successMessage = ref('')
+const showSuccess = ref(false)
 
 function triggerSuccess(msg) {
   successMessage.value = msg
   showSuccess.value = true
   setTimeout(() => {
     showSuccess.value = false
-  }, 3000) // 2 sekunde prikaz
+  }, 3000)
 }
 
 
@@ -373,7 +371,7 @@ watch(
 }
 
 .related-card {
-  width: 250px;       /* veće kartice */
+  width: 250px;
   background-color: rgba(83, 12, 12, 0.2);
   border-radius: 12px;
   overflow: hidden;
@@ -611,7 +609,7 @@ watch(
   position: fixed;
   top: 90px;
   right: 20px;
-  background-color: #2e794d; /* zeleno */
+  background-color: #2e794d;
   color: white;
   padding: 12px 20px;
   border-radius: 8px;
@@ -650,7 +648,6 @@ watch(
   z-index: 9999;
 }
 
-/* Popup box */
 .edit-popup {
   background: #fff;
   width: 100%;
@@ -661,7 +658,6 @@ watch(
   animation: popupFadeIn 0.25s ease;
 }
 
-/* Title */
 .edit-popup h3 {
   margin: 0 0 14px;
   font-size: 18px;
@@ -669,7 +665,6 @@ watch(
   color: #222;
 }
 
-/* Textarea */
 .edit-textarea {
   width: 100%;
   resize: none;
@@ -687,7 +682,6 @@ watch(
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.15);
 }
 
-/* Buttons */
 .edit-actions {
   display: flex;
   justify-content: flex-end;
@@ -730,7 +724,6 @@ watch(
   background: #ddd;
 }
 
-/* Animation */
 @keyframes popupFadeIn {
   from {
     opacity: 0;
@@ -742,7 +735,6 @@ watch(
   }
 }
 
-/* Mobile */
 @media (max-width: 480px) {
   .edit-popup {
     margin: 0 14px;
@@ -760,7 +752,6 @@ watch(
     padding: 16px;
   }
 
-  /* CARD */
   .recipe-card {
     width: 100%;
     padding: 18px;
@@ -777,7 +768,6 @@ watch(
     border-radius: 14px;
   }
 
-  /* PREP TIME */
   .prep-time {
     gap: 10px;
     padding: 10px;
@@ -791,7 +781,6 @@ watch(
     font-size: 16px;
   }
 
-  /* INGREDIENTS */
   .sub-title {
     font-size: 20px;
   }
@@ -810,7 +799,6 @@ watch(
     font-size: 14px;
   }
 
-  /* INSTRUCTIONS */
   .recipe-inst {
     font-size: 14px;
     line-height: 1.6;
@@ -821,7 +809,6 @@ watch(
     width: 100% !important;
   }
 
-  /* COMMENTS */
   .comments-section {
     padding: 16px;
     border-radius: 18px;
@@ -872,7 +859,6 @@ watch(
     margin-top: 6px;
   }
 
-  /* LOGIN BOX */
   .login-box {
     flex-direction: column;
     align-items: stretch;
@@ -884,7 +870,6 @@ watch(
     padding: 10px 0;
   }
 
-  /* RELATED */
   .related-section {
     min-width: auto;
     padding: 20px;
@@ -913,7 +898,6 @@ watch(
     margin: 0 16px 12px;
   }
 
-  /* SUCCESS POPUP */
   .success-popup {
     top: auto;
     bottom: 20px;

@@ -51,7 +51,6 @@
               >Direktna izmena
             </h2>
             <h2></h2>
-            <!-- KARTICE RECEPATA -->
             <div v-for="rec in recipes" :key="rec.rec_id" class="recipe-card">
               <button class="card-delete-btnn" @click="deleteRecipe(rec.rec_id)">✖</button>
               <button class="card-edit-btnn" @click="openEditPopup(rec)">✎</button>
@@ -67,7 +66,6 @@
               </div>
             </div>
 
-            <!-- EDIT POPUP -->
             <div v-if="isEditPopupOpen" class="popup-overlay-edit">
               <div class="popup-card-edit">
                 <h3>✎ Izmena recepta</h3>
@@ -110,12 +108,10 @@
 
           <div v-if="activeTable === 'categories'" class="cards-container-wrapper">
             <h2><strong style="color: red">✖ - </strong>Direktno brisanje</h2>
-            <!-- Dugme za otvaranje popup-a -->
             <div class="add-category-wrapper">
               <button class="add-btn" @click="showAddPopup = true">+ Dodaj kategoriju</button>
             </div>
 
-            <!-- Lista kategorija -->
             <div class="cards-container">
               <div v-for="cat in categories" :key="cat.cat_id" class="category-card">
                 <button class="card-delete-btnn" @click="deleteCategory(cat.cat_id)" title="Obriši">
@@ -127,7 +123,6 @@
               </div>
             </div>
 
-            <!-- Popup za dodavanje nove kategorije -->
             <div v-if="showAddPopup" class="popup-overlay">
               <div class="popup-card">
                 <h3>Dodaj novu kategoriju</h3>
@@ -183,7 +178,6 @@
 
           <div v-if="activeTable === 'comments'" class="cards-comment-wrapper">
             <h2><strong style="color: red">✖ - </strong>Direktno brisanje</h2>
-            <!-- Tabela komentara -->
             <div class="comments-table-wrapper">
               <table class="comments-table">
                 <thead>
@@ -275,15 +269,15 @@ const showAddPopup = ref(false)
 const newCategoryName = ref('')
 const isEditPopupOpen = ref(false)
 
-const successMessage = ref('') // poruka za zeleni popup
-const showSuccess = ref(false) // da li prikazati popup
+const successMessage = ref('')
+const showSuccess = ref(false)
 
 function triggerSuccess(msg) {
   successMessage.value = msg
   showSuccess.value = true
   setTimeout(() => {
     showSuccess.value = false
-  }, 2000) // 2 sekunde prikaz
+  }, 2000)
 }
 
 const openModal = (table) => {

@@ -2,7 +2,6 @@
 <template>
   <div class="register-wrapper">
     <div class="register-layout">
-      <!-- LEVA STRANA (SLIKA / ilustracija) -->
       <div class="register-image">
         <div class="overlay">
           <img src="/src/components/logo.png" class="logo" />
@@ -11,7 +10,6 @@
         </div>
       </div>
 
-      <!-- DESNA STRANA (FORMA) -->
       <div class="register-card">
         <h1>Registruj se</h1>
         <p class="subtitle">Kreiraj nalog i dodaj svoj komentar</p>
@@ -55,7 +53,7 @@
 <script setup>
 import { ref } from 'vue'
 import api from '@/api'
-import { useRouter } from 'vue-router' // <--- ovde
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
@@ -91,7 +89,6 @@ async function handleRegister() {
 
     router.push('/login')
 
-    // reset forme
     username.value = ''
     fullname.value = ''
     email.value = ''
@@ -125,7 +122,6 @@ async function handleRegister() {
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.18);
 }
 
-/* LEVA STRANA */
 .register-image {
   flex: 1;
   background-image: url('@/components/backgroundimage.jpeg');
@@ -170,7 +166,6 @@ async function handleRegister() {
   opacity: 0.9;
 }
 
-/* DESNA STRANA (FORMA) */
 .register-card {
   flex: 1;
   padding: 40px;
@@ -252,7 +247,6 @@ button:hover {
   color: #27ae60;
 }
 
-/* RESPONSIVE */
 @media (max-width: 768px) {
   .register-layout {
     flex-direction: column;

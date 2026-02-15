@@ -92,25 +92,25 @@ onMounted(() => {
   }
 })
 
-const successMessage = ref('') // poruka za zeleni popup
-const showSuccess = ref(false) // da li prikazati popup
+const successMessage = ref('')
+const showSuccess = ref(false)
 
 function triggerSuccess(msg) {
   successMessage.value = msg
   showSuccess.value = true
   setTimeout(() => {
     showSuccess.value = false
-  }, 1000) // 2 sekunde prikaz
+  }, 1000)
 }
 </script>
 
 <style scoped>
 .favorites-page {
-  min-height: 100vh; /* zauzima full visinu */
+  min-height: 100vh;
   display: flex;
-  justify-content: center; /* horizontalno centriranje */
-  align-items: flex-start; /* gore ostavlja padding */
-  padding-top: 120px; /* odstojanje od headera */
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 120px;
   background: #f3efef;
 }
 
@@ -124,7 +124,6 @@ function triggerSuccess(msg) {
   align-items: center;
 }
 
-/* GRID WRAPPER */
 .main-wrapper {
   max-width: 1200px;
   width: 100%;
@@ -137,27 +136,24 @@ function triggerSuccess(msg) {
   justify-items: center;
 }
 
-/* GRID ITEM */
 .main {
   display: flex;
   justify-content: center;
 }
 
-/* LINK RESET */
 a {
   display: block;
   text-decoration: none;
   color: inherit;
 }
 
-/* KARTICA */
 .recipe-card {
   position: relative;
   width: 100%;
   max-width: 280px;
   background-color: rgba(255, 255, 255, 0.95);
   border-radius: 20px;
-  overflow: hidden; /* VAŽNO: slika će se uklopiti u radius */
+  overflow: hidden;
 
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
   transition:
@@ -174,14 +170,14 @@ a {
   position: absolute;
   top: 15px;
   right: 15px;
-  width: 40px; /* veće dugme */
+  width: 40px;
   height: 40px;
   border-radius: 50%;
   border: 2px solid #fff;
   border-color: #e53935;
   background: #e53935;
   color: #fff;
-  font-size: 25px; /* veće srce */
+  font-size: 25px;
   cursor: pointer;
   z-index: 5;
 
@@ -195,7 +191,7 @@ a {
 .fav-btn:hover {
   background: #e53935;
   border-color: #e53935;
-  transform: scale(1.1); /* malo veći hover efekat */
+  transform: scale(1.1);
 }
 
 .fav-btn.active {
@@ -204,12 +200,10 @@ a {
   color: #fff;
 }
 
-/* SLIKA */
 .recipe-card img {
   width: 100%;
   height: 190px;
   object-fit: cover;
-  /* ukloni border-bottom */
   border-bottom: none;
 }
 
@@ -218,7 +212,6 @@ a {
   transform: translateY(-8px);
 }
 
-/* NASLOV */
 .recipe-card h2 {
   margin: 14px 12px 6px;
   font-size: 16.5px;
@@ -227,14 +220,12 @@ a {
   line-height: 1.3;
 }
 
-/* TEŽINA PRIPREME */
 .recipe-card .difficulty {
   margin-bottom: 16px;
   font-size: 14px;
   color: #6d6d6d;
 }
 
-/* MOBILE */
 @media (max-width: 768px) {
   .main-wrapper {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -274,7 +265,7 @@ a {
   position: fixed;
   top: 90px;
   right: 20px;
-  background-color: #2e794d; /* zeleno */
+  background-color: #2e794d;
   color: white;
   padding: 12px 20px;
   border-radius: 8px;
@@ -305,7 +296,7 @@ a {
 
 @media (max-width: 480px) {
   .favorites-page {
-    padding-top: 90px; /* manje od headera */
+    padding-top: 90px;
   }
 
   h1 {
@@ -315,7 +306,7 @@ a {
   }
 
   .main-wrapper {
-    grid-template-columns: 1fr; /* jedna kolona */
+    grid-template-columns: 1fr;
     gap: 20px;
     padding: 16px;
     border-radius: 20px;
@@ -327,7 +318,7 @@ a {
   }
 
   .recipe-card img {
-    height: 210px; /* veća slika */
+    height: 210px;
   }
 
   .recipe-card h2 {

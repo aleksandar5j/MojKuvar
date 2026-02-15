@@ -19,11 +19,9 @@
       <template v-else>
         <button class="addforlogged" @click="router.push('/dodaj-recept')">Dodaj recept</button>
         <div class="user-menu" @click="toggleMenu">
-          <!-- avatar -->
           <img v-if="session.isAdmin" class="admin" :src="admin" alt="Admin" />
           <img v-else-if="session.isLoggedIn" class="avatar" :src="avatar" alt="User" />
 
-          <!-- dropdown -->
           <div v-if="menuOpen" class="dropdown">
             <div class="dropdown-user">Korisničko ime: {{ user.usr_username }}</div>
             <button

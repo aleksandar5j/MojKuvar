@@ -51,14 +51,12 @@
         <button class="btn-add" @click="addSelectedIngredient">Dodaj</button>
       </div>
 
-      <!-- Dodavanje novog sastojka -->
       <div class="ingredient-row">
         <input type="text" v-model="customIngredient" placeholder="Unesi novi sastojak" />
         <input type="text" v-model="customQuantity" placeholder="Količina" />
         <button class="btn-add" @click="addCustomIngredient">Dodaj novi</button>
       </div>
 
-      <!-- Lista selektovanih sastojaka -->
       <div class="ingredient-list" v-if="ingredients.length">
         <h4>Izabrani sastojci:</h4>
         <div v-for="(ing, index) in ingredients" :key="index" class="ingredient-item">
@@ -166,10 +164,9 @@ async function submitRecipe() {
     fd.append('rec_preparation', rec_preparation.value)
     fd.append('cat_id', cat_id.value)
     fd.append('ingredients', JSON.stringify(ingredients.value))
-    fd.append('sid', session.sid) // <-- sid ide u FormData
-    fd.append('image', image.value) // File
+    fd.append('sid', session.sid)
+    fd.append('image', image.value)
 
-    // ne šalji sid kao header, samo FormData
     await api.postRecipe(fd)
 
     showToast('Recept uspešno dodat!', 'success')
@@ -202,7 +199,6 @@ function showToast(msg, type = 'error') {
 </script>
 
 <style scoped>
-/* HERO */
 .hero {
   min-height: 100vh;
   width: 100%;
@@ -215,7 +211,6 @@ function showToast(msg, type = 'error') {
   padding: 30px;
 }
 
-/* MAIN WRAPPER – WIDE */
 .add-recipe-wrapper {
   width: 96%;
   max-width: 1400px;
@@ -225,7 +220,6 @@ function showToast(msg, type = 'error') {
   box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35);
 }
 
-/* TITLE */
 .add-recipe-wrapper h2 {
   text-align: center;
   color: #743f3f;
@@ -235,7 +229,7 @@ function showToast(msg, type = 'error') {
 }
 
 .form-title {
-  grid-column: 1 / -1; /* 🔥 zauzima ceo grid red */
+  grid-column: 1 / -1;
   text-align: center;
 
   font-size: 32px;
@@ -244,7 +238,6 @@ function showToast(msg, type = 'error') {
   margin-bottom: 10px;
 }
 
-/* FORM LAYOUT – SVE U ŠIRINU */
 .add-recipe-wrapper {
   width: 100%;
   max-width: 1400px;
@@ -259,7 +252,6 @@ function showToast(msg, type = 'error') {
   border-radius: 24px;
 }
 
-/* FORM GROUP */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -271,7 +263,6 @@ function showToast(msg, type = 'error') {
   color: #743f3f;
 }
 
-/* INPUTS – KOMPAKTNI */
 .form-group textarea,
 .form-group select {
   padding: 11px 12px;
@@ -300,7 +291,6 @@ function showToast(msg, type = 'error') {
   box-shadow: 0 0 0 2px rgba(116, 63, 63, 0.2);
 }
 
-/* FILE INPUT */
 .form-group input[type='file'] {
   padding: 8px;
   background: #f6eaea;
@@ -308,7 +298,6 @@ function showToast(msg, type = 'error') {
   cursor: pointer;
 }
 
-/* SASTOJCI NASLOV – CELOM ŠIRINOM */
 .add-recipe-wrapper h3 {
   grid-column: 1 / -1;
   margin-top: 6px;
@@ -325,7 +314,6 @@ function showToast(msg, type = 'error') {
   margin-bottom: 14px;
 }
 
-/* select + input */
 .ingredient-row select,
 .ingredient-row input {
   height: 40px;
@@ -336,7 +324,6 @@ function showToast(msg, type = 'error') {
   outline: none;
 }
 
-/* širine */
 .ingredient-row select {
   width: 200px;
 }
@@ -345,7 +332,6 @@ function showToast(msg, type = 'error') {
   width: 180px;
 }
 
-/* dugme */
 .btn-add {
   height: 40px;
   width: 100px;
@@ -407,23 +393,20 @@ textarea {
   margin-top: 20px;
 }
 
-/* INGREDIENT LIST – TAG MODE */
-/* Naslov liste */
 .ingredient-list h4 {
   color: #743f3f;
   font-size: 16px;
   font-weight: 600;
 }
 
-/* Lista tagova */
 .ingredient-list {
-  grid-column: 1 / -1; /* ceo red */
+  grid-column: 1 / -1;
   display: flex;
   flex-direction: row;
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 0; /* već smo razmak dali h4 */
+  margin-top: 0;
 }
 
 .ingredient-item {
@@ -433,7 +416,7 @@ textarea {
   gap: 8px;
 
   padding: 8px 12px;
-  background: rgba(183, 58, 58, 0.2); /* svetlo crvena pozadina */
+  background: rgba(183, 58, 58, 0.2);
   border-radius: 20px;
   font-size: 13px;
   color: #743f3f;
@@ -453,7 +436,6 @@ textarea {
   transform: scale(1.2);
 }
 
-/* SUBMIT – CELOM ŠIRINOM */
 .submit-btn {
   grid-column: 1 / -1;
   text-align: center;
@@ -501,13 +483,11 @@ textarea {
   font-size: 22px;
 }
 
-/* ERROR */
 .toast.error {
   background: #e53935;
   color: #fff;
 }
 
-/* SUCCESS */
 .toast.success {
   background: #2e7d32;
   color: #fff;

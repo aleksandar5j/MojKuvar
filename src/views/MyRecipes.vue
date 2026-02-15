@@ -7,10 +7,8 @@
         <h1>Moji recepti</h1>
       </div>
 
-      <!-- GRID KARTICA -->
       <div class="main-wrapper">
         <div v-for="rec in recipes" :key="rec.rec_id" class="recipe-card">
-          <!-- EDIT / DELETE -->
           <div class="card-actions">
             <button class="card-edit-btnn" @click.stop="openEditPopup(rec)" title="Izmeni">
               ✎
@@ -20,7 +18,6 @@
             </button>
           </div>
 
-          <!-- LINK SAMO NA SADRŽAJ -->
           <RouterLink
             class="card-link"
             :to="{ name: 'detalji-recepta', params: { id: rec.rec_id } }"
@@ -39,7 +36,6 @@
       </div>
     </div>
 
-    <!-- AKO NEMA RECEPATA -->
     <div v-else class="nofav">
       <img src="/src/components/nosearch.png" style="height: 400px; margin-top: 50px" />
       <h3 style="text-align: center; font-size: 40px; font-weight: bold; color: #743f3f">
@@ -127,15 +123,15 @@ async function deleteRecipe(rec_id) {
   }
 }
 
-const successMessage = ref('') // poruka za zeleni popup
-const showSuccess = ref(false) // da li prikazati popup
+const successMessage = ref('')
+const showSuccess = ref(false)
 
 function triggerSuccess(msg) {
   successMessage.value = msg
   showSuccess.value = true
   setTimeout(() => {
     showSuccess.value = false
-  }, 3000) // 2 sekunde prikaz
+  }, 3000)
 }
 
 async function editRecipe() {
@@ -189,7 +185,7 @@ function closeEditPopup() {
 
 <style scoped>
 .myrecipes-page {
-  padding-top: 120px; /* odstojanje od headera */
+  padding-top: 120px;
 }
 
 .page-title {
@@ -214,7 +210,6 @@ function closeEditPopup() {
   min-height: 75vh;
 }
 
-/* RESPONSIVE */
 @media (max-width: 1100px) {
   .main-wrapper {
     grid-template-columns: repeat(3, 1fr);
@@ -231,7 +226,6 @@ function closeEditPopup() {
   }
 }
 
-/* CARD */
 .recipe-card {
   position: relative;
   background: #fff;
@@ -249,7 +243,6 @@ function closeEditPopup() {
   box-shadow: 0 22px 45px rgba(0, 0, 0, 0.15);
 }
 
-/* ACTIONS */
 .card-actions {
   position: absolute;
   top: 10px;
@@ -302,7 +295,6 @@ function closeEditPopup() {
   transform: scale(1.05);
 }
 
-/* LINK */
 .card-link {
   display: flex;
   flex-direction: column;
@@ -311,7 +303,6 @@ function closeEditPopup() {
   color: inherit;
 }
 
-/* IMAGE */
 .recipe-image {
   height: 70%;
   width: 100%;
@@ -323,7 +314,6 @@ function closeEditPopup() {
   transform: scale(1.06);
 }
 
-/* INFO */
 .recipe-info {
   height: 30%;
   display: flex;
@@ -340,13 +330,11 @@ function closeEditPopup() {
   text-align: center;
 }
 
-/* LINK RESET */
 a {
   text-decoration: none;
   color: inherit;
 }
 
-/* PRAZNO STANJE */
 .nofav {
   display: flex;
   min-height: 88vh;
@@ -373,7 +361,6 @@ a {
   background: #5f3030;
 }
 
-/* RESPONSIVE */
 @media (max-width: 768px) {
   .main-wrapper {
     padding: 0 20px 40px;
@@ -389,7 +376,7 @@ a {
   position: fixed;
   top: 20px;
   right: 20px;
-  background-color: #2e794d; /* zeleno */
+  background-color: #2e794d;
   color: white;
   padding: 12px 20px;
   border-radius: 8px;
@@ -555,7 +542,6 @@ a {
   transform: translateY(-1px);
 }
 
-/* Animacije */
 @keyframes fadeIn {
   from {
     opacity: 0;
