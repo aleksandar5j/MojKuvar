@@ -40,22 +40,24 @@ export default {
   latestRecipes: (data) => axios.get('recipes/latest-added-recipes', data),
 
   adminRecipes: (sid) => axios.get('admin/recipes', { params: { sid } }),
-  adminDeleteRecipes: (rec_id) => axios.delete('admin/recipes', { params: { rec_id } }),
+  adminDeleteRecipes: (sid, rec_id) => axios.delete('admin/recipes', { params: { sid, rec_id } }),
   adminEditRecipes: (data) => axios.put('admin/recipes', data),
 
   adminCategories: (sid) => axios.get('admin/categories', { params: { sid } }),
-  adminDeleteCategories: (cat_id) => axios.delete('admin/categories', { params: { cat_id } }),
-  adminPostCategory: (cat_name) => axios.post('admin/categories', { cat_name }),
+  adminDeleteCategories: (sid, cat_id) =>
+    axios.delete('admin/categories', { params: { sid, cat_id } }),
+  adminPostCategory: (sid, cat_name) => axios.post('admin/categories', { sid, cat_name }),
 
   adminIngredients: (sid) => axios.get('admin/ingredients', { params: { sid } }),
-  adminDeleteIngredients: (ing_id) => axios.delete('admin/ingredients', { params: { ing_id } }),
-  adminPostIngredients: (ing_name) => axios.post('admin/ingredients', { ing_name }),
+  adminDeleteIngredients: (sid, ing_id) =>
+    axios.delete('admin/ingredients', { params: { sid, ing_id } }),
+  adminPostIngredients: (sid, ing_name) => axios.post('admin/ingredients', { sid, ing_name }),
 
   adminComments: (sid) => axios.get('admin/comments', { params: { sid } }),
-  adminDeleteComment: (com_id) => axios.delete('admin/comments', { params: { com_id } }),
+  adminDeleteComment: (sid, com_id) => axios.delete('admin/comments', { params: { sid, com_id } }),
 
   adminUsers: (sid) => axios.get('admin/users', { params: { sid } }),
-  adminDeleteUser: (usr_id) => axios.delete('admin/users', { params: { usr_id } }),
+  adminDeleteUser: (sid, usr_id) => axios.delete('admin/users', { params: { sid, usr_id } }),
 
   adminUpdateUserRole: (data) => axios.put('admin/give-role', data),
 

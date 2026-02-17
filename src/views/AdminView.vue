@@ -347,7 +347,7 @@ async function deleteRecipe(rec_id) {
   const confirmDelete = window.confirm('Da li si siguran da želiš da obrišeš ovaj recept?')
   if (!confirmDelete) return
   try {
-    const res = await api.adminDeleteRecipes(rec_id)
+    const res = await api.adminDeleteRecipes(session.sid, rec_id)
     console.log(res.data)
     await getAll()
     triggerSuccess('Recept uspešno obrisan ✅')
@@ -359,6 +359,7 @@ async function deleteRecipe(rec_id) {
 async function editRecipe() {
   try {
     const res = await api.adminEditRecipes({
+      sid: session.sid,
       rec_id: editRecipeData.value.rec_id,
       rec_name: editRecipeData.value.rec_name,
       rec_description: editRecipeData.value.rec_description,
@@ -381,7 +382,7 @@ async function addCategory() {
   }
 
   try {
-    const res = await api.adminPostCategory(newCategoryName.value)
+    const res = await api.adminPostCategory(session.sid, newCategoryName.value)
     console.log(res.data)
     newCategoryName.value = ''
     showAddPopup.value = false
@@ -396,7 +397,7 @@ async function deleteCategory(cat_id) {
   const confirmDelete = window.confirm('Da li si siguran da želiš da obrišeš ovu kategoriju?')
   if (!confirmDelete) return
   try {
-    const res = await api.adminDeleteCategories(cat_id)
+    const res = await api.adminDeleteCategories(session.sid, cat_id)
     console.log(res.data)
     console.log('Uspesno obrisano')
     await getAll()
@@ -415,7 +416,7 @@ async function addIngredient() {
   }
 
   try {
-    const res = await api.adminPostIngredients(newIngredientName.value)
+    const res = await api.adminPostIngredients(session.sid, newIngredientName.value)
     console.log(res.data)
     newIngredientName.value = ''
     showAddPopup.value = false
@@ -430,7 +431,7 @@ async function deleteIngredient(ing_id) {
   const confirmDelete = window.confirm('Da li si siguran da želiš da obrišeš ovaj sastojak?')
   if (!confirmDelete) return
   try {
-    const res = await api.adminDeleteIngredients(ing_id)
+    const res = await api.adminDeleteIngredients(session.sid, ing_id)
     console.log(res.data)
     await getAll()
     triggerSuccess('Sastojak uspešno obrisan ✅')
@@ -443,7 +444,7 @@ async function deleteComment(com_id) {
   const confirmDelete = window.confirm('Da li si siguran da želiš da obrišeš ovaj komentar?')
   if (!confirmDelete) return
   try {
-    const res = await api.adminDeleteComment(com_id)
+    const res = await api.adminDeleteComment(session.sid, com_id)
     console.log(res.data)
     triggerSuccess('Komentar uspešno obrisan ✅')
     await getAll()
@@ -456,7 +457,7 @@ async function deleteUser(usr_id) {
   const confirmDelete = window.confirm('Da li si siguran da želiš da obrišeš ovog korisnika?')
   if (!confirmDelete) return
   try {
-    const res = await api.adminDeleteUser(usr_id)
+    const res = await api.adminDeleteUser(session.sid, usr_id)
     console.log(res.data)
     triggerSuccess('Korisnik uspešno obrisan ✅')
     await getAll()
