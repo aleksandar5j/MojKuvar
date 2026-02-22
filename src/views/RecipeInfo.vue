@@ -1,17 +1,22 @@
 <!-- eslint-disable vue/no-parsing-error -->
+<!-- RecipeInfo.vue -->
 <template>
   <div>
-    <h1 style="color: #743f3f; padding-top: 120px; text-align: center; font-size: 40px; background-color: rgba(83, 12, 12, 0.2); font-weight: bold;/* #743f3f sa 50% providnosti */">
+    <h1 style="color: #743f3f; padding-top: 120px; text-align: center; font-size: 40px; background-color: rgba(83, 12, 12, 0.2); font-weight: bold;">
       Instrukcije za pravljenje recepta
     </h1>
 
     <div class="wrapper" v-if="recipe && recipe.rec_name">
       <div class="recipe-card">
         <h1 class="recipe-title">{{ recipe.rec_name }}</h1>
-        <img class="recipe-image" :src="`http://565q123.e2.mars-hosting.com${recipe.image}`" />
+        <img
+          class="recipe-image"
+          :src="`https://565q123.e2.mars-hosting.com/api/images/imagesview?rec_id=${recipe.rec_id}`"
+          alt="Recept slika"
+        />
 
         <div class="prep-time">
-          <img src="/src/components/clock.png">
+          <img src="/src/components/clock.png" alt="Clock" />
           <p>{{ recipe.rec_preparation }}</p>
         </div>
 
@@ -29,7 +34,6 @@
 
         <h3 style="font-weight: bold; margin-top: 20px; color: #743f3f; font-size: 25px;margin-bottom: 10px; text-align: center;">Instrukcije</h3>
         <p class="recipe-inst" style="color: #743f3f">{{ recipe.rec_instructions }}</p>
-
       </div>
 
       <hr style="width: 120vh; margin-top: 40px; height: 2px; background-color: #5c2e2e; border: 0;"></hr>
@@ -37,7 +41,6 @@
       <div class="comments-section">
         <h2>Komentari</h2>
 
-        <!-- Forma za dodavanje komentara -->
         <div v-if="isLoggedIn" class="add-comment">
           <h3 style="color: #743f3f;">Dodaj komentar</h3>
           <textarea v-model="newComment"></textarea>
@@ -50,7 +53,6 @@
           <button @click="router.push('/login')">Uloguj se</button>
         </div>
 
-        <!-- Lista komentara -->
         <div v-if="comments.length === 0" class="no-comments" style="color: #743f3f;">
           Nema komentara za ovaj recept.
         </div>
@@ -96,7 +98,11 @@
             class="related-card-link"
           >
             <div class="related-card">
-              <img :src="`http://565q123.e2.mars-hosting.com${r.image}`" class="related-image" />
+              <img
+                :src="`https://565q123.e2.mars-hosting.com/api/images/imagesview?rec_id=${r.rec_id}`"
+                class="related-image"
+                alt="Sličan recept"
+              />
               <p class="related-name">{{ r.rec_name }}</p>
               <p class="related-desc">{{ r.rec_description }}</p>
             </div>
@@ -109,29 +115,21 @@
       </div>
     </div>
 
-      <div v-if="isEditPopupOpen" class="edit-popup-overlay">
-          <div class="edit-popup">
-            <h3>Izmeni komentar</h3>
-
-            <textarea
-              v-model="editCommentData.com_text"
-              rows="4"
-              class="edit-textarea"
-            ></textarea>
-
-            <div class="edit-actions">
-              <button @click="updateComment" class="btn-save">Sačuvaj</button>
-              <button @click="closeEditPopup" class="btn-cancel">Otkaži</button>
-            </div>
-          </div>
+    <div v-if="isEditPopupOpen" class="edit-popup-overlay">
+      <div class="edit-popup">
+        <h3>Izmeni komentar</h3>
+        <textarea v-model="editCommentData.com_text" rows="4" class="edit-textarea"></textarea>
+        <div class="edit-actions">
+          <button @click="updateComment" class="btn-save">Sačuvaj</button>
+          <button @click="closeEditPopup" class="btn-cancel">Otkaži</button>
         </div>
+      </div>
+    </div>
 
     <div v-if="showSuccess" class="success-popup">
       {{ successMessage }}
     </div>
   </div>
-
-
 </template>
 
 <script setup>
@@ -152,13 +150,13 @@ const relatedRecipes = ref([])
 async function getRecipe() {
   try {
     const res = await api.getRecipeId(route.params.id)
-
     recipe.value = res.data.data.recipe
     ingredients.value = res.data.data.ingredients
 
-    const related = await api.getRelatedRecipes(route.params.id)
+    const related = await api.getRelatedRecipes(route.params.id) // sada api/same-category
     relatedRecipes.value = related.data.data.data
   } catch (error) {
+    console.log('AxiosErrorcode:', error.code)
     console.log(error)
   }
 }
@@ -178,13 +176,11 @@ const newComment = ref('')
 
 async function postComment() {
   try {
-    const res = await api.addComment({
+    await api.addComment({
       id: route.params.id,
       comment: newComment.value,
       sid: session.sid
     })
-
-    console.log(res.data)
     newComment.value = ''
     getComments()
     triggerSuccess('Komentar uspešno dodat ✅')
@@ -195,8 +191,7 @@ async function postComment() {
 
 async function deleteComment(com_id) {
   const confirmDelete = window.confirm('Da li si siguran da želiš da obrišeš svoj komentar?')
-  if (!confirmDelete) return
-  if (!isLoggedIn) return
+  if (!confirmDelete || !isLoggedIn) return
   try {
     await api.deleteOwnComment(session.sid, com_id)
     await getComments()
@@ -207,18 +202,10 @@ async function deleteComment(com_id) {
 }
 
 const isEditPopupOpen = ref(false)
-
-const editCommentData = ref({
-  com_id: null,
-  usr_id: null,
-  com_text: '',
-})
+const editCommentData = ref({ com_id: null, usr_id: null, com_text: '' })
 
 function openEditPopup(c) {
-  editCommentData.value = {
-    com_id: c.com_id,
-    com_text: c.com_text
-  }
+  editCommentData.value = { com_id: c.com_id, com_text: c.com_text }
   isEditPopupOpen.value = true
 }
 
@@ -228,14 +215,12 @@ function closeEditPopup() {
 
 async function updateComment() {
   if (!isLoggedIn) return
-
   try {
     await api.updateOwnComment({
       com_id: editCommentData.value.com_id,
       com_text: editCommentData.value.com_text,
       sid: session.sid
     })
-
     isEditPopupOpen.value = false
     await getComments()
     triggerSuccess('Komentar uspešno izmenjen ✏️')
@@ -244,32 +229,26 @@ async function updateComment() {
   }
 }
 
-const successMessage = ref('') // poruka za zeleni popup
-const showSuccess = ref(false) // da li prikazati popup
-
+const successMessage = ref('')
+const showSuccess = ref(false)
 function triggerSuccess(msg) {
   successMessage.value = msg
   showSuccess.value = true
-  setTimeout(() => {
-    showSuccess.value = false
-  }, 3000) // 2 sekunde prikaz
+  setTimeout(() => { showSuccess.value = false }, 3000)
 }
-
 
 onMounted(() => {
   getRecipe()
   getComments()
 })
 
-watch(
-  () => route.params.id,
-  // eslint-disable-next-line no-unused-vars
-  (newId, oldId) => {
-    getRecipe()
-    getComments()
-  }
-)
+watch(() => route.params.id, () => {
+  getRecipe()
+  getComments()
+})
 </script>
+
+
 
 <style scoped>
 .wrapper {

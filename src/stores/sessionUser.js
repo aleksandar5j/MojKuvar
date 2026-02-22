@@ -10,16 +10,30 @@ export const useSessionStore = defineStore('session', {
 
   actions: {
     async login(username, password) {
-      const res = await api.loginUser({ username, password })
-      const { sessionUser, sid, message } = res.data.data
+      try {
+        const res = await api.loginUser({ username, password })
+        const payload = res.data?.data || res.data
 
-      this.user = sessionUser
-      this.sid = sid
-      this.message = message
+        const { sessionUser, sid, message } = payload
 
-      localStorage.setItem('user', JSON.stringify(sessionUser))
-      localStorage.setItem('sid', sid)
+        if (!sessionUser || !sid) {
+          throw new Error('Neispravan login response')
+        }
+
+        this.user = sessionUser
+        this.sid = sid
+        this.message = message || null
+
+        localStorage.setItem('user', JSON.stringify(sessionUser))
+        localStorage.setItem('sid', sid)
+
+      } catch (err) {
+        this.logout()
+        throw err
+      }
     },
+
+
 
     logout() {
       this.user = null
@@ -33,6 +47,9 @@ export const useSessionStore = defineStore('session', {
 
   getters: {
     isLoggedIn: (state) => !!state.user,
-    isAdmin: (state) => !!state.user?.usr_admin,
+    isAdmin: (state) =>
+      !!state.user?.usr_admin ||
+      state.user?.roles?.includes('admin') ||
+      false,
   },
 })

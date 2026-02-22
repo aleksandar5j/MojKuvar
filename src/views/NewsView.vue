@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="news-page">
+    <!-- HERO -->
     <section class="hero">
       <div class="hero-overlay">
         <h1>Sreća se pravi kod kuće!</h1>
@@ -11,13 +12,12 @@
       </div>
     </section>
 
+    <!-- CTA sekcije -->
     <section class="cta" v-if="!isLoggedIn">
       <div class="cta-img"></div>
-
       <div class="cta-content">
         <h2>Pridruži se zajednici</h2>
-        <p>
-          Pripremili smo poseban meni baš za tebe. Sa Meal Planner-om možeš brzo pripremiti meni
+        <p>Pripremili smo poseban meni baš za tebe. Sa Meal Planner-om možeš brzo pripremiti meni
           prilagođen svom ukusu.
         </p>
         <button class="cta-btn" @click="router.push('/register')">Registruj se</button>
@@ -30,62 +30,57 @@
         <p>Ulogujte se, dodajte vas omiljeni recept, i zadovoljite druge vašim ukusom!</p>
         <button class="cta-btn2" @click="router.push('/dodaj-recept')">Dodaj recept</button>
       </div>
-
       <div class="cta-img2"></div>
     </section>
 
     <section class="cta3">
       <div class="cta-img3"></div>
-
       <div class="cta-content3">
         <h2>Vaši omiljeni recepti</h2>
         <p>Ulogujte se, pronadjite vaš omiljeni recept, i sačuvajte ga u vaše favorite!</p>
         <button class="cta-btn3" @click="router.push('/vasa-omiljena-jela')">Moji favoriti</button>
       </div>
     </section>
-
-    <h2 class="section-title" style="font-size: 60px">NAJNOVIJA JELA</h2>
-    <section class="latest-section">
-      <div class="latest-grid">
-        <RouterLink
-          class="food-card"
-          v-for="(food, index) in latestRecipes"
-          :key="food.rec_id"
-          :to="{ name: 'detalji-recepta', params: { id: food.rec_id } }"
-          :class="{
-            featured: index === 0,
-            'side-top': index === 1,
-            'side-bottom': index === 2,
-            normal: index > 2,
-          }"
+<!-- Najnovija jela -->
+<h2 class="section-title">NAJNOVIJA JELA</h2>
+<section class="latest-section">
+  <div class="latest-grid">
+    <RouterLink
+      v-for="(food, index) in latestRecipes.filter(f => f.rec_id)"
+      :key="food.rec_id"
+      :to="{ name: 'detalji-recepta', params: { id: food.rec_id } }"
+      :class="{
+        featured: index === 0,
+        'side-top': index === 1,
+        'side-bottom': index === 2,
+        normal: index > 2,
+      }"
+      class="food-card"
+    >
+      <div class="img-box">
+        <img
+          :src="`https://565q123.e2.mars-hosting.com/api/images/imagesview?rec_id=${food.rec_id}`"
+        />
+        <button
+          class="fav-btn"
+          :class="{ active: food.isFavorite }"
+          @click.prevent="toggleFavorite(food)"
+          v-if="isLoggedIn"
         >
-          <div class="img-box">
-            <img :src="`http://565q123.e2.mars-hosting.com${food.image}`" />
-            <button
-              class="fav-btn"
-              :class="{ active: food.isFavorite }"
-              @click="toggleFavorite(food)"
-              v-if="isLoggedIn"
-            >
-              ❤
-            </button>
-            <span class="food-tag">{{ food.rec_name }}</span>
-
-            <div class="food-desc">{{ food.rec_description }}</div>
-
-            <div class="overlay"></div>
-          </div>
-        </RouterLink>
+          ❤
+        </button>
+        <span class="food-tag">{{ food.rec_name }}</span>
+        <div class="food-desc">{{ food.rec_description }}</div>
+        <div class="overlay"></div>
       </div>
-    </section>
+    </RouterLink>
   </div>
+</section>
 
-  <div v-if="showSuccess" class="success-popup">
-    {{ successMessage }}
-  </div>
 
-  <div v-if="showError" class="error-popup">
-    {{ errorMessage }}
+    <!-- POPUP PORUKE -->
+    <div v-if="showSuccess" class="success-popup">{{ successMessage }}</div>
+    <div v-if="showError" class="error-popup">{{ errorMessage }}</div>
   </div>
 </template>
 
@@ -104,24 +99,31 @@ const userFavorites = ref([])
 async function getLatestRecipes() {
   try {
     const res = await api.latestRecipes()
-    latestRecipes.value = res.data.data
-    console.log(res.data)
+    // res je ono što Axios vraća, pa:
+    // ako backend vraća { data: [...] } unutar res.data
+    latestRecipes.value = Array.isArray(res.data.data) ? res.data.data : []
+    console.log("Latest recipes:", latestRecipes.value)
   } catch (error) {
-    console.log(error)
+    console.log("Greška pri učitavanju recepata:", error)
   }
 }
+
+
 
 async function getUserFavorites() {
   if (!isLoggedIn) return
   try {
     const res = await api.userFavoriteRecipes(session.sid)
-    userFavorites.value = res.data.data
+    const data = res.data?.data
+    userFavorites.value = Array.isArray(data) ? data : []
   } catch (error) {
-    console.log(error)
+    console.error(error)
+    userFavorites.value = []
   }
 }
 
 function markFavoriteRecipes() {
+  if (!Array.isArray(latestRecipes.value)) return
   latestRecipes.value.forEach((food) => {
     food.isFavorite = userFavorites.value.some((uf) => uf.rec_id === food.rec_id)
   })
@@ -130,20 +132,16 @@ function markFavoriteRecipes() {
 async function toggleFavorite(food) {
   if (!isLoggedIn) {
     triggerError('Morate biti ulogovani!')
-    setTimeout(() => {
-      router.push('/login')
-    }, 1000)
+    setTimeout(() => router.push('/login'), 1000)
     return
   }
   try {
     if (!food.isFavorite) {
-      const res = await api.addFavoriteRecipe(session.sid, food.rec_id)
+      await api.addFavoriteRecipe(session.sid, food.rec_id)
       triggerSuccess('Uspesno si dodao recept u favorite ✅')
-      console.log(res.data)
     } else {
-      const res = await api.deleteFavoriteRecipe(session.sid, food.rec_id)
+      await api.deleteFavoriteRecipe(session.sid, food.rec_id)
       triggerSuccess('Uspesno si uklonio recept iz favorita ✅')
-      console.log(res.data)
     }
     await getUserFavorites()
     markFavoriteRecipes()
@@ -160,24 +158,18 @@ onMounted(async () => {
 
 const successMessage = ref('')
 const showSuccess = ref(false)
-
 function triggerSuccess(msg) {
   successMessage.value = msg
   showSuccess.value = true
-  setTimeout(() => {
-    showSuccess.value = false
-  }, 1000)
+  setTimeout(() => (showSuccess.value = false), 1000)
 }
 
 const errorMessage = ref('')
 const showError = ref(false)
-
 function triggerError(msg) {
   errorMessage.value = msg
   showError.value = true
-  setTimeout(() => {
-    showError.value = false
-  }, 1000)
+  setTimeout(() => (showError.value = false), 1000)
 }
 </script>
 

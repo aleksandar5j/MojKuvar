@@ -51,14 +51,12 @@
         <button class="btn-add" @click="addSelectedIngredient">Dodaj</button>
       </div>
 
-      <!-- Dodavanje novog sastojka -->
       <div class="ingredient-row">
-        <input type="text" v-model="customIngredient" placeholder="Unesi novi sastojak" />
-        <input type="text" v-model="customQuantity" placeholder="Količina" />
-        <button class="btn-add" @click="addCustomIngredient">Dodaj novi</button>
+        <input type="text" v-model="customIngredient" placeholder="Ovde Unesi novi sastojak" />
+
+        <button class="btn-add" @click="addIngredientToDB">Dodaj novi</button>
       </div>
 
-      <!-- Lista selektovanih sastojaka -->
       <div class="ingredient-list" v-if="ingredients.length">
         <h4>Izabrani sastojci:</h4>
         <div v-for="(ing, index) in ingredients" :key="index" class="ingredient-item">
@@ -74,9 +72,7 @@
   </div>
 
   <div v-if="toastMsg" :class="['toast', toastType]">
-    <span class="icon">
-      {{ toastType === 'error' ? '⚠️' : '✅' }}
-    </span>
+    <span class="icon">{{ toastType === 'error' ? '⚠️' : '✅' }}</span>
     <p>{{ toastMsg }}</p>
   </div>
 </template>
@@ -100,7 +96,7 @@ const ingredients = ref([])
 const selectedIngredient = ref('')
 const newQuantity = ref('')
 const customIngredient = ref('')
-const customQuantity = ref('')
+
 
 const categories = ref([])
 const ingredientss = ref([])
@@ -131,12 +127,30 @@ function addSelectedIngredient() {
   newQuantity.value = ''
 }
 
-function addCustomIngredient() {
-  if (!customIngredient.value || !customQuantity.value) return
-  ingredients.value.push({ name: customIngredient.value, quantity: customQuantity.value })
-  customIngredient.value = ''
-  customQuantity.value = ''
+// Dodaj novu funkciju za dodavanje začina u bazu
+async function addIngredientToDB() {
+  if (!customIngredient.value.trim()) return
+
+  try {
+    // šaljemo SID i ime začina
+    await api.postIngredient(session.sid, customIngredient.value.trim())
+
+    // odmah dodajemo u lokalni niz i pokazujemo poruku
+    ingredientss.value.push({ ing_name: customIngredient.value.trim() })
+    customIngredient.value = ''
+    showToast('Začin dodat u bazu ✅', 'success')
+  } catch (err) {
+    console.error('Greška pri dodavanju začina:', err)
+    showToast('Došlo je do greške pri dodavanju začina ⚠️', 'error')
+  }
 }
+
+
+
+
+
+
+
 
 function removeIngredient(index) {
   ingredients.value.splice(index, 1)
@@ -147,13 +161,7 @@ function onFileChange(e) {
 }
 
 async function submitRecipe() {
-  if (
-    !rec_name.value ||
-    !rec_instructions.value ||
-    !rec_preparation.value ||
-    !cat_id.value ||
-    !image.value
-  ) {
+  if (!rec_name.value || !rec_instructions.value || !rec_preparation.value || !cat_id.value || !image.value) {
     showToast('Popuni sva obavezna polja!', 'error')
     return
   }
@@ -166,11 +174,10 @@ async function submitRecipe() {
     fd.append('rec_preparation', rec_preparation.value)
     fd.append('cat_id', cat_id.value)
     fd.append('ingredients', JSON.stringify(ingredients.value))
-    fd.append('sid', session.sid) // <-- sid ide u FormData
-    fd.append('image', image.value) // File
+    fd.append('sid', session.sid) // sid za backend
+    fd.append('image_file', image.value) // mora da se poklapa sa backend parametrom
 
-    // ne šalji sid kao header, samo FormData
-    await api.postRecipe(fd)
+    await api.postRecipe(fd, { withCredentials: true }) // važno ako backend koristi cookies
 
     showToast('Recept uspešno dodat!', 'success')
 
@@ -178,7 +185,7 @@ async function submitRecipe() {
       router.push('/moji-recepti')
     }, 1200)
   } catch (err) {
-    console.error(err)
+    console.error('Backend greška:', err)
     showToast('Došlo je do greške prilikom dodavanja recepta.', 'error')
   }
 }
@@ -194,12 +201,12 @@ const toastType = ref('error')
 function showToast(msg, type = 'error') {
   toastMsg.value = msg
   toastType.value = type
-
   setTimeout(() => {
     toastMsg.value = ''
   }, 3500)
 }
 </script>
+
 
 <style scoped>
 /* HERO */

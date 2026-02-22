@@ -1,16 +1,17 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="myrecipes-page">
     <div v-if="recipes.length > 0">
+
       <!-- NASLOV -->
       <div class="page-title">
         <h1>Moji recepti</h1>
       </div>
 
-      <!-- GRID KARTICA -->
+      <!-- GRID -->
       <div class="main-wrapper">
         <div v-for="rec in recipes" :key="rec.rec_id" class="recipe-card">
-          <!-- EDIT / DELETE -->
+
+          <!-- ACTION BUTTONS -->
           <div class="card-actions">
             <button class="card-edit-btnn" @click.stop="openEditPopup(rec)" title="Izmeni">
               ✎
@@ -20,13 +21,13 @@
             </button>
           </div>
 
-          <!-- LINK SAMO NA SADRŽAJ -->
+          <!-- LINK KA DETALJIMA -->
           <RouterLink
             class="card-link"
             :to="{ name: 'detalji-recepta', params: { id: rec.rec_id } }"
           >
             <img
-              :src="`http://565q123.e2.mars-hosting.com${rec.image}`"
+              :src="`https://565q123.e2.mars-hosting.com/api/images/imagesview?rec_id=${rec.rec_id}`"
               alt="Slika recepta"
               class="recipe-image"
             />
@@ -35,6 +36,7 @@
               <h4>{{ rec.rec_name }}</h4>
             </div>
           </RouterLink>
+
         </div>
       </div>
     </div>
@@ -45,27 +47,31 @@
       <h3 style="text-align: center; font-size: 40px; font-weight: bold; color: #743f3f">
         Još uvek niste dodali nijedan recept!
       </h3>
-      <button @click="router.push('/dodaj-recept')">Dodaj svoj recept</button>
+      <button @click="router.push('/dodaj-recept')">
+        Dodaj svoj recept
+      </button>
     </div>
 
+    <!-- SUCCESS POPUP -->
     <div v-if="showSuccess" class="success-popup">
       {{ successMessage }}
     </div>
 
+    <!-- EDIT POPUP -->
     <div v-if="isEditPopupOpen" class="popup-overlay-edit">
       <div class="popup-card-edit">
         <h3>✎ Izmena recepta</h3>
+
         <h3>Ime</h3>
         <input
           type="text"
           v-model="editRecipeData.rec_name"
-          placeholder="Naziv recepta"
           class="popup-input"
         />
+
         <h3>Deskripcija</h3>
         <textarea
           v-model="editRecipeData.rec_description"
-          placeholder="Opis recepta"
           class="popup-input textarea"
         ></textarea>
 
@@ -73,25 +79,29 @@
         <input
           type="text"
           v-model="editRecipeData.rec_preparation"
-          placeholder="Vreme pripreme (npr. 30 min)"
           class="popup-input"
         />
 
-        <h3>Korak po korak instrukcije</h3>
+        <h3>Instrukcije</h3>
         <textarea
           v-model="editRecipeData.rec_instructions"
-          placeholder="Instrukcije za pripremu"
           class="popup-input textarea"
         ></textarea>
 
         <div class="popup-buttonss">
-          <button class="btn-add" @click="editRecipe()">Sačuvaj izmene</button>
-          <button class="btn-cancel" @click="closeEditPopup">Otkaži</button>
+          <button class="btn-add" @click="editRecipe">
+            Sačuvaj izmene
+          </button>
+          <button class="btn-cancel" @click="closeEditPopup">
+            Otkaži
+          </button>
         </div>
       </div>
     </div>
+
   </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted } from 'vue'
@@ -100,67 +110,53 @@ import { useSessionStore } from '@/stores/sessionUser'
 import router from '@/router'
 
 const session = useSessionStore()
-
 const recipes = ref([])
 
 async function myRecipes() {
+  console.log("SID koji saljemo:", session.sid); // <--- ovo da vidimo da li postoji sid
+
+  if (!session.sid) {
+    console.log("Nema sesije");
+    return;
+  }
+
   try {
-    const res = await api.myRecipes(session.sid)
-    recipes.value = res.data.data
-    console.log(res.data)
-    console.log(recipes.value)
+    const res = await api.myRecipes(session.sid);
+    console.log("Odgovor backend-a:", res);
+    recipes.value = res.data.data.data;
   } catch (error) {
-    console.log(error)
+    console.log("Greška pri učitavanju:", error);
   }
 }
 
+
+// DELETE
 async function deleteRecipe(rec_id) {
-  const confirmDelete = window.confirm('Da li si siguran da želiš da obrišeš svoj recept?')
+  const confirmDelete = window.confirm('Da li si siguran da želiš da obrišeš recept?')
   if (!confirmDelete) return
+
   try {
-    const res = await api.deleteOwnRecipe(session.sid, rec_id)
-    console.log(res.data)
-    triggerSuccess('Vas recept je uspešno obrisan ✅')
+    await api.deleteOwnRecipe(session.sid, rec_id)
+    triggerSuccess('Recept uspešno obrisan ✅')
     await myRecipes()
   } catch (error) {
-    console.log(error)
+    console.log("Greška pri brisanju:", error)
   }
 }
 
-const successMessage = ref('') // poruka za zeleni popup
-const showSuccess = ref(false) // da li prikazati popup
+// SUCCESS POPUP
+const successMessage = ref('')
+const showSuccess = ref(false)
 
 function triggerSuccess(msg) {
   successMessage.value = msg
   showSuccess.value = true
   setTimeout(() => {
     showSuccess.value = false
-  }, 3000) // 2 sekunde prikaz
+  }, 3000)
 }
 
-async function editRecipe() {
-  try {
-    const res = await api.updateOwnRecipe({
-      rec_id: editRecipeData.value.rec_id,
-      rec_name: editRecipeData.value.rec_name,
-      rec_description: editRecipeData.value.rec_description,
-      rec_preparation: editRecipeData.value.rec_preparation,
-      rec_instructions: editRecipeData.value.rec_instructions,
-      sid: session.sid,
-    })
-    console.log(res.data)
-    isEditPopupOpen.value = false
-    triggerSuccess('Vas recept je uspesno izmenjen ✅')
-    await myRecipes()
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-onMounted(() => {
-  myRecipes()
-})
-
+// EDIT POPUP
 const isEditPopupOpen = ref(false)
 
 const editRecipeData = ref({
@@ -172,19 +168,32 @@ const editRecipeData = ref({
 })
 
 function openEditPopup(rec) {
-  editRecipeData.value = {
-    rec_id: rec.rec_id,
-    rec_name: rec.rec_name,
-    rec_description: rec.rec_description,
-    rec_preparation: rec.rec_preparation,
-    rec_instructions: rec.rec_instructions,
-  }
+  editRecipeData.value = { ...rec }
   isEditPopupOpen.value = true
 }
 
 function closeEditPopup() {
   isEditPopupOpen.value = false
 }
+
+async function editRecipe() {
+  try {
+    await api.updateOwnRecipe({
+      ...editRecipeData.value,
+      sid: session.sid
+    })
+
+    isEditPopupOpen.value = false
+    triggerSuccess('Recept uspešno izmenjen ✅')
+    await myRecipes()
+  } catch (error) {
+    console.log("Greška pri izmeni:", error)
+  }
+}
+
+onMounted(() => {
+  myRecipes()
+})
 </script>
 
 <style scoped>

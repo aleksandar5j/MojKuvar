@@ -13,6 +13,7 @@
       >
         Tvoji omiljeni recepti
       </h1>
+
       <div class="main-wrapper" v-if="favorites.length > 0" ref="favoritesWrapper">
         <div class="main" v-for="fav in favorites" :key="fav.fav_id">
           <RouterLink :to="{ name: 'detalji-recepta', params: { id: fav.rec_id } }">
@@ -24,7 +25,13 @@
               >
                 ❤
               </button>
-              <img :src="`http://565q123.e2.mars-hosting.com${fav.image}`" alt="Recipe image" />
+
+              <img
+                :src="`https://565q123.e2.mars-hosting.com/api/images/imagesview?rec_id=${fav.rec_id}`"
+                alt="Recipe image"
+                @error="handleImageError($event)"
+              />
+
               <h2>{{ fav.rec_name }}</h2>
               <p class="difficulty">Težina pripreme: {{ fav.rec_preparation }}</p>
             </div>
@@ -46,9 +53,10 @@
       </p>
       <button @click="router.push('/login')">Uloguj se</button>
     </div>
-  </div>
-  <div v-if="showSuccess" class="success-popup">
-    {{ successMessage }}
+
+    <div v-if="showSuccess" class="success-popup">
+      {{ successMessage }}
+    </div>
   </div>
 </template>
 
@@ -56,10 +64,9 @@
 import { useSessionStore } from '@/stores/sessionUser'
 import api from '@/api'
 import { ref, onMounted, computed } from 'vue'
-
 import { useRouter } from 'vue-router'
-const router = useRouter()
 
+const router = useRouter()
 const session = useSessionStore()
 const isLoggedIn = computed(() => session.isLoggedIn)
 
@@ -69,21 +76,26 @@ async function favoriteRecipes() {
   try {
     const res = await api.userFavoriteRecipes(session.sid)
     favorites.value = res.data.data
-    console.log(res.data.data)
   } catch (e) {
-    console.log(e)
+    console.error('Greška pri učitavanju favorita:', e)
   }
 }
 
 async function toggleFavorite(fav) {
   try {
-    const res = await api.deleteFavoriteRecipe(session.sid, fav.rec_id)
+    await api.deleteFavoriteRecipe(session.sid, fav.rec_id)
     await favoriteRecipes()
-    triggerSuccess('Uspesno si uklonio recept iz favorita ✅')
-    console.log(res.data)
+    triggerSuccess('Uspešno si uklonio recept iz favorita ✅')
   } catch (error) {
-    console.log(error)
+    console.error('Greška pri uklanjanju favorita:', error)
   }
+}
+
+
+
+// fallback ako se slika ne učita
+function handleImageError(event) {
+  event.target.src = '/src/components/noimage.png'
 }
 
 onMounted(() => {
@@ -92,25 +104,25 @@ onMounted(() => {
   }
 })
 
-const successMessage = ref('') // poruka za zeleni popup
-const showSuccess = ref(false) // da li prikazati popup
+const successMessage = ref('')
+const showSuccess = ref(false)
 
 function triggerSuccess(msg) {
   successMessage.value = msg
   showSuccess.value = true
   setTimeout(() => {
     showSuccess.value = false
-  }, 1000) // 2 sekunde prikaz
+  }, 1000)
 }
 </script>
 
 <style scoped>
 .favorites-page {
-  min-height: 100vh; /* zauzima full visinu */
+  min-height: 100vh;
   display: flex;
-  justify-content: center; /* horizontalno centriranje */
-  align-items: flex-start; /* gore ostavlja padding */
-  padding-top: 120px; /* odstojanje od headera */
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 120px;
   background: #f3efef;
 }
 
@@ -124,7 +136,6 @@ function triggerSuccess(msg) {
   align-items: center;
 }
 
-/* GRID WRAPPER */
 .main-wrapper {
   max-width: 1200px;
   width: 100%;
@@ -137,33 +148,26 @@ function triggerSuccess(msg) {
   justify-items: center;
 }
 
-/* GRID ITEM */
 .main {
   display: flex;
   justify-content: center;
 }
 
-/* LINK RESET */
 a {
   display: block;
   text-decoration: none;
   color: inherit;
 }
 
-/* KARTICA */
 .recipe-card {
   position: relative;
   width: 100%;
   max-width: 280px;
   background-color: rgba(255, 255, 255, 0.95);
   border-radius: 20px;
-  overflow: hidden; /* VAŽNO: slika će se uklopiti u radius */
-
+  overflow: hidden;
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -174,42 +178,30 @@ a {
   position: absolute;
   top: 15px;
   right: 15px;
-  width: 40px; /* veće dugme */
+  width: 40px;
   height: 40px;
   border-radius: 50%;
   border: 2px solid #fff;
   border-color: #e53935;
   background: #e53935;
   color: #fff;
-  font-size: 25px; /* veće srce */
+  font-size: 25px;
   cursor: pointer;
   z-index: 5;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   transition: all 0.25s ease;
 }
 
 .fav-btn:hover {
-  background: #e53935;
-  border-color: #e53935;
-  transform: scale(1.1); /* malo veći hover efekat */
+  transform: scale(1.1);
 }
 
-.fav-btn.active {
-  background: #e53935;
-  border-color: #e53935;
-  color: #fff;
-}
-
-/* SLIKA */
 .recipe-card img {
   width: 100%;
   height: 190px;
   object-fit: cover;
-  /* ukloni border-bottom */
   border-bottom: none;
 }
 
@@ -218,7 +210,6 @@ a {
   transform: translateY(-8px);
 }
 
-/* NASLOV */
 .recipe-card h2 {
   margin: 14px 12px 6px;
   font-size: 16.5px;
@@ -227,14 +218,12 @@ a {
   line-height: 1.3;
 }
 
-/* TEŽINA PRIPREME */
 .recipe-card .difficulty {
   margin-bottom: 16px;
   font-size: 14px;
   color: #6d6d6d;
 }
 
-/* MOBILE */
 @media (max-width: 768px) {
   .main-wrapper {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -274,7 +263,7 @@ a {
   position: fixed;
   top: 90px;
   right: 20px;
-  background-color: #2e794d; /* zeleno */
+  background-color: #2e794d;
   color: white;
   padding: 12px 20px;
   border-radius: 8px;
@@ -287,100 +276,28 @@ a {
 }
 
 @keyframes slideIn {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 
 @keyframes fadeOut {
-  to {
-    opacity: 0;
-  }
+  to { opacity: 0; }
 }
 
 @media (max-width: 480px) {
-  .favorites-page {
-    padding-top: 90px; /* manje od headera */
-  }
-
-  h1 {
-    font-size: 26px !important;
-    padding-top: 10px !important;
-    margin-bottom: 10px;
-  }
-
-  .main-wrapper {
-    grid-template-columns: 1fr; /* jedna kolona */
-    gap: 20px;
-    padding: 16px;
-    border-radius: 20px;
-  }
-
-  .recipe-card {
-    max-width: 100%;
-    border-radius: 18px;
-  }
-
-  .recipe-card img {
-    height: 210px; /* veća slika */
-  }
-
-  .recipe-card h2 {
-    font-size: 18px;
-    margin: 12px 10px 6px;
-  }
-
-  .recipe-card .difficulty {
-    font-size: 15px;
-    margin-bottom: 14px;
-  }
-
-  .fav-btn {
-    width: 46px;
-    height: 46px;
-    font-size: 26px;
-    top: 12px;
-    right: 12px;
-  }
-
-  .nofav img {
-    height: 200px;
-  }
-
-  .nofav h3 {
-    font-size: 22px !important;
-    text-align: center;
-  }
-
-  .notlogged {
-    margin-top: 180px;
-    padding: 0 20px;
-    text-align: center;
-  }
-
-  .notlogged p {
-    font-size: 22px !important;
-  }
-
-  .notlogged button {
-    width: 100%;
-    max-width: 280px;
-    font-size: 18px;
-    padding: 12px 0;
-  }
-
-  .success-popup {
-    top: auto;
-    bottom: 20px;
-    right: 50%;
-    transform: translateX(50%);
-    border-radius: 14px;
-    font-size: 15px;
-  }
+  .favorites-page { padding-top: 90px; }
+  h1 { font-size: 26px !important; padding-top: 10px !important; margin-bottom: 10px; }
+  .main-wrapper { grid-template-columns: 1fr; gap: 20px; padding: 16px; border-radius: 20px; }
+  .recipe-card { max-width: 100%; border-radius: 18px; }
+  .recipe-card img { height: 210px; }
+  .recipe-card h2 { font-size: 18px; margin: 12px 10px 6px; }
+  .recipe-card .difficulty { font-size: 15px; margin-bottom: 14px; }
+  .fav-btn { width: 46px; height: 46px; font-size: 26px; top: 12px; right: 12px; }
+  .nofav img { height: 200px; }
+  .nofav h3 { font-size: 22px !important; text-align: center; }
+  .notlogged { margin-top: 180px; padding: 0 20px; text-align: center; }
+  .notlogged p { font-size: 22px !important; }
+  .notlogged button { width: 100%; max-width: 280px; font-size: 18px; padding: 12px 0; }
+  .success-popup { top: auto; bottom: 20px; right: 50%; transform: translateX(50%); border-radius: 14px; font-size: 15px; }
 }
 </style>

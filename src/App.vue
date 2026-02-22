@@ -1,130 +1,118 @@
 <template>
-  <header>
-    <RouterLink to="/"><img alt="Logo" class="logo" :src="logo" /></RouterLink>
+  <div v-if="!sessionChecked" class="loading-screen">Proveravam sesiju...</div>
 
-    <button class="hamburger" @click="mobileOpen = !mobileOpen">☰</button>
+  <template v-else>
+    <header>
+      <RouterLink to="/"><img alt="Logo" class="logo" :src="logo" /></RouterLink>
 
-    <div class="center-nav">
-      <RouterLink to="/vasa-omiljena-jela">Moji favoriti</RouterLink>
-      <RouterLink to="/o-nama">O nama</RouterLink>
-      <RouterLink to="/novosti">Novosti</RouterLink>
-    </div>
+      <button class="hamburger" @click="mobileOpen = !mobileOpen">☰</button>
 
-    <div class="right-nav">
+      <div class="center-nav">
+        <RouterLink to="/vasa-omiljena-jela">Moji favoriti</RouterLink>
+        <RouterLink to="/o-nama">O nama</RouterLink>
+        <RouterLink to="/novosti">Novosti</RouterLink>
+      </div>
+
+      <div class="right-nav">
+        <template v-if="!isLoggedIn">
+          <RouterLink to="/register">Registruj se</RouterLink>
+          <RouterLink to="/login">Uloguj se</RouterLink>
+        </template>
+
+        <template v-else>
+          <button class="addforlogged" @click="router.push('/dodaj-recept')">Dodaj recept</button>
+
+          <div class="user-menu" @click="toggleMenu">
+            <img v-if="session.isAdmin" class="admin" :src="admin" alt="Admin" />
+            <img v-else class="avatar" :src="avatar" alt="User" />
+
+            <div v-if="menuOpen" class="dropdown">
+              <div class="dropdown-user">Korisničko ime: {{ user.usr_username }}</div>
+              <button class="dropdown-btn" v-if="session.isAdmin" @click="router.push('/admin-komande')">Admin panel</button>
+              <button class="dropdown-btn" @click="router.push('/moji-recepti')">Moji recepti</button>
+              <button class="dropdown-btn" @click.stop="logoutUser">Odjavi se</button>
+            </div>
+          </div>
+        </template>
+      </div>
+    </header>
+
+    <!-- Mobile menu -->
+    <div class="mobile-menu" v-if="mobileOpen">
+      <RouterLink to="/" @click="closeMobile">Početna</RouterLink>
+      <RouterLink to="/vasa-omiljena-jela" @click="closeMobile">Moji favoriti</RouterLink>
+      <RouterLink to="/o-nama" @click="closeMobile">O nama</RouterLink>
+      <RouterLink to="/novosti" @click="closeMobile">Novosti</RouterLink>
+
+      <hr />
+
       <template v-if="!isLoggedIn">
-        <RouterLink to="/register">Registruj se</RouterLink>
-        <RouterLink to="/login">Uloguj se</RouterLink>
+        <RouterLink to="/register" @click="closeMobile">Registruj se</RouterLink>
+        <RouterLink to="/login" @click="closeMobile">Uloguj se</RouterLink>
       </template>
 
       <template v-else>
-        <button class="addforlogged" @click="router.push('/dodaj-recept')">Dodaj recept</button>
-        <div class="user-menu" @click="toggleMenu">
-          <!-- avatar -->
-          <img v-if="session.isAdmin" class="admin" :src="admin" alt="Admin" />
-          <img v-else-if="session.isLoggedIn" class="avatar" :src="avatar" alt="User" />
-
-          <!-- dropdown -->
-          <div v-if="menuOpen" class="dropdown">
-            <div class="dropdown-user">Korisničko ime: {{ user.usr_username }}</div>
-            <button
-              class="dropdown-btn"
-              style="color: #743f3f; font-weight: bold"
-              v-if="session.isAdmin"
-              @click="router.push('/admin-komande')"
-            >
-              Admin panel
-            </button>
-            <button class="dropdown-btn" @click="router.push('/moji-recepti')">Moji recepti</button>
-            <button class="dropdown-btn" @click.stop="logoutUser">Odjavi se</button>
-          </div>
-        </div>
+        <button @click="goToAddRecipeMobile">➕ Dodaj recept</button>
+        <button @click="goToMyRecipesMobile">📖 Moji recepti</button>
+        <button v-if="session.isAdmin" @click="goToAdminMobile">🛠 Admin panel</button>
+        <button class="logout" @click="logoutUser">🚪 Odjavi se</button>
       </template>
     </div>
-  </header>
 
-  <div class="mobile-menu" v-if="mobileOpen">
-    <RouterLink to="/" @click="closeMobile">Početna</RouterLink>
-    <RouterLink to="/vasa-omiljena-jela" @click="closeMobile">Moji favoriti</RouterLink>
-    <RouterLink to="/o-nama" @click="closeMobile">O nama</RouterLink>
-    <RouterLink to="/novosti" @click="closeMobile">Novosti</RouterLink>
+    <main v-if="isLoggedIn">
+      <RouterView />
+    </main>
 
-    <hr />
-
-    <template v-if="!isLoggedIn">
-      <RouterLink to="/register" @click="closeMobile">Registruj se</RouterLink>
-      <RouterLink to="/login" @click="closeMobile">Uloguj se</RouterLink>
-    </template>
-
-    <template v-else>
-      <button @click="goToAddRecipeMobile">➕ Dodaj recept</button>
-      <button
-        @click="
-          () => {
-            router.push('/moji-recepti')
-            closeMobile()
-          }
-        "
-      >
-        📖 Moji recepti
-      </button>
-      <button
-        v-if="session.isAdmin"
-        @click="
-          () => {
-            router.push('/admin-komande')
-            closeMobile()
-          }
-        "
-      >
-        🛠 Admin panel
-      </button>
-      <button class="logout" @click="logoutUser">🚪 Odjavi se</button>
-    </template>
-  </div>
-
-  <main>
-    <RouterView />
-  </main>
+    <div v-else class="not-logged-in">
+      <RouterView />
+    </div>
+  </template>
 </template>
 
 <script setup>
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useSessionStore } from './stores/sessionUser'
-import { computed } from 'vue'
 import logo from './components/logo.png'
 import avatar from './components/avatar.png'
 import admin from './components/admin.png'
 
-const session = useSessionStore()
 const router = useRouter()
+const session = useSessionStore()
 
+// reactive
+const menuOpen = ref(false)
+const mobileOpen = ref(false)
+
+// getters
 const isLoggedIn = computed(() => !!session.user)
 const user = computed(() => session.user || {})
+const sessionChecked = ref(false)
 
+// logout
 const logoutUser = () => {
   session.logout()
   router.push('/login')
 }
 
-import { ref } from 'vue'
+// menu
+const toggleMenu = () => menuOpen.value = !menuOpen.value
 
-const menuOpen = ref(false)
+const closeMobile = () => mobileOpen.value = false
+const goToAddRecipeMobile = () => { router.push('/dodaj-recept'); closeMobile() }
+const goToMyRecipesMobile = () => { router.push('/moji-recepti'); closeMobile() }
+const goToAdminMobile = () => { router.push('/admin-komande'); closeMobile() }
 
-const toggleMenu = () => {
-  menuOpen.value = !menuOpen.value
-}
-
-const mobileOpen = ref(false)
-
-const closeMobile = () => {
-  mobileOpen.value = false
-}
-
-const goToAddRecipeMobile = () => {
-  router.push('/dodaj-recept')
-  closeMobile()
-}
+// proveri sesiju na load
+onMounted(async () => {
+  //await session.checkSession()
+  sessionChecked.value = true
+})
 </script>
+
+
+
+
 
 <style scoped>
 @import './assets/base.css';

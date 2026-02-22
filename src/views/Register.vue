@@ -55,7 +55,7 @@
 <script setup>
 import { ref } from 'vue'
 import api from '@/api'
-import { useRouter } from 'vue-router' // <--- ovde
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
@@ -78,6 +78,7 @@ async function handleRegister() {
   }
 
   try {
+    // poziv backend registra funkcije koja dodaje korisnika i povezuje ga sa rolom "user"
     const res = await api.registerUser({
       username: username.value,
       fullname: fullname.value,
@@ -89,6 +90,7 @@ async function handleRegister() {
 
     console.log(res.data)
 
+    // preusmeri na login stranu
     router.push('/login')
 
     // reset forme
@@ -98,6 +100,7 @@ async function handleRegister() {
     password.value = ''
     password2.value = ''
   } catch (err) {
+    // backend writeExit vraća poruku u data
     errorMsg.value = err.response?.data?.data || 'Došlo je do greške.'
     console.log(err)
   }

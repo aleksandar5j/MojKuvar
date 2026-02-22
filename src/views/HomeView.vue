@@ -68,7 +68,11 @@
         ❤
       </button>
 
-      <img :src="`http://565q123.e2.mars-hosting.com${recipe.image}`" alt="recipe" />
+      <!-- SLIKA SA NOVIM ENDPOINTOM -->
+     <img
+  :src="`https://565q123.e2.mars-hosting.com/api/images/imagesview?rec_id=${recipe.rec_id}`"
+  alt="recipe"
+/>
 
       <div class="overlay"></div>
 
@@ -113,7 +117,11 @@
             :to="{ name: 'detalji-recepta', params: { id: pop.rec_id } }"
             class="rec-card"
           >
-            <img :src="`http://565q123.e2.mars-hosting.com${pop.image}`" alt="recipe" />
+            <!-- SLIKA SA NOVIM ENDPOINTOM -->
+            <img
+  :src="`https://565q123.e2.mars-hosting.com/api/images/imagesview?rec_id=${pop.rec_id}`"
+  alt="recipe"
+/>
 
             <div class="overlay"></div>
 
@@ -200,7 +208,6 @@ async function pretrazi() {
       ingredient: selectedIngredient.value,
     })
     recipes.value = res.data.data
-    console.log(res.data)
 
     if (recipes.value.length > 0) {
       setTimeout(() => {
@@ -213,37 +220,31 @@ async function pretrazi() {
 }
 
 const categories = ref([])
+const ingredients = ref([])
+const recipes = ref([])
+const popularRecipes = ref([])
+const userFavorites = ref([])
+
+const STEP = 6
+const visibleCount = ref(STEP)
+
+const displayedRecipes = computed(() => recipes.value.slice(0, visibleCount.value))
+const recipesWrapper = ref(null)
+const slider = ref(null)
 
 async function getCategories() {
   try {
     const res = await api.getCategories()
-    console.log(res.data)
     categories.value = res.data.data
   } catch (error) {
     console.log(error)
   }
 }
 
-const ingredients = ref([])
-
 async function getIngredients() {
   try {
     const res = await api.getIngredients()
-    console.log(res.data)
     ingredients.value = res.data.data
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-const recipes = ref([])
-const popularRecipes = ref([])
-
-async function getPopularRecipes() {
-  try {
-    const res = await api.getFavoriteRecipes()
-    console.log(res.data)
-    popularRecipes.value = res.data.data
   } catch (error) {
     console.log(error)
   }
@@ -252,14 +253,20 @@ async function getPopularRecipes() {
 async function getRecipes() {
   try {
     const res = await api.getRecipes()
-    console.log(res.data)
     recipes.value = res.data.data
   } catch (error) {
     console.log(error)
   }
 }
 
-const userFavorites = ref([])
+async function getPopularRecipes() {
+  try {
+    const res = await api.getFavoriteRecipes()
+    popularRecipes.value = res.data.data
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 async function getUserFavorites() {
   try {
@@ -271,8 +278,8 @@ async function getUserFavorites() {
 }
 
 function markFavoriteRecipes() {
-  recipes.value.forEach((recipe) => {
-    recipe.isFavorite = userFavorites.value.some((uf) => uf.rec_id === recipe.rec_id)
+  recipes.value.forEach(recipe => {
+    recipe.isFavorite = userFavorites.value.some(uf => uf.rec_id === recipe.rec_id)
   })
 }
 
@@ -281,9 +288,7 @@ async function toggleFavorite(recipe) {
     if (!recipe.isFavorite) {
       if (!isLoggedIn) {
         triggerError('Morate biti ulogovani!')
-        setTimeout(() => {
-          router.push('/login')
-        }, 1000)
+        setTimeout(() => router.push('/login'), 1000)
         return
       }
       await api.addFavoriteRecipe(session.sid, recipe.rec_id)
@@ -306,67 +311,9 @@ async function dodajRecept() {
     router.push('/dodaj-recept')
   } else {
     triggerError('Morate biti ulogovani!')
-    setTimeout(() => {
-      router.push('/login')
-    }, 1000)
-    return
+    setTimeout(() => router.push('/login'), 1000)
   }
 }
-
-onMounted(async () => {
-  await getCategories()
-  await getIngredients()
-  await getRecipes()
-
-  await getPopularRecipes()
-
-  if (isLoggedIn) {
-    await getUserFavorites()
-    markFavoriteRecipes()
-  }
-})
-
-function goToFavorites() {
-  if (!isLoggedIn) {
-    triggerError('Morate biti ulogovani!')
-    setTimeout(() => {
-      router.push('/login')
-    }, 1000)
-    return
-  } else {
-    router.push('/vasa-omiljena-jela')
-  }
-}
-
-function goToAddRecipe() {
-  if (!isLoggedIn) {
-    triggerError('Morate biti ulogovani!')
-    setTimeout(() => {
-      router.push('/login')
-    }, 1000)
-    return
-  } else {
-    router.push('/dodaj-recept')
-  }
-}
-
-const slider = ref(null)
-
-const scrollLeft = () => {
-  slider.value.scrollBy({
-    left: -425,
-    behavior: 'smooth',
-  })
-}
-
-const scrollRight = () => {
-  slider.value.scrollBy({
-    left: 425,
-    behavior: 'smooth',
-  })
-}
-
-const recipesWrapper = ref(null)
 
 function scrollToRecipes() {
   if (recipesWrapper.value) {
@@ -396,39 +343,69 @@ function onIngredientChange() {
   scrollToRecipes()
 }
 
-const STEP = 6
-const visibleCount = ref(STEP)
-
-const displayedRecipes = computed(() => {
-  return recipes.value.slice(0, visibleCount.value)
-})
-
-const loadMoreRecipes = () => {
+function loadMoreRecipes() {
   visibleCount.value += STEP
+}
+
+function scrollLeft() {
+  slider.value.scrollBy({ left: -425, behavior: 'smooth' })
+}
+
+function scrollRight() {
+  slider.value.scrollBy({ left: 425, behavior: 'smooth' })
 }
 
 const successMessage = ref('')
 const showSuccess = ref(false)
-
 function triggerSuccess(msg) {
   successMessage.value = msg
   showSuccess.value = true
-  setTimeout(() => {
-    showSuccess.value = false
-  }, 1000)
+  setTimeout(() => showSuccess.value = false, 1000)
 }
 
 const errorMessage = ref('')
 const showError = ref(false)
-
 function triggerError(msg) {
   errorMessage.value = msg
   showError.value = true
-  setTimeout(() => {
-    showError.value = false
-  }, 1000)
+  setTimeout(() => showError.value = false, 1000)
 }
+
+function goToFavorites() {
+  if (!isLoggedIn) {
+    triggerError('Morate biti ulogovani!')
+    setTimeout(() => router.push('/login'), 1000)
+    return
+  } else {
+    router.push('/vasa-omiljena-jela')
+  }
+}
+
+function goToAddRecipe() {
+  if (!isLoggedIn) {
+    triggerError('Morate biti ulogovani!')
+    setTimeout(() => router.push('/login'), 1000)
+    return
+  } else {
+    router.push('/dodaj-recept')
+  }
+}
+
+onMounted(async () => {
+
+  await getCategories()
+  await getIngredients()
+  await getRecipes()
+  await getPopularRecipes()
+  if (isLoggedIn) {
+    await getUserFavorites()
+    markFavoriteRecipes()
+  }
+})
 </script>
+
+
+
 
 <style scoped>
 .hero {
