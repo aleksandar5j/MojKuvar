@@ -2,7 +2,6 @@
 <template>
   <div class="page">
     <div class="login-layout">
-      <!-- LEVA STRANA (SLIKA) -->
       <div class="login-image">
         <div class="overlay">
           <img src="/src/components/logo.png" class="logo" />
@@ -11,7 +10,6 @@
         </div>
       </div>
 
-      <!-- DESNA STRANA (LOGIN) -->
       <div class="login-container">
         <h1>Uloguj se</h1>
 
@@ -88,7 +86,6 @@ const loginUser = async () => {
   background: #f3efef;
 }
 
-/* SPLIT LAYOUT */
 .login-layout {
   width: 100%;
   max-width: 1000px;
@@ -100,20 +97,17 @@ const loginUser = async () => {
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.18);
 }
 
-/* DESNA STRANA */
 .login-container {
   flex: 1;
   padding: 40px;
 }
 
-/* NASLOV */
 .login-container h1 {
   text-align: center;
   margin-bottom: 20px;
   color: #743f3f;
 }
 
-/* TIPS */
 .login-tips {
   display: flex;
   gap: 10px;
@@ -129,7 +123,6 @@ const loginUser = async () => {
   font-size: 13px;
 }
 
-/* FORMA */
 .form-group {
   margin-bottom: 15px;
 }
@@ -153,7 +146,6 @@ input {
   box-shadow: 0 0 0 3px rgba(116, 63, 63, 0.2);
 }
 
-/* BUTTON */
 button {
   width: 100%;
   padding: 13px;
@@ -172,7 +164,6 @@ button:hover {
   box-shadow: 0 10px 20px rgba(116, 63, 63, 0.35);
 }
 
-/* PORUKE */
 .error,
 .success {
   text-align: center;
@@ -187,7 +178,6 @@ button:hover {
   color: green;
 }
 
-/* MOBILE */
 @media (max-width: 768px) {
   .login-layout {
     flex-direction: column;
@@ -213,27 +203,24 @@ button:hover {
   background: rgba(116, 63, 63, 0.6);
 }
 
-/* CENTRIRANJE SADRŽAJA */
 .overlay {
   position: relative;
   z-index: 2;
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* vertikalno */
-  align-items: center; /* horizontalno */
+  justify-content: center;
+  align-items: center;
   text-align: center;
   color: white;
   padding: 40px;
 }
 
-/* LOGO */
 .logo {
   width: 150px;
   height: 150px;
 }
 
-/* TEKST */
 .overlay h2 {
   font-size: 32px;
   margin-bottom: 10px;

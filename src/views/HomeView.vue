@@ -8,7 +8,6 @@
         <button @click="searchByName" id="search">Pretraži</button>
       </div>
 
-      <!-- KATEGORIJA -->
       <div class="row">
         <label class="cat">Kategorija jela</label>
         <select class="select" v-model="selectedCategory" @change="onCategoryChange">
@@ -38,7 +37,6 @@
         </select>
       </div>
 
-      <!-- DODAJ NOVI RECEPT -->
       <div class="newRecipe">
         <label class="dodaj">Dodaj svoj recept →</label>
         <button @click="dodajRecept">Dodaj</button>
@@ -46,10 +44,8 @@
     </div>
   </div>
 
-  <!-- NASLOVI -->
   <h1 v-if="recipes.length > 0" class="section-title">PREPORUČUJEMO</h1>
 
-  <!-- RECEPTI -->
   <div class="recipes-wrapper" v-if="recipes.length > 0" ref="recipesWrapper">
     <RouterLink
       v-for="(recipe, index) in displayedRecipes"
@@ -57,7 +53,6 @@
       :to="{ name: 'detalji-recepta', params: { id: recipe.rec_id } }"
       :class="['rec-card', { big: index === 0 }]"
     >
-      <!-- SRCE -->
       <button
         class="fav-btn"
         :class="{ active: recipe.isFavorite }"
@@ -103,7 +98,6 @@
     </div>
   </div>
 
-  <!-- OMILJENA JELA -->
   <h1 class="section-title">OMILJENA JELA NAŠIH KORISNIKA</h1>
   <div class="slider-container">
     <button class="arrow left" @click="scrollLeft">‹</button>
@@ -136,13 +130,11 @@
 
   <footer class="footer">
     <div class="footer-content">
-      <!-- LOGO / OPIS -->
       <div class="footer-col">
         <img src="/src/components/logo.png" />
         <p>Pronađi savršene recepte za svaki dan. Jednostavno, brzo i ukusno.</p>
       </div>
 
-      <!-- LINKOVI -->
       <div class="footer-col">
         <h4>Navigacija</h4>
         <ul>
@@ -152,7 +144,6 @@
         </ul>
       </div>
 
-      <!-- INFO -->
       <div class="footer-col">
         <h4>Informacije</h4>
         <ul>
@@ -163,7 +154,6 @@
       </div>
     </div>
 
-    <!-- DONJA LINIJA -->
     <div class="footer-bottom">
       © {{ new Date().getFullYear() }} Moj Kuvar — Sva prava zadržana
     </div>

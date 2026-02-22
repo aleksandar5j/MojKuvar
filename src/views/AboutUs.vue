@@ -1,12 +1,10 @@
 <template>
   <div class="about-page">
-    <!-- Hero sekcija -->
     <section class="hero">
       <h1>O nama</h1>
       <p>Upoznajte tim koji stoji iza naših ukusnih recepata.</p>
     </section>
 
-    <!-- Tim sekcija -->
     <section class="team">
       <h2>Naš tim</h2>
       <div class="team-grid">
@@ -17,7 +15,6 @@
       </div>
     </section>
 
-    <!-- Naša misija -->
     <section class="mission">
       <h2>Naša misija</h2>
       <p>
@@ -50,7 +47,6 @@ const team = [
   line-height: 1.6;
 }
 
-/* Hero */
 .hero {
   text-align: center;
   padding: 90px;
@@ -71,7 +67,6 @@ const team = [
   margin: 0 auto;
 }
 
-/* Tim sekcija */
 .team {
   padding: 60px 20px;
   text-align: center;
@@ -125,7 +120,6 @@ const team = [
   color: #555;
 }
 
-/* Misija */
 .mission {
   padding: 60px 20px;
   background-color: #fff;
@@ -145,7 +139,6 @@ const team = [
   color: #444;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .hero h1 {
     font-size: 36px;
