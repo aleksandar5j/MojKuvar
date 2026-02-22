@@ -10,7 +10,6 @@ import MyRecipes from '@/views/MyRecipes.vue'
 import NewsView from '@/views/NewsView.vue'
 import AdminView from '@/views/AdminView.vue'
 
-
 import { useSessionStore } from '@/stores/sessionUser'
 
 const router = createRouter({
@@ -76,7 +75,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const session = useSessionStore()
 
-  if (to.meta.requiresAdmin && !session.isAdmin) {
+  if (to.meta.requiresAdmin && !session.isAdmin && !session.isOwner) {
     return next('/')
   }
   if (to.meta.requiresAuth && !session.isLoggedIn) {

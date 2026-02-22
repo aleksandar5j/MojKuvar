@@ -23,13 +23,21 @@
           <button class="addforlogged" @click="router.push('/dodaj-recept')">Dodaj recept</button>
 
           <div class="user-menu" @click="toggleMenu">
-            <img v-if="session.isAdmin" class="admin" :src="admin" alt="Admin" />
+            <img v-if="session.isAdmin || session.isOwner" class="admin" :src="admin" alt="Admin" />
             <img v-else class="avatar" :src="avatar" alt="User" />
 
             <div v-if="menuOpen" class="dropdown">
               <div class="dropdown-user">Korisničko ime: {{ user.usr_username }}</div>
-              <button class="dropdown-btn" v-if="session.isAdmin" @click="router.push('/admin-komande')">Admin panel</button>
-              <button class="dropdown-btn" @click="router.push('/moji-recepti')">Moji recepti</button>
+              <button
+                class="dropdown-btn"
+                v-if="session.isAdmin || session.isOwner"
+                @click="router.push('/admin-komande')"
+              >
+                Admin panel
+              </button>
+              <button class="dropdown-btn" @click="router.push('/moji-recepti')">
+                Moji recepti
+              </button>
               <button class="dropdown-btn" @click.stop="logoutUser">Odjavi se</button>
             </div>
           </div>
@@ -54,7 +62,9 @@
       <template v-else>
         <button @click="goToAddRecipeMobile">➕ Dodaj recept</button>
         <button @click="goToMyRecipesMobile">📖 Moji recepti</button>
-        <button v-if="session.isAdmin" @click="goToAdminMobile">🛠 Admin panel</button>
+        <button v-if="session.isAdmin || session.isOwner" @click="goToAdminMobile">
+          🛠 Admin panel
+        </button>
         <button class="logout" @click="logoutUser">🚪 Odjavi se</button>
       </template>
     </div>
@@ -96,12 +106,21 @@ const logoutUser = () => {
 }
 
 // menu
-const toggleMenu = () => menuOpen.value = !menuOpen.value
+const toggleMenu = () => (menuOpen.value = !menuOpen.value)
 
-const closeMobile = () => mobileOpen.value = false
-const goToAddRecipeMobile = () => { router.push('/dodaj-recept'); closeMobile() }
-const goToMyRecipesMobile = () => { router.push('/moji-recepti'); closeMobile() }
-const goToAdminMobile = () => { router.push('/admin-komande'); closeMobile() }
+const closeMobile = () => (mobileOpen.value = false)
+const goToAddRecipeMobile = () => {
+  router.push('/dodaj-recept')
+  closeMobile()
+}
+const goToMyRecipesMobile = () => {
+  router.push('/moji-recepti')
+  closeMobile()
+}
+const goToAdminMobile = () => {
+  router.push('/admin-komande')
+  closeMobile()
+}
 
 // proveri sesiju na load
 onMounted(async () => {
@@ -109,10 +128,6 @@ onMounted(async () => {
   sessionChecked.value = true
 })
 </script>
-
-
-
-
 
 <style scoped>
 @import './assets/base.css';

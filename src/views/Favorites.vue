@@ -27,7 +27,7 @@
               </button>
 
               <img
-                :src="`https://565q123.e2.mars-hosting.com/api/images/imagesview?rec_id=${fav.rec_id}`"
+                :src="config.imageUrl + fav.rec_id"
                 alt="Recipe image"
                 @error="handleImageError($event)"
               />
@@ -66,6 +66,8 @@ import api from '@/api'
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
+import config from '@/api/config'
+
 const router = useRouter()
 const session = useSessionStore()
 const isLoggedIn = computed(() => session.isLoggedIn)
@@ -90,8 +92,6 @@ async function toggleFavorite(fav) {
     console.error('Greška pri uklanjanju favorita:', error)
   }
 }
-
-
 
 // fallback ako se slika ne učita
 function handleImageError(event) {
@@ -167,7 +167,9 @@ a {
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -276,28 +278,87 @@ a {
 }
 
 @keyframes slideIn {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 @keyframes fadeOut {
-  to { opacity: 0; }
+  to {
+    opacity: 0;
+  }
 }
 
 @media (max-width: 480px) {
-  .favorites-page { padding-top: 90px; }
-  h1 { font-size: 26px !important; padding-top: 10px !important; margin-bottom: 10px; }
-  .main-wrapper { grid-template-columns: 1fr; gap: 20px; padding: 16px; border-radius: 20px; }
-  .recipe-card { max-width: 100%; border-radius: 18px; }
-  .recipe-card img { height: 210px; }
-  .recipe-card h2 { font-size: 18px; margin: 12px 10px 6px; }
-  .recipe-card .difficulty { font-size: 15px; margin-bottom: 14px; }
-  .fav-btn { width: 46px; height: 46px; font-size: 26px; top: 12px; right: 12px; }
-  .nofav img { height: 200px; }
-  .nofav h3 { font-size: 22px !important; text-align: center; }
-  .notlogged { margin-top: 180px; padding: 0 20px; text-align: center; }
-  .notlogged p { font-size: 22px !important; }
-  .notlogged button { width: 100%; max-width: 280px; font-size: 18px; padding: 12px 0; }
-  .success-popup { top: auto; bottom: 20px; right: 50%; transform: translateX(50%); border-radius: 14px; font-size: 15px; }
+  .favorites-page {
+    padding-top: 90px;
+  }
+  h1 {
+    font-size: 26px !important;
+    padding-top: 10px !important;
+    margin-bottom: 10px;
+  }
+  .main-wrapper {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 16px;
+    border-radius: 20px;
+  }
+  .recipe-card {
+    max-width: 100%;
+    border-radius: 18px;
+  }
+  .recipe-card img {
+    height: 210px;
+  }
+  .recipe-card h2 {
+    font-size: 18px;
+    margin: 12px 10px 6px;
+  }
+  .recipe-card .difficulty {
+    font-size: 15px;
+    margin-bottom: 14px;
+  }
+  .fav-btn {
+    width: 46px;
+    height: 46px;
+    font-size: 26px;
+    top: 12px;
+    right: 12px;
+  }
+  .nofav img {
+    height: 200px;
+  }
+  .nofav h3 {
+    font-size: 22px !important;
+    text-align: center;
+  }
+  .notlogged {
+    margin-top: 180px;
+    padding: 0 20px;
+    text-align: center;
+  }
+  .notlogged p {
+    font-size: 22px !important;
+  }
+  .notlogged button {
+    width: 100%;
+    max-width: 280px;
+    font-size: 18px;
+    padding: 12px 0;
+  }
+  .success-popup {
+    top: auto;
+    bottom: 20px;
+    right: 50%;
+    transform: translateX(50%);
+    border-radius: 14px;
+    font-size: 15px;
+  }
 }
 </style>

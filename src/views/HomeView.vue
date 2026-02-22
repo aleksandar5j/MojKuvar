@@ -69,10 +69,7 @@
       </button>
 
       <!-- SLIKA SA NOVIM ENDPOINTOM -->
-     <img
-  :src="`https://565q123.e2.mars-hosting.com/api/images/imagesview?rec_id=${recipe.rec_id}`"
-  alt="recipe"
-/>
+      <img :src="config.imageUrl + recipe.rec_id" alt="recipe" />
 
       <div class="overlay"></div>
 
@@ -118,10 +115,7 @@
             class="rec-card"
           >
             <!-- SLIKA SA NOVIM ENDPOINTOM -->
-            <img
-  :src="`https://565q123.e2.mars-hosting.com/api/images/imagesview?rec_id=${pop.rec_id}`"
-  alt="recipe"
-/>
+            <img :src="config.imageUrl + pop.rec_id" alt="recipe" />
 
             <div class="overlay"></div>
 
@@ -190,6 +184,7 @@ import api from '@/api'
 
 import { useSessionStore } from '@/stores/sessionUser'
 import router from '@/router'
+import config from '@/api/config'
 
 const session = useSessionStore()
 const isLoggedIn = session.isLoggedIn
@@ -278,8 +273,8 @@ async function getUserFavorites() {
 }
 
 function markFavoriteRecipes() {
-  recipes.value.forEach(recipe => {
-    recipe.isFavorite = userFavorites.value.some(uf => uf.rec_id === recipe.rec_id)
+  recipes.value.forEach((recipe) => {
+    recipe.isFavorite = userFavorites.value.some((uf) => uf.rec_id === recipe.rec_id)
   })
 }
 
@@ -360,7 +355,7 @@ const showSuccess = ref(false)
 function triggerSuccess(msg) {
   successMessage.value = msg
   showSuccess.value = true
-  setTimeout(() => showSuccess.value = false, 1000)
+  setTimeout(() => (showSuccess.value = false), 1000)
 }
 
 const errorMessage = ref('')
@@ -368,7 +363,7 @@ const showError = ref(false)
 function triggerError(msg) {
   errorMessage.value = msg
   showError.value = true
-  setTimeout(() => showError.value = false, 1000)
+  setTimeout(() => (showError.value = false), 1000)
 }
 
 function goToFavorites() {
@@ -392,7 +387,6 @@ function goToAddRecipe() {
 }
 
 onMounted(async () => {
-
   await getCategories()
   await getIngredients()
   await getRecipes()
@@ -403,9 +397,6 @@ onMounted(async () => {
   }
 })
 </script>
-
-
-
 
 <style scoped>
 .hero {

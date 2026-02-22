@@ -54,12 +54,7 @@
               <button class="card-delete-btnn" @click="deleteRecipe(rec.rec_id)">✖</button>
               <button class="card-edit-btnn" @click="openEditPopup(rec)">✎</button>
 
-              <img
-  :src="`https://565q123.e2.mars-hosting.com/api/images/imagesview?rec_id=${rec.rec_id}`"
-  alt="Slika recepta"
-  class="recipe-image"
-                />
-
+              <img :src="config.imageUrl + rec.rec_id" alt="Slika recepta" class="recipe-image" />
 
               <div class="recipe-info">
                 <h4>{{ rec.rec_name }}</h4>
@@ -71,16 +66,34 @@
                 <h3>✎ Izmena recepta</h3>
 
                 <h3>Ime</h3>
-                <input type="text" v-model="editRecipeData.rec_name" placeholder="Naziv recepta" class="popup-input" />
+                <input
+                  type="text"
+                  v-model="editRecipeData.rec_name"
+                  placeholder="Naziv recepta"
+                  class="popup-input"
+                />
 
                 <h3>Deskripcija</h3>
-                <textarea v-model="editRecipeData.rec_description" placeholder="Opis recepta" class="popup-input textarea"></textarea>
+                <textarea
+                  v-model="editRecipeData.rec_description"
+                  placeholder="Opis recepta"
+                  class="popup-input textarea"
+                ></textarea>
 
                 <h3>Vreme pripreme</h3>
-                <input type="text" v-model="editRecipeData.rec_preparation" placeholder="Vreme pripreme (npr. 30 min)" class="popup-input" />
+                <input
+                  type="text"
+                  v-model="editRecipeData.rec_preparation"
+                  placeholder="Vreme pripreme (npr. 30 min)"
+                  class="popup-input"
+                />
 
                 <h3>Korak po korak instrukcije</h3>
-                <textarea v-model="editRecipeData.rec_instructions" placeholder="Instrukcije za pripremu" class="popup-input textarea"></textarea>
+                <textarea
+                  v-model="editRecipeData.rec_instructions"
+                  placeholder="Instrukcije za pripremu"
+                  class="popup-input textarea"
+                ></textarea>
 
                 <div class="popup-buttonss">
                   <button class="btn-add" @click="editRecipe()">Sačuvaj izmene</button>
@@ -109,7 +122,12 @@
             <div v-if="showAddPopup" class="popup-overlay">
               <div class="popup-card">
                 <h3>Dodaj novu kategoriju</h3>
-                <input type="text" v-model="newCategoryName" placeholder="Ime kategorije" class="popup-input" />
+                <input
+                  type="text"
+                  v-model="newCategoryName"
+                  placeholder="Ime kategorije"
+                  class="popup-input"
+                />
                 <div class="popup-buttons">
                   <button class="btn-add" @click="addCategory()">Dodaj</button>
                   <button class="btn-cancel" @click="showAddPopup = false">Otkaži</button>
@@ -137,7 +155,12 @@
             <div v-if="showAddPopup" class="popup-overlay">
               <div class="popup-card">
                 <h3>Dodaj novi sastojak</h3>
-                <input type="text" v-model="newIngredientName" placeholder="Ime sastojka" class="popup-input" />
+                <input
+                  type="text"
+                  v-model="newIngredientName"
+                  placeholder="Ime sastojka"
+                  class="popup-input"
+                />
                 <div class="popup-buttons">
                   <button class="btn-add" @click="addIngredient()">Dodaj</button>
                   <button class="btn-cancel" @click="showAddPopup = false">Otkaži</button>
@@ -175,63 +198,55 @@
             </div>
           </div>
 
-       <!-- KORISNICI -->
-<div v-if="activeTable === 'users'" class="cards-users-wrapper">
-  <h2><strong style="color: red">✖ - </strong>Direktno brisanje</h2>
-  <div class="users-table-wrapper">
-    <table class="users-table">
-      <thead>
-        <tr>
-          <th>Korisnik</th>
-          <th>Email</th>
-          <th>Datum kreiranja</th>
-          <th>Status</th>
-          <th>Daj rolu</th>
-          <th>Akcija</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="usr in users" :key="usr.usr_id">
-          <td>{{ usr.usr_fullname }} ({{ usr.usr_username }})</td>
-          <td>{{ usr.usr_email }}</td>
-          <td>{{ new Date(usr.usr_timecreated).toLocaleString() }}</td>
-  <td>
-  {{ usr.usr_roles && usr.usr_roles.trim() !== '' ? usr.usr_roles : 'user' }}
-</td>
+          <!-- KORISNICI -->
+          <div v-if="activeTable === 'users'" class="cards-users-wrapper">
+            <h2><strong style="color: red">✖ - </strong>Direktno brisanje</h2>
+            <div class="users-table-wrapper">
+              <table class="users-table">
+                <thead>
+                  <tr>
+                    <th>Korisnik</th>
+                    <th>Email</th>
+                    <th>Datum kreiranja</th>
+                    <th>Status</th>
+                    <th>Daj rolu</th>
+                    <th>Akcija</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="usr in users" :key="usr.usr_id">
+                    <td>{{ usr.usr_fullname }} ({{ usr.usr_username }})</td>
+                    <td>{{ usr.usr_email }}</td>
+                    <td>{{ new Date(usr.usr_timecreated).toLocaleString() }}</td>
+                    <td>
+                      {{ usr.usr_roles && usr.usr_roles.trim() !== '' ? usr.usr_roles : 'user' }}
+                    </td>
 
-<td class="role-cell">
-  <div class="multi-select-dropdown">
-    <button @click="usr.showDropdown = !usr.showDropdown" class="dropdown-btn">
-      {{ usr.newRoles.length ? usr.newRoles.join(', ') : 'Dodeliti rolu' }}
+                    <td class="role-cell">
+                      <div class="multi-select-dropdown">
+                        <button @click="usr.showDropdown = !usr.showDropdown" class="dropdown-btn">
+                          {{ usr.newRoles.length ? usr.newRoles.join(', ') : 'Dodeliti rolu' }}
+                        </button>
 
-    </button>
+                        <div v-if="usr.showDropdown" class="dropdown-options">
+                          <label v-for="role in availableRoles" :key="role">
+                            <input type="checkbox" :value="role" v-model="usr.newRoles" />
+                            {{ role }}
+                          </label>
+                        </div>
+                      </div>
 
-    <div v-if="usr.showDropdown" class="dropdown-options">
-      <label v-for="role in availableRoles" :key="role">
-        <input
-          type="checkbox"
-          :value="role"
-          v-model="usr.newRoles"
-        />
-        {{ role }}
-      </label>
-    </div>
-  </div>
+                      <button class="btn-save" @click="saveUserRole(usr)">Sačuvaj</button>
+                    </td>
 
-  <button class="btn-save" @click="saveUserRole(usr)">Sačuvaj</button>
-</td>
-
-
-          <td>
-            <button class="card-delete" @click="deleteUser(usr.usr_id)">✖</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-
+                    <td>
+                      <button class="card-delete" @click="deleteUser(usr.usr_id)">✖</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -248,6 +263,8 @@ import api from '@/api'
 import { ref, computed, onMounted } from 'vue'
 import { useSessionStore } from '@/stores/sessionUser'
 
+import config from '@/api/config'
+
 const session = useSessionStore()
 
 const showModal = ref(false)
@@ -259,7 +276,6 @@ const categories = ref([])
 const ingredients = ref([])
 const comments = ref([])
 const users = ref([])
-
 
 const showAddPopup = ref(false)
 const newCategoryName = ref('')
@@ -280,7 +296,7 @@ const showSuccess = ref(false)
 function triggerSuccess(msg) {
   successMessage.value = msg
   showSuccess.value = true
-  setTimeout(() => showSuccess.value = false, 2000)
+  setTimeout(() => (showSuccess.value = false), 2000)
 }
 
 const openModal = (table) => {
@@ -288,15 +304,13 @@ const openModal = (table) => {
   action.value = null
   showModal.value = true
 
-if (table === 'users') {
-  users.value.forEach(u => {
-    // inicijalizuj kao array jer koristiš checkbox v-model
-    u.newRoles = u.usr_roles ? u.usr_roles.split(', ') : [];
-    u.showDropdown = false; // dodaj odmah za dropdown
-  })
-}
-
-
+  if (table === 'users') {
+    users.value.forEach((u) => {
+      // inicijalizuj kao array jer koristiš checkbox v-model
+      u.newRoles = u.usr_roles ? u.usr_roles.split(', ') : []
+      u.showDropdown = false // dodaj odmah za dropdown
+    })
+  }
 }
 
 const availableRoles = ref([])
@@ -305,12 +319,11 @@ const fetchRoles = async () => {
   try {
     const res = await api.getRoles(session.sid)
     // backend vraća roles unutar data
-    availableRoles.value = res.data.data.roles.map(r => r.rol_name)
+    availableRoles.value = res.data.data.roles.map((r) => r.rol_name)
   } catch (err) {
     console.error('Greška pri učitavanju rola:', err)
   }
 }
-
 
 const closeModal = () => {
   showModal.value = false
@@ -335,22 +348,21 @@ async function getAll() {
       api.adminCategories(session.sid),
       api.adminIngredients(session.sid),
       api.adminComments(session.sid),
-      api.adminUsers(session.sid)
+      api.adminUsers(session.sid),
     ])
     recipes.value = rec.data.data.recipes
     categories.value = cat.data.data
     ingredients.value = ing.data.data
     comments.value = com.data.data
-    users.value = usr.data.data.map(u => ({
+    users.value = usr.data.data.map((u) => ({
       ...u,
       newRoles: u.usr_roles ? u.usr_roles.split(', ') : [],
-      showDropdown: false
+      showDropdown: false,
     }))
   } catch (err) {
     console.log(err)
   }
 }
-
 
 function openEditPopup(rec) {
   editRecipeData.value = { ...rec }
@@ -367,7 +379,9 @@ async function deleteRecipe(rec_id) {
     await api.adminDeleteRecipes(session.sid, rec_id)
     await getAll()
     triggerSuccess('Recept uspešno obrisan ✅')
-  } catch (err) { console.log(err) }
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 async function editRecipe() {
@@ -376,7 +390,9 @@ async function editRecipe() {
     isEditPopupOpen.value = false
     await getAll()
     triggerSuccess('Recept uspešno izmenjen ✅')
-  } catch (err) { console.log(err) }
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 async function addCategory() {
@@ -397,7 +413,6 @@ async function addCategory() {
     else alert('Greška prilikom dodavanja kategorije')
   }
 }
-
 
 async function deleteCategory(cat_id) {
   if (!cat_id) return alert('Nije izabrana kategorija')
@@ -420,8 +435,6 @@ async function deleteCategory(cat_id) {
   }
 }
 
-
-
 async function addIngredient() {
   if (!newIngredientName.value.trim()) return alert('Unesite ime sastojka')
   try {
@@ -430,7 +443,9 @@ async function addIngredient() {
     showAddPopup.value = false
     await getAll()
     triggerSuccess('Sastojak uspešno dodat ✅')
-  } catch (err) { console.log(err) }
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 async function deleteIngredient(ing_id) {
@@ -439,48 +454,45 @@ async function deleteIngredient(ing_id) {
     await api.adminDeleteIngredients(session.sid, ing_id)
     await getAll()
     triggerSuccess('Sastojak uspešno obrisan ✅')
-  } catch (err) { console.log(err) }
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 // AdminView.vue
 async function deleteComment(com_id) {
-  if (!confirm('Da li si siguran da želiš da obrišeš ovaj komentar?')) return;
+  if (!confirm('Da li si siguran da želiš da obrišeš ovaj komentar?')) return
 
   try {
-    const res = await api.adminDeleteComment(session.sid,com_id);
-    console.log('Response from delete:', res); // ovde vidiš com_id
-    await getAll(); // osveži listu komentara
-    triggerSuccess(`Komentar ${res.com_id} uspešno obrisan ✅`);
+    const res = await api.adminDeleteComment(session.sid, com_id)
+    console.log('Response from delete:', res) // ovde vidiš com_id
+    await getAll() // osveži listu komentara
+    triggerSuccess(`Komentar ${res.com_id} uspešno obrisan ✅`)
   } catch (err) {
-    console.log('Greška pri brisanju:', err);
+    console.log('Greška pri brisanju:', err)
   }
 }
-
-
-
 
 async function deleteUser(usr_id) {
-  if (!confirm('Da li si siguran da želiš da obrišeš ovog korisnika?')) return;
+  if (!confirm('Da li si siguran da želiš da obrišeš ovog korisnika?')) return
 
   try {
-    const res = await api.adminDeleteUser(session.sid, usr_id);
-    console.log('Response from delete:', res); // vidiš usr_id
+    const res = await api.adminDeleteUser(session.sid, usr_id)
+    console.log('Response from delete:', res) // vidiš usr_id
 
-    await getAll(); // ❗ čekamo da se lista osveži
-    triggerSuccess(`Korisnik ${usr_id} uspešno obrisan ✅`);
+    await getAll() // ❗ čekamo da se lista osveži
+    triggerSuccess(`Korisnik ${usr_id} uspešno obrisan ✅`)
   } catch (err) {
-    console.log(err);
-    const msg = err.response?.data?.message || 'Greška pri brisanju korisnika ❌';
-    triggerSuccess(msg);
+    console.log(err)
+    const msg = err.response?.data?.message || 'Greška pri brisanju korisnika ❌'
+    triggerSuccess(msg)
   }
 }
-
-
 
 async function saveUserRole(user) {
   if (!user.newRoles || user.newRoles.length === 0) {
-    triggerSuccess('Rola nije promenjena ❌');
-    return;
+    triggerSuccess('Rola nije promenjena ❌')
+    return
   }
 
   try {
@@ -488,28 +500,21 @@ async function saveUserRole(user) {
       usr_id: user.usr_id,
       roles: user.newRoles.join(','), // 👈 BITNO
       sid: session.sid,
-    });
+    })
 
-    await getAll();
-    triggerSuccess('Uspesno promenjena rola korisnika ✅');
+    await getAll()
+    triggerSuccess('Uspesno promenjena rola korisnika ✅')
   } catch (err) {
-    if (err.response?.status === 403) alert('Nemate pravo da menjate ovu rolu ❌');
-    else console.log(err);
+    if (err.response?.status === 403) alert('Nemate pravo da menjate ovu rolu ❌')
+    else console.log(err)
   }
 }
-
-
-
-
-
 
 onMounted(() => {
   getAll()
   fetchRoles()
 })
 </script>
-
-
 
 <style scoped>
 .admin-page {
@@ -608,14 +613,13 @@ onMounted(() => {
 
 .modal {
   background: #fff;
-  width: 1100px;   /* bilo 1000px */
+  width: 1100px; /* bilo 1000px */
   max-height: 100vh;
   border-radius: 12px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
-
 
 .modal-header {
   padding: 16px;
@@ -926,7 +930,6 @@ onMounted(() => {
   border: 1px solid #ddd;
   padding: 10px 12px; /* veći padding za preglednost */
   text-align: left;
-
 }
 
 .users-table th {
@@ -1190,7 +1193,7 @@ onMounted(() => {
   position: relative;
 }
 /* Custom checkbox u dropdown-u */
-.multi-select-dropdown input[type="checkbox"] {
+.multi-select-dropdown input[type='checkbox'] {
   appearance: none; /* uklanja default stil checkboxa */
   width: 20px;
   height: 20px;
@@ -1202,12 +1205,12 @@ onMounted(() => {
   transition: all 0.2s ease;
 }
 
-.multi-select-dropdown input[type="checkbox"]:checked {
+.multi-select-dropdown input[type='checkbox']:checked {
   background-color: #743f3f;
   border-color: #743f3f;
 }
 
-.multi-select-dropdown input[type="checkbox"]:checked::after {
+.multi-select-dropdown input[type='checkbox']:checked::after {
   content: '✔';
   position: absolute;
   top: 50%;
@@ -1232,7 +1235,7 @@ onMounted(() => {
 
 .multi-select-dropdown .dropdown-options {
   position: absolute; /* lebdi preko ostalog sadržaja */
-  top: 100%;           /* odmah ispod dugmeta */
+  top: 100%; /* odmah ispod dugmeta */
   left: 0;
   background: #fff;
   border: 1px solid #ddd;
@@ -1241,22 +1244,22 @@ onMounted(() => {
   padding: 8px;
   max-height: 200px;
   overflow-y: auto;
-  z-index: 10;         /* iznad svega ostalog u tabeli */
-  width: max-content;  /* širina se prilagođava sadržaju */
+  z-index: 10; /* iznad svega ostalog u tabeli */
+  width: max-content; /* širina se prilagođava sadržaju */
 }
 .multi-select-dropdown .dropdown-btn {
-  background-color: #743f3f;   /* boja sajta */
-  color: white;                /* tekst bele boje */
-  border: none;                /* ukloni default border */
-  border-radius: 8px;          /* blago zaobljeni uglovi */
-  padding: 6px 12px;           /* prostor unutar buttona */
-  font-size: 14px;             /* tekst u skladu sa ostalim */
+  background-color: #743f3f; /* boja sajta */
+  color: white; /* tekst bele boje */
+  border: none; /* ukloni default border */
+  border-radius: 8px; /* blago zaobljeni uglovi */
+  padding: 6px 12px; /* prostor unutar buttona */
+  font-size: 14px; /* tekst u skladu sa ostalim */
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: space-between; /* tekst i strelica na krajevima */
-  width: 150px;                /* fiksna širina da ne širi red */
-  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  width: 150px; /* fiksna širina da ne širi red */
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
   transition: all 0.2s;
 }
 
@@ -1264,7 +1267,7 @@ onMounted(() => {
 .multi-select-dropdown .dropdown-btn:hover {
   background-color: #a05a5a;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Strelica animacija */
@@ -1278,7 +1281,4 @@ onMounted(() => {
 .multi-select-dropdown .dropdown-btn.active::after {
   transform: rotate(180deg);
 }
-
-
-
 </style>

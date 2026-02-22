@@ -11,7 +11,7 @@
         <h1 class="recipe-title">{{ recipe.rec_name }}</h1>
         <img
           class="recipe-image"
-          :src="`https://565q123.e2.mars-hosting.com/api/images/imagesview?rec_id=${recipe.rec_id}`"
+          :src="config.imageUrl + recipe.rec_id"
           alt="Recept slika"
         />
 
@@ -99,7 +99,7 @@
           >
             <div class="related-card">
               <img
-                :src="`https://565q123.e2.mars-hosting.com/api/images/imagesview?rec_id=${r.rec_id}`"
+                :src="config.imageUrl + r.rec_id"
                 class="related-image"
                 alt="Sličan recept"
               />
@@ -138,6 +138,8 @@ import { useRoute } from 'vue-router'
 import { ref, onMounted, watch } from 'vue'
 import { useSessionStore } from '@/stores/sessionUser'
 import router from '@/router'
+
+import config from '@/api/config'
 
 const session = useSessionStore()
 const isLoggedIn = session.isLoggedIn

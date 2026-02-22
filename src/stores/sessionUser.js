@@ -26,14 +26,11 @@ export const useSessionStore = defineStore('session', {
 
         localStorage.setItem('user', JSON.stringify(sessionUser))
         localStorage.setItem('sid', sid)
-
       } catch (err) {
         this.logout()
         throw err
       }
     },
-
-
 
     logout() {
       this.user = null
@@ -47,9 +44,7 @@ export const useSessionStore = defineStore('session', {
 
   getters: {
     isLoggedIn: (state) => !!state.user,
-    isAdmin: (state) =>
-      !!state.user?.usr_admin ||
-      state.user?.roles?.includes('admin') ||
-      false,
+    isAdmin: (state) => !!state.user?.usr_admin || state.user?.roles?.includes('admin') || false,
+    isOwner: (state) => !!state.user?.usr_admin || state.user?.roles?.includes('owner') || false,
   },
 })
