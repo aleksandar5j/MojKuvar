@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # kuvar-project
 
 This template should help get you started developing with Vue 3 in Vite.
@@ -138,3 +139,65 @@ For open source projects, say how it is licensed.
 ## Project status
 If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
 >>>>>>> 14683f5383daeeadffd0b6d79c8cd79a458af973
+=======
+🍳 MojKuvar
+
+https://565q123.e2.mars-hosting.com
+
+MojKuvar is a web application designed for discovering, creating, and organizing recipes in a simple and user-friendly way. It allows users to explore various dishes, save their favorites, and manage their own cooking ideas all in one place.
+
+🚀 Features
+
+📖 Browse a collection of recipes
+
+➕ Add new recipes with ingredients and instructions
+
+✏️ Edit and update existing recipes
+
+❌ Delete recipes
+
+⭐ Mark favorite recipes
+
+🔍 Search recipes by name or ingredients
+
+📱 Responsive design for all devices
+
+🛠️ Technologies Used
+
+🧑‍🍳 User profiles and personal recipe collections
+
+📝 Comments and ratings on recipes
+
+
+Frontend: Vue 3
+
+Backend: REST API
+
+Database: MySQL
+
+HTTP Client: Axios
+
+Styling: CSS
+
+
+Make sure you have pnpm installed
+
+npm install -g pnpm
+
+⚙️ Installation
+Clone the repository
+
+git clone https://github.com/your-username/mojkuvar.git
+
+Navigate into the project folder
+
+cd mojkuvar
+
+Install dependencies
+
+pnpm install
+
+Run the development server
+
+pnpm dev
+>>>>>>> cc99d3590a10fda13579e5bb3e9eaa6a88f75a2d
