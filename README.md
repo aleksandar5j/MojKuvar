@@ -2,7 +2,7 @@
 
 MojKuvar is a web application designed for discovering, creating, and organizing recipes in a simple and user-friendly way. It allows users to explore various dishes, save their favorites, and manage their own cooking ideas all in one place.
 
-🚀 Features
+# 🚀 Features
 
 📖 Browse a collection of recipes
 
@@ -19,7 +19,7 @@ MojKuvar is a web application designed for discovering, creating, and organizing
 📱 Responsive design for all devices
 
 
-🛠️ Technologies Used
+# 🛠️ Technologies Used
 
 Frontend: Vue 3
 
@@ -32,7 +32,7 @@ HTTP Client: Axios
 Styling: CSS
 
 
-⚙️ Installation
+# ⚙️ Installation
 
 Make sure you have pnpm installed
 
