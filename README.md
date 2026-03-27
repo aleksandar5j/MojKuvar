@@ -38,9 +38,9 @@ HTTP Client: Axios
 Styling: CSS
 
 
-📸 Preview
+Make sure you have pnpm installed
 
-Add screenshots of your application here
+npm install -g pnpm
 
 ⚙️ Installation
 Clone the repository
