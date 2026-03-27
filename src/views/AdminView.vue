@@ -43,7 +43,6 @@
         </div>
 
         <div class="modal-content">
-          <!-- RECEPATI -->
           <div v-if="activeTable === 'recipes'" class="cards-container">
             <h2>
               <strong style="color: red">✖ - </strong>Direktno brisanje <br />
@@ -103,7 +102,6 @@
             </div>
           </div>
 
-          <!-- KATEGORIJE -->
           <div v-if="activeTable === 'categories'" class="cards-container-wrapper">
             <h2><strong style="color: red">✖ - </strong>Direktno brisanje</h2>
             <div class="add-category-wrapper">
@@ -136,7 +134,6 @@
             </div>
           </div>
 
-          <!-- SASTOJCI -->
           <div v-if="activeTable === 'ingredients'" class="cards-container-wrapper">
             <h2><strong style="color: red">✖ - </strong>Direktno brisanje</h2>
             <div class="add-ingredient-wrapper">
@@ -169,7 +166,6 @@
             </div>
           </div>
 
-          <!-- KOMENTARI -->
           <div v-if="activeTable === 'comments'" class="cards-comment-wrapper">
             <h2><strong style="color: red">✖ - </strong>Direktno brisanje</h2>
             <div class="comments-table-wrapper">
@@ -198,7 +194,6 @@
             </div>
           </div>
 
-          <!-- KORISNICI -->
           <div v-if="activeTable === 'users'" class="cards-users-wrapper">
             <h2><strong style="color: red">✖ - </strong>Direktno brisanje</h2>
             <div class="users-table-wrapper">
@@ -251,7 +246,6 @@
       </div>
     </div>
 
-    <!-- ZELENI POPUP -->
     <div v-if="showSuccess" class="success-popup">
       {{ successMessage }}
     </div>
@@ -306,9 +300,8 @@ const openModal = (table) => {
 
   if (table === 'users') {
     users.value.forEach((u) => {
-      // inicijalizuj kao array jer koristiš checkbox v-model
       u.newRoles = u.usr_roles ? u.usr_roles.split(', ') : []
-      u.showDropdown = false // dodaj odmah za dropdown
+      u.showDropdown = false
     })
   }
 }
@@ -496,17 +489,21 @@ async function saveUserRole(user) {
   }
 
   try {
-    await api.adminUpdateUserRole({
+    const res = await api.adminUpdateUserRole({
       usr_id: user.usr_id,
-      roles: user.newRoles.join(','), // 👈 BITNO
+      roles: user.newRoles.join(','),
       sid: session.sid,
     })
 
-    await getAll()
-    triggerSuccess('Uspesno promenjena rola korisnika ✅')
+    if (res?.data?.success) {
+      await getAll()
+      triggerSuccess('Uspesno promenjena rola korisnika ✅')
+    } else {
+      alert(res?.data?.message || 'Došlo je do greške na serveru ❌')
+    }
   } catch (err) {
-    if (err.response?.status === 403) alert('Nemate pravo da menjate ovu rolu ❌')
-    else console.log(err)
+    console.log('ERROR:', err?.response?.data || err)
+    alert(err?.response?.data?.message || 'Server greška ❌')
   }
 }
 

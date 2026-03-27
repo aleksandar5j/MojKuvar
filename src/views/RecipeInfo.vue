@@ -155,7 +155,7 @@ async function getRecipe() {
     recipe.value = res.data.data.recipe
     ingredients.value = res.data.data.ingredients
 
-    const related = await api.getRelatedRecipes(route.params.id) // sada api/same-category
+    const related = await api.getRelatedRecipes(route.params.id)
     relatedRecipes.value = related.data.data.data
   } catch (error) {
     console.log('AxiosErrorcode:', error.code)
